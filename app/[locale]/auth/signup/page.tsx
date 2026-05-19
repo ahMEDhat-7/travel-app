@@ -17,7 +17,7 @@ export default function SignUpPage({ params }: SignUpPageProps) {
   const translations: Record<string, Record<string, string>> = {
     en: {
       title: 'Create Account',
-      subtitle: "Join us to explore Egypt's wonders",
+      subtitle: "Join us to explore Sharm El-Sheikh's wonders",
       googleButton: 'Continue with Google',
       or: 'or',
       nameLabel: 'Full Name',

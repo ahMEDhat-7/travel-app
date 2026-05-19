@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { getStats, getBestsellingTours } from '@/services/tour.service';
 import ScrollButton from '@/components/ScrollButton';
+import ImagePreviewer from '@/components/ImagePreviewer';
 import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
@@ -11,13 +12,13 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   
   const titles: Record<string, string> = {
-    en: 'Traveloo - Best Tours & Travel Experiences in Egypt',
-    ru: 'Traveloo - Лучшие туры и путешествия в Египте',
+    en: 'Sharm Cloud Tours - Best Tours in Sharm El-Sheikh',
+    ru: 'Sharm Cloud Tours - Лучшие туры в Шарм-эль-Шейхе',
   };
   
   const descriptions: Record<string, string> = {
-    en: 'Discover amazing tours in Egypt. Book Pyramids, Nile Cruises, Desert Adventures and more. Best prices, instant confirmation, free cancellation.',
-    ru: 'Откройте для себя удивительные туры в Египте. Забронируйте пирамиды, круизы по Нилу, приключения в пустыне и многое другое.',
+    en: 'Discover amazing tours in Sharm El-Sheikh. Book Red Sea Diving, Desert Safaris, Snorkeling Adventures and more. Best prices, instant confirmation, free cancellation.',
+    ru: 'Откройте для себя удивительные туры в Шарм-эль-Шейхе. Забронируйте дайвинг на Красном море, сафари в пустыне, сноркелинг и многое другое.',
   };
   
   return {
@@ -27,7 +28,7 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
       title: titles[locale] || titles.en,
       description: descriptions[locale] || descriptions.en,
       url: `${baseUrl}/${locale}`,
-      siteName: 'Traveloo',
+      siteName: 'Sharm Cloud Tours',
       locale: locale,
       type: 'website',
     },
@@ -236,11 +237,9 @@ export default async function HomePage(props: { params: Promise<{ locale: string
 
   return (
     <div className="min-h-screen bg-[var(--theme-bg)]">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
-        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
-      </div>
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-[var(--theme-bg)] py-24">
+      <ImagePreviewer livePreview={commonT('livePreview')} />
+
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-[var(--theme-bg)] py-16 md:py-24">
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--theme-bg)] via-[#1a1810] to-[var(--theme-bg)]" />
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-20 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px]" />
@@ -310,7 +309,7 @@ export default async function HomePage(props: { params: Promise<{ locale: string
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent mb-4">
               {commonT('featured')}
             </h2>
-            <p className="text-[var(--theme-text-secondary)]">Handpicked tours for unforgettable experiences</p>
+            <p className="text-[var(--theme-text-secondary)]">{homeT('featuredTours')}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -341,7 +340,7 @@ export default async function HomePage(props: { params: Promise<{ locale: string
                 </div>
                 
                 <div className="p-6">
-                  <div className="flex items-center gap-2 text-amber-200/70 text-sm mb-3">
+                  <div className="flex items-center gap-2 text-[var(--theme-gold)] text-sm mb-3">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -351,7 +350,7 @@ export default async function HomePage(props: { params: Promise<{ locale: string
                     <span>{tour.duration}</span>
                   </div>
                   
-                  <h3 className="text-xl font-bold text-[var(--theme-text)] mb-2 group-hover:text-amber-200 transition-colors">
+                  <h3 className="text-xl font-bold text-[var(--theme-text)] mb-2 group-hover:text-[var(--theme-gold)] transition-colors">
                       {getTourTitle(tour)}
                     </h3>
                     <p className="text-[var(--theme-text-secondary)] text-sm mb-4 line-clamp-2">{getTourDesc(tour)}</p>
@@ -363,7 +362,7 @@ export default async function HomePage(props: { params: Promise<{ locale: string
                       </span>
                       <span className="text-[var(--theme-text-secondary)] text-sm"> {commonT('perPerson')}</span>
                     </div>
-                    <span className="px-4 py-2 bg-white/5 text-amber-200 rounded-xl text-sm font-medium group-hover:bg-amber-500 group-hover:text-slate-900 transition-all">
+                    <span className="px-4 py-2 bg-white/5 text-[var(--theme-gold)] rounded-xl text-sm font-medium group-hover:bg-amber-500 group-hover:text-slate-900 transition-all">
                       {commonT('viewDetails')}
                     </span>
                   </div>
@@ -397,7 +396,7 @@ export default async function HomePage(props: { params: Promise<{ locale: string
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent mb-4">
               {homeT('reviews')}
             </h2>
-            <p className="text-[var(--theme-text-secondary)]">What our travelers say</p>
+            <p className="text-[var(--theme-text-secondary)]">{homeT('travelersSay')}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -423,11 +422,11 @@ export default async function HomePage(props: { params: Promise<{ locale: string
                 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-amber-200 font-medium">{review.userName}</p>
+                    <p className="text-[var(--theme-gold)] font-medium">{review.userName}</p>
                     <p className="text-[var(--theme-text-secondary)] text-sm">{review.tourTitle}</p>
                   </div>
                   <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
-                    <span className="text-amber-200 font-bold">{review.userName.charAt(0)}</span>
+                    <span className="text-[var(--theme-gold)] font-bold">{review.userName.charAt(0)}</span>
                   </div>
                 </div>
               </div>

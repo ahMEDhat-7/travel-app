@@ -1,4 +1,4 @@
-# tasks.md — Traveloo Egypt Tours Platform
+# tasks.md — Sharm Cloud Tours Platform
 
 ## Project Milestones & Tasks
 
@@ -234,4 +234,4 @@ Build the full admin shell and all admin pages.
 
 ---
 
-_Traveloo tasks.md — generated from PRD v4.0_
+_Sharm Cloud Tours tasks.md — generated from PRD v4.0_

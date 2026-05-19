@@ -43,6 +43,14 @@ model User {
   password  String?
   role      Role     @default(USER)
   createdAt DateTime @default(now())
+  emailVerified Boolean @default(false)
+  verificationToken String?
+  verificationTokenExpiry DateTime?
+  resetToken String?
+  resetTokenExpiry DateTime?
+  phone     String?
+  whatsapp  String?
+  address   String?
 
   bookings     Booking[]
   reviews      Review[]

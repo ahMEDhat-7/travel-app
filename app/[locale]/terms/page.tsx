@@ -3,8 +3,8 @@ import { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Terms of Service | Traveloo',
-    description: 'Terms and conditions for using Traveloo booking services.',
+    title: 'Terms of Service | Sharm Cloud Tours',
+    description: 'Terms and conditions for using Sharm Cloud Tours booking services.',
   };
 }
 
@@ -20,17 +20,17 @@ export default async function TermsPage(props: { params: Promise<{ locale: strin
         <div className="space-y-6 text-[var(--theme-text-secondary)]">
           <section>
             <h2 className="text-xl font-semibold text-[var(--theme-text)] mb-3">1. Acceptance of Terms</h2>
-            <p>By accessing and using the Traveloo website, you accept and agree to be bound by the terms and provision of this agreement.</p>
+            <p>By accessing and using the Sharm Cloud Tours website, you accept and agree to be bound by the terms and provision of this agreement.</p>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold text-[var(--theme-text)] mb-3">2. Use License</h2>
-            <p>Permission is granted to temporarily use Traveloo for personal, non-commercial transitory viewing only.</p>
+            <p>Permission is granted to temporarily use Sharm Cloud Tours for personal, non-commercial transitory viewing only.</p>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold text-[var(--theme-text)] mb-3">3. Booking and Payments</h2>
-            <p className="mb-2">When you make a booking through Traveloo:</p>
+            <p className="mb-2">When you make a booking through Sharm Cloud Tours:</p>
             <ul className="list-disc pl-6 space-y-2">
               <li>You agree to provide accurate and complete information</li>
               <li>Payment is processed securely through our payment partners</li>
@@ -51,12 +51,12 @@ export default async function TermsPage(props: { params: Promise<{ locale: strin
 
           <section>
             <h2 className="text-xl font-semibold text-[var(--theme-text)] mb-3">5. Limitation of Liability</h2>
-            <p>Traveloo acts as a intermediary between customers and tour operators. We are not liable for any damages, injuries, or losses that may occur during the tour.</p>
+            <p>Sharm Cloud Tours acts as a intermediary between customers and tour operators. We are not liable for any damages, injuries, or losses that may occur during the tour.</p>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold text-[var(--theme-text)] mb-3">6. Intellectual Property</h2>
-            <p>All content on this website is the property of Traveloo and may not be reproduced without permission.</p>
+            <p>All content on this website is the property of Sharm Cloud Tours and may not be reproduced without permission.</p>
           </section>
 
           <section>

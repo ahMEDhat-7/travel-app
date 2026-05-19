@@ -96,7 +96,7 @@ export default function Navbar({ locale, translations }: NavbarProps) {
                 fontFamily: 'var(--theme-font-heading)'
               }}
             >
-              Traveloo
+              Sharm Cloud Tours
             </span>
           </Link>
           
@@ -105,7 +105,7 @@ export default function Navbar({ locale, translations }: NavbarProps) {
               <Link 
                 key={key} 
                 href={`/${locale}/${key}`}
-                className="relative text-sm lg:text-base hover:opacity-80 transition-opacity"
+                className="group relative text-sm lg:text-base hover:opacity-80 transition-opacity"
                 style={{ color: 'var(--theme-text)' }}
               >
                 {translations[key as keyof typeof translations]}

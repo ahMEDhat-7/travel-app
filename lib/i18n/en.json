@@ -10,30 +10,32 @@
   },
   "home": {
     "reviews": "Reviews",
+    "featuredTours": "Handpicked tours for unforgettable experiences",
+    "travelersSay": "What our travelers say",
     "hero": {
-      "subtitle": "Discover the Wonders of Egypt",
+      "subtitle": "Discover the Beauty of Sharm El-Sheikh",
       "title": "Discover the Magic",
-      "description": "Ancient pyramids, Nile cruises & unforgettable adventures await you",
+      "description": "Red Sea adventures, desert safaris & unforgettable experiences await you",
       "statTours": "Tours",
       "statTravelers": "Happy Travelers",
       "statDestinations": "Destinations"
     }
   },
   "about": {
-    "title": "About Traveloo",
-    "subtitle": "Discover the magic of Egypt with our expert-curated tours",
+    "title": "About Sharm Cloud Tours",
+    "subtitle": "Discover the magic of Sharm El-Sheikh with our expert-curated tours",
     "storyTitle": "Our Story",
-    "storyText": "Traveloo is a premier Egypt tours booking platform, dedicated to providing unforgettable experiences across the ancient land of Egypt.",
+    "storyText": "Sharm Cloud Tours is a premier Sharm El-Sheikh tours booking platform, dedicated to providing unforgettable experiences along the beautiful Red Sea coast.",
     "whyChooseTitle": "Why Choose Us",
     "reasons": [
-      "Expert local guides with deep knowledge of Egyptian history",
+      "Expert local guides with deep knowledge of Red Sea and Sinai history",
       "Carefully curated tour itineraries",
       "24/7 customer support",
       "Flexible booking and free cancellation on selected tours",
       "Small group sizes for an intimate experience"
     ],
     "teamTitle": "Our Team",
-    "teamText": "Our team consists of passionate Egyptologists, experienced tour guides, and dedicated travel professionals all united by our love for this incredible country.",
+    "teamText": "Our team consists of passionate local experts, experienced tour guides, and dedicated travel professionals all united by our love for Sharm El-Sheikh.",
     "ctaButton": "Explore Our Tours"
   },
   "contact": {
@@ -73,7 +75,7 @@
     },
     "signup": {
       "title": "Create Account",
-      "subtitle": "Join us to explore Egypt's wonders",
+      "subtitle": "Join us to explore Sharm El-Sheikh's wonders",
       "googleButton": "Continue with Google",
       "or": "or",
       "nameLabel": "Full Name",
@@ -166,7 +168,8 @@
     "error": "An error occurred",
     "success": "Success",
     "viewDetails": "View Details",
-    "perPerson": "/person"
+    "perPerson": "/person",
+    "livePreview": "Live Preview"
   },
   "auth_ts": {
     "loginRequired": "Please log in to continue",
@@ -178,5 +181,121 @@
     "unauthorized": "Unauthorized",
     "serverError": "Server Error",
     "capacityExceeded": "Sorry, no more spots available for this date"
+  },
+  "tourDetail": {
+    "tourNotFound": "Tour Not Found",
+    "shareTour": "Share this tour:"
+  },
+  "profile": {
+    "myBookings": "My Bookings",
+    "myReviews": "My Reviews",
+    "accountSettings": "Account Settings",
+    "noBookings": "No bookings yet",
+    "noReviews": "No reviews yet",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "saveChanges": "Save Changes",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password"
+  },
+  "admin": {
+    "adminPanel": "Admin Panel",
+    "dashboard": "Dashboard",
+    "tours": "Tours",
+    "bookings": "Bookings",
+    "reviews": "Reviews",
+    "messages": "Messages",
+    "customer": "Customer",
+    "tour": "Tour",
+    "date": "Date",
+    "guests": "Guests",
+    "status": "Status",
+    "created": "Created",
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "save": "Save",
+    "cancel": "Cancel",
+    "allCategories": "All Categories",
+    "allLocations": "All Locations",
+    "tourNotFound": "Tour not found",
+    "noConversations": "No conversations"
+  },
+  "homePage": {
+    "featuredTours": "Handpicked tours for unforgettable experiences",
+    "travelersSay": "What our travelers say"
+  },
+  "bookingWidget": {
+    "loginRequired": "Login Required",
+    "loginToBook": "Please login to book this tour",
+    "bookingSubmitted": "Booking Submitted!",
+    "redirecting": "Redirecting to your bookings..."
+  },
+  "reviewForm": {
+    "loading": "Loading...",
+    "thankYou": "Thank you!"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "collectInfo": "We collect information you provide directly to us, including:",
+    "infoItems": {
+      "account": "Account information (name, email, phone)",
+      "booking": "Booking information (tour preferences, travel dates)",
+      "payment": "Payment information (processed securely via third parties)",
+      "communications": "Communications with our support team"
+    },
+    "useInfo": "We use the information we collect to:",
+    "useItems": {
+      "process": "Process and confirm your bookings",
+      "confirmations": "Send booking confirmations and updates",
+      "support": "Provide customer support",
+      "improve": "Improve our services and user experience",
+      "promotional": "Send promotional emails (with your consent)"
+    },
+    "shareInfo": "We may share your information with:",
+    "shareItems": {
+      "operators": "Tour operators (necessary for booking fulfillment)",
+      "processors": "Payment processors (for transaction processing)",
+      "providers": "Service providers (for email, analytics, etc.)"
+    },
+    "cookies": "We use cookies and similar tracking technologies to enhance your browsing experience and analyze site traffic.",
+    "security": "We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.",
+    "yourRights": "You have the right to:",
+    "rightsItems": {
+      "access": "Access your personal data",
+      "correct": "Correct inaccurate data",
+      "delete": "Request deletion of your data",
+      "optout": "Opt-out of marketing communications"
+    },
+    "thirdParty": "Our website may contain links to third-party websites. We are not responsible for the privacy practices of these external sites.",
+    "children": "Our services are not intended for children under 13. We do not knowingly collect personal information from children under 13.",
+    "updates": "We may update this privacy policy from time to time. We will notify you of any material changes by posting the new policy on this page.",
+    "contact": "If you have any questions about this Privacy Policy, please contact us through our contact page.",
+    "lastUpdated": "Last updated:"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "intro": "By accessing and using the Sharm Cloud Tours website, you accept and agree to be bound by the terms and provision of this agreement.",
+    "permission": "Permission is granted to temporarily use Sharm Cloud Tours for personal, non-commercial transitory viewing only.",
+    "bookingTerms": "When you make a booking through Sharm Cloud Tours:",
+    "bookingItems": {
+      "accurate": "You agree to provide accurate and complete information",
+      "payment": "Payment is processed securely through our payment partners",
+      "availability": "Bookings are confirmed subject to availability",
+      "confirmation": "You will receive a confirmation email upon successful booking"
+    },
+    "cancellationTerms": "Cancellations are subject to the following terms:",
+    "cancellationItems": {
+      "free": "Free cancellation up to 24 hours before the tour date",
+      "fee": "Cancellations within 24 hours may be subject to a fee",
+      "noshow": "No-shows are non-refundable"
+    },
+    "liability": "Sharm Cloud Tours acts as a intermediary between customers and tour operators. We are not liable for any damages, injuries, or losses that may occur during the tour.",
+    "copyright": "All content on this website is the property of Sharm Cloud Tours and may not be reproduced without permission.",
+    "accountSecurity": "You are responsible for maintaining the confidentiality of your account and password.",
+    "contact": "If you have any questions about these Terms of Service, please contact us through our contact page.",
+    "lastUpdated": "Last updated:"
   }
 }

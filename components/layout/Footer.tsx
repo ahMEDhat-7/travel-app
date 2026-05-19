@@ -1,10 +1,58 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+
+interface ContactData {
+  email: string;
+  phone: string;
+  whatsapp: string;
+  whatsappLink: string | null;
+  address: string;
+}
 
 interface FooterProps {
   locale: string;
 }
 
+const DEFAULT_CONTACT: ContactData = {
+  email: 'support@sharmcloudtours.com',
+  phone: '',
+  whatsapp: '',
+  whatsappLink: null,
+  address: '',
+};
+
 export default function Footer({ locale }: FooterProps) {
+  const [contact, setContact] = useState<ContactData>(DEFAULT_CONTACT);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchContact();
+  }, []);
+
+  const fetchContact = async () => {
+    try {
+      const res = await fetch('/api/contact');
+      const data = await res.json();
+      if (data.success && data.data) {
+        setContact({
+          email: data.data.email || DEFAULT_CONTACT.email,
+          phone: data.data.phone || '',
+          whatsapp: data.data.whatsapp || '',
+          whatsappLink: data.data.whatsappLink || null,
+          address: data.data.address || '',
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching contact:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const address = contact.address || (locale === 'ru' ? 'Шарм-эль-Шейх, Синай, Египет' : 'Sharm El-Sheikh, Sinai, Egypt');
+
   return (
     <footer className="relative bg-[#0a0a0f] border-t border-white/10">
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
@@ -19,11 +67,11 @@ export default function Footer({ locale }: FooterProps) {
                 </svg>
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent">
-                Traveloo
+Sharm Cloud Tours
               </span>
             </div>
             <p className="text-slate-400 text-sm">
-              {locale === 'ru' ? 'Откройте магию Египта с нашими тщательно подобранными турами.' : 'Discover the magic of Egypt with our carefully curated tours.'}
+              {locale === 'ru' ? 'Откройте магию Шарм-эль-Шейха с нашими тщательно подобранными турами.' : 'Discover the magic of Sharm El-Sheikh with our carefully curated tours.'}
             </p>
           </div>
           
@@ -66,9 +114,21 @@ export default function Footer({ locale }: FooterProps) {
           <div>
             <h4 className="text-white font-semibold mb-4">{locale === 'ru' ? 'Контакты' : 'Contact'}</h4>
             <ul className="space-y-2 text-sm text-slate-400">
-              <li>{locale === 'ru' ? 'Каир, Египет' : 'Cairo, Egypt'}</li>
-              <li>info@traveloo.com</li>
-              <li>+20 123 456 789</li>
+              {contact.address && <li>{address}</li>}
+              <li>{contact.email}</li>
+              {contact.phone && <li>{contact.phone}</li>}
+              {contact.whatsappLink && (
+                <li>
+                  <a 
+                    href={contact.whatsappLink} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-green-400 hover:text-green-300"
+                  >
+                    WhatsApp
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -96,7 +156,7 @@ export default function Footer({ locale }: FooterProps) {
 
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-slate-500 text-sm">
-            © {new Date().getFullYear()} Traveloo. {locale === 'ru' ? 'Все права защищены.' : 'All rights reserved.'}
+            © {new Date().getFullYear()} Sharm Cloud Tours. {locale === 'ru' ? 'Все права защищены.' : 'All rights reserved.'}
           </p>
           <div className="flex gap-6 text-sm">
             <a href="#" className="text-slate-500 hover:text-amber-400 transition-colors">

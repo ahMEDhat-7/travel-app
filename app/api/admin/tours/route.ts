@@ -95,6 +95,11 @@ const updateTourSchema = z.object({
 
 export async function GET(request: NextRequest) {
   try {
+    const isAdmin = await checkAdmin();
+    if (!isAdmin) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     const slug = searchParams.get('slug');

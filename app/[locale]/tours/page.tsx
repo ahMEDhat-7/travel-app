@@ -212,7 +212,7 @@ export default function ToursPage({ params }: ToursPageProps) {
       <div className="max-w-7xl mx-auto px-4 py-24 md:py-32 relative">
         <div className="text-center mb-12">
           <h1 className={`text-4xl md:text-5xl font-bold bg-gradient-to-r ${headingGradient} bg-clip-text text-transparent mb-4`}>
-            {locale === 'ru' ? 'Откройте Египет' : 'Discover Magical Egypt'}
+            {locale === 'ru' ? 'Откройте Шарм-эль-Шейх' : 'Discover Magical Sharm El-Sheikh'}
           </h1>
           <p style={{ color: textSecondary }}>{locale === 'ru' ? 'Найдите идеальное приключение' : 'Find your perfect adventure'}</p>
         </div>

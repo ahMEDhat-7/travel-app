@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { hashPassword } from '@/lib/password';
+import { generateToken, getTokenExpiry } from '@/lib/token';
+import { sendVerificationEmail } from '@/lib/email';
 import { withRateLimit, RATE_LIMITS } from '@/lib/api-rate-limit';
 
 const registerSchema = z.object({
@@ -32,6 +34,8 @@ export async function POST(request: NextRequest) {
     }
 
     const hashedPassword = hashPassword(input.password);
+    const verificationToken = generateToken();
+    const verificationTokenExpiry = getTokenExpiry(60);
 
     const user = await db.user.create({
       data: {
@@ -39,7 +43,15 @@ export async function POST(request: NextRequest) {
         email: input.email,
         password: hashedPassword,
         role: 'USER',
+        verificationToken,
+        verificationTokenExpiry,
       },
+    });
+
+    sendVerificationEmail({
+      to: input.email,
+      verificationToken,
+      userName: input.name,
     });
 
     return NextResponse.json({
@@ -48,7 +60,9 @@ export async function POST(request: NextRequest) {
         id: user.id,
         name: user.name,
         email: user.email,
+        emailVerified: false,
       },
+      message: 'Registration successful. Please check your email to verify your account.',
     });
   } catch (error: any) {
     console.error('Registration error:', error);

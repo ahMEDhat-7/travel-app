@@ -209,6 +209,12 @@ export default function SignInPage({ params }: SignInPageProps) {
             >
               {isLoading ? t.submitLoading : t.submitButton}
             </button>
+
+            <div className="text-center mt-4">
+              <a href={`/${locale}/auth/forgot-password`} className="text-sm text-amber-400 hover:text-amber-300 font-medium">
+                Forgot password?
+              </a>
+            </div>
           </form>
 
           <p className="mt-6 text-center text-sm text-[var(--theme-text-secondary)]">

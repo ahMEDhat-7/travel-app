@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { CurrencyCode, getDefaultCurrency, currencies } from '@/lib/currency';
+import { CurrencyCode, currencies } from '@/lib/currency';
 
 interface CurrencyContextType {
   currency: CurrencyCode;
@@ -20,6 +20,23 @@ export function useCurrency() {
   return context;
 }
 
+function getCurrencyFromLocale(): CurrencyCode {
+  if (typeof window !== 'undefined') {
+    const path = window.location.pathname;
+    if (path.startsWith('/ru')) return 'RUB';
+    if (path.startsWith('/en')) return 'USD';
+    
+    const saved = localStorage.getItem('currency');
+    if (saved && currencies[saved as CurrencyCode]) {
+      return saved as CurrencyCode;
+    }
+    
+    const browserLang = navigator.language;
+    if (browserLang.startsWith('ru')) return 'RUB';
+  }
+  return 'USD';
+}
+
 interface CurrencyProviderProps {
   children: ReactNode;
 }
@@ -30,7 +47,7 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
 
   useEffect(() => {
     setMounted(true);
-    setCurrencyState(getDefaultCurrency());
+    setCurrencyState(getCurrencyFromLocale());
   }, []);
 
   const setCurrency = (newCurrency: CurrencyCode) => {

@@ -7,6 +7,9 @@ import { db } from '@/lib/db';
 const updateProfileSchema = z.object({
   name: z.string().min(2).max(100).optional(),
   email: z.string().email().optional(),
+  phone: z.string().max(30).optional(),
+  whatsapp: z.string().max(20).optional(),
+  address: z.string().max(500).optional(),
 });
 
 export async function GET() {
@@ -29,6 +32,9 @@ export async function GET() {
         image: true,
         role: true,
         createdAt: true,
+        phone: true,
+        whatsapp: true,
+        address: true,
       },
     });
 
@@ -74,9 +80,18 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const updateData: { name?: string; email?: string } = {};
+    const isAdmin = user.role === 'ADMIN';
+    
+    const updateData: { name?: string; email?: string; phone?: string; whatsapp?: string; address?: string } = {};
     if (input.name) updateData.name = input.name;
     if (input.email) updateData.email = input.email;
+    
+    // Only admins can update contact fields
+    if (isAdmin) {
+      if (input.phone !== undefined) updateData.phone = input.phone;
+      if (input.whatsapp !== undefined) updateData.whatsapp = input.whatsapp;
+      if (input.address !== undefined) updateData.address = input.address;
+    }
 
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json(
@@ -95,6 +110,9 @@ export async function PUT(request: NextRequest) {
         image: true,
         role: true,
         createdAt: true,
+        phone: true,
+        whatsapp: true,
+        address: true,
       },
     });
 

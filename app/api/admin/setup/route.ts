@@ -10,7 +10,7 @@ export async function GET() {
         data: [
           {
             id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
-            email: 'admin@traveloo.com',
+            email: 'admin@sharmcloudtours.com',
             name: 'Admin',
             role: 'ADMIN',
           },
@@ -26,7 +26,7 @@ export async function GET() {
       return NextResponse.json({ 
         success: true, 
         message: 'Database initialized with users',
-        admin: 'admin@traveloo.com'
+        admin: 'admin@sharmcloudtours.com'
       });
     }
     

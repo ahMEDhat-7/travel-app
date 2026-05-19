@@ -3,8 +3,8 @@ import { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Privacy Policy | Traveloo',
-    description: 'Learn how Traveloo protects and handles your personal data.',
+    title: 'Privacy Policy | Sharm Cloud Tours',
+    description: 'Learn how Sharm Cloud Tours protects and handles your personal data.',
   };
 }
 

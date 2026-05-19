@@ -1,4 +1,4 @@
-# Traveloo — Egypt Tours Platform
+# Sharm Cloud Tours — Sharm El-Sheikh Tours Platform
 
 ## Product Requirements Document v4.0
 
@@ -26,7 +26,7 @@
 
 | Attribute    | Value                                                                          |
 | ------------ | ------------------------------------------------------------------------------ |
-| Product Name | Traveloo — Egypt Tours Platform                                                |
+| Product Name | Sharm Cloud Tours — Sharm El-Sheikh Tours Platform                              |
 | Type         | Single-vendor booking platform                                                 |
 | Target Users | International tourists + 1–2 admin staff                                       |
 | Scale        | Small agency — tens of tours, hundreds of bookings/year                        |
@@ -59,7 +59,7 @@
 ## 4. Project Structure
 
 ```
-traveloo/
+sharm-cloud-tours/
 ├── app/                                  # Next.js App Router root
 │   ├── [locale]/                         # Locale-prefixed public routes (en, ru, ...)
 │   │   ├── page.tsx                      # Home page
@@ -509,4 +509,4 @@ totalPrice = people × tour.price
 
 ---
 
-_Traveloo PRD v4.0 — May 2025_
+_Sharm Cloud Tours PRD v4.0 — May 2025_

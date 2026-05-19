@@ -64,22 +64,24 @@ export const authOptions: NextAuthOptions = {
       }
       return true;
     },
-    async session({ session }) {
-      if (session.user?.email) {
-        const user = await db.user.findUnique({
-          where: { email: session.user.email },
-        });
-        
-        if (user) {
-          session.user.id = user.id;
-          session.user.role = user.role;
-        }
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as 'USER' | 'ADMIN';
       }
       return session;
     },
     async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
+      if (user && user.email) {
+        const dbUser = await db.user.findUnique({
+          where: { email: user.email },
+          select: { id: true, role: true },
+        });
+        
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.role = dbUser.role;
+        }
       }
       return token;
     },

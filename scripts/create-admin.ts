@@ -1,7 +1,7 @@
 import { db } from '../lib/db';
 
 async function createAdmin() {
-  const adminEmail = 'admin@traveloo.com';
+  const adminEmail = 'admin@sharmcloudtours.com';
   
   const existing = await db.user.findUnique({ where: { email: adminEmail } });
   

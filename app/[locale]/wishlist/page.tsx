@@ -60,7 +60,7 @@ export default async function WishlistPage(props: { params: Promise<{ locale: st
                   <img src={item.tour.image} alt={item.tour.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
                 </div>
                 <div className="p-5">
-                  <h3 className="font-bold text-lg text-[var(--theme-text)] mb-2 group-hover:text-amber-200 transition-colors">{item.tour.title}</h3>
+                  <h3 className="font-bold text-lg text-[var(--theme-text)] mb-2 group-hover:text-[var(--theme-gold)] transition-colors">{item.tour.title}</h3>
                   <p className="text-[var(--theme-text-secondary)] text-sm mb-3">{item.tour.location} • {item.tour.duration}</p>
                   <span className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent">
                     ${item.tour.price}

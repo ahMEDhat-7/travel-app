@@ -49,7 +49,7 @@ export default async function LocaleLayout({
             <div className="absolute right-0 top-0 w-px h-full bg-gradient-to-b from-[var(--theme-brand-gold)] via-[var(--theme-brand-goldBright)] to-[var(--theme-brand-gold)] animate-pulse z-50" />
             
             <Navbar locale={locale} translations={navTranslations} />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 pt-14 md:pt-20">{children}</main>
             <FooterController locale={locale} />
           </div>
         </NextIntlClientProvider>

@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { db } from '@/lib/db';
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://traveloo.com';
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://sharmcloudtours.com';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [

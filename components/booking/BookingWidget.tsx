@@ -8,6 +8,7 @@ import { useCurrency } from '@/contexts/CurrencyContext';
 interface BookingWidgetProps {
   tourId: string;
   price: number;
+  childPrice?: number;
   maxCapacity: number;
   locale: string;
 }
@@ -15,13 +16,15 @@ interface BookingWidgetProps {
 export default function BookingWidget({
   tourId,
   price,
+  childPrice,
   maxCapacity,
   locale,
 }: BookingWidgetProps) {
   const router = useRouter();
   const { data: session, status } = useSession();
   const { formatPrice } = useCurrency();
-  const [people, setPeople] = useState(1);
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
   const defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() + 7);
   const [date, setDate] = useState(defaultDate.toISOString().split('T')[0]);
@@ -39,7 +42,8 @@ export default function BookingWidget({
     }
   }, [session]);
 
-  const total = people * price;
+  const effectiveChildPrice = childPrice ?? price;
+  const total = (adults * price) + (children * effectiveChildPrice);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +57,9 @@ export default function BookingWidget({
         body: JSON.stringify({
           tourId,
           tourDate: date,
-          people,
+          people: adults + children,
+          adults,
+          children,
           contactName: name,
           contactEmail: email,
           contactPhone: phone,
@@ -65,7 +71,7 @@ export default function BookingWidget({
       if (data.success) {
         setSuccess(true);
         setTimeout(() => {
-          router.push(`/${locale}/wishlist`);
+          router.push(`/${locale}/booking/${data.data.id}`);
         }, 2000);
       } else {
         setError(data.error || 'Booking failed');
@@ -154,26 +160,58 @@ export default function BookingWidget({
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-1">
-            People
-          </label>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setPeople(Math.max(1, people - 1))}
-              className="px-4 py-2 md:py-3 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-xl text-[var(--theme-text)] hover:bg-[var(--theme-bg-secondary)] transition-all text-sm md:text-base"
-            >
-              -
-            </button>
-            <span className="flex-1 text-center text-[var(--theme-text)] font-medium text-sm md:text-base">{people}</span>
-            <button
-              type="button"
-              onClick={() => setPeople(Math.min(maxCapacity, people + 1))}
-              className="px-4 py-2 md:py-3 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-xl text-[var(--theme-text)] hover:bg-[var(--theme-bg-secondary)] transition-all text-sm md:text-base"
-            >
-              +
-            </button>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-1">
+              Adults
+            </label>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setAdults(Math.max(1, adults - 1))}
+                className="px-3 py-2 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)] hover:bg-[var(--theme-bg-secondary)] transition-all text-sm"
+              >
+                -
+              </button>
+              <span className="flex-1 text-center text-[var(--theme-text)] font-medium text-sm">{adults}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const totalPeople = adults + children + 1;
+                  if (totalPeople <= maxCapacity) setAdults(adults + 1);
+                }}
+                disabled={adults + children >= maxCapacity}
+                className="px-3 py-2 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)] hover:bg-[var(--theme-bg-secondary)] transition-all text-sm disabled:opacity-50"
+              >
+                +
+              </button>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-1">
+              Children {childPrice && childPrice < price && `(-$${price - childPrice})`}
+            </label>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setChildren(Math.max(0, children - 1))}
+                className="px-3 py-2 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)] hover:bg-[var(--theme-bg-secondary)] transition-all text-sm"
+              >
+                -
+              </button>
+              <span className="flex-1 text-center text-[var(--theme-text)] font-medium text-sm">{children}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const totalPeople = adults + children + 1;
+                  if (totalPeople <= maxCapacity) setChildren(children + 1);
+                }}
+                disabled={adults + children >= maxCapacity}
+                className="px-3 py-2 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)] hover:bg-[var(--theme-bg-secondary)] transition-all text-sm disabled:opacity-50"
+              >
+                +
+              </button>
+            </div>
           </div>
         </div>
 

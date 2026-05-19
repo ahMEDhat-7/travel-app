@@ -13,6 +13,6 @@ export default function robots(): MetadataRoute.Robots {
         '/static/',
       ],
     },
-    sitemap: `${process.env.NEXT_PUBLIC_APP_URL || 'https://traveloo.com'}/sitemap.xml`,
+    sitemap: `${process.env.NEXT_PUBLIC_APP_URL || 'https://sharmcloudtours.com'}/sitemap.xml`,
   };
 }

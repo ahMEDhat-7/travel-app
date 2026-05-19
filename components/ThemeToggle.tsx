@@ -39,7 +39,7 @@ export default function ThemeToggle() {
       }}
       aria-label="Toggle theme"
     >
-      {isDark ? (
+      {!isDark ? (
         <svg 
           className="w-5 h-5 transition-all duration-300 group-hover:animate-pulse" 
           fill="currentColor" 

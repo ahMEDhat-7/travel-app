@@ -11,3 +11,13 @@ export async function checkAdminAuth() {
   
   return session;
 }
+
+export async function requireAdmin() {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.email || session.user.role !== 'ADMIN') {
+    throw new Error('ADMIN_REQUIRED');
+  }
+  
+  return session;
+}

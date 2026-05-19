@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { use } from 'react';
 import BookingWidget from '@/components/booking/BookingWidget';
 import ItineraryAccordion from '@/components/tours/ItineraryAccordion';
+import TourJsonLd from '@/components/tours/TourJsonLd';
 import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface TourData {
@@ -38,76 +39,72 @@ interface TourData {
 }
 
 const SAMPLE_TOURS: Record<string, TourData> = {
-  'pyramids-luxor-tour': {
+  'red-sea-diving': {
     id: '1',
-    slug: 'pyramids-luxor-tour',
-    title: 'Pyramids & Luxor Adventure',
-    shortDesc: 'Experience the wonder of ancient Egypt from Cairo to Luxor',
-    description: 'This incredible 5-day journey takes you through the heart of ancient Egypt. Start in Cairo with the iconic Pyramids of Giza and the Sphinx, then fly to Luxor to explore the Valley of the Kings, Karnak Temple, and more.',
-    highlights: ['Great Pyramids of Giza', 'Sphinx', 'Valley of the Kings', 'Karnak Temple', 'Luxor Temple'],
-    included: ['All entrance fees', '4-star accommodation', 'Breakfast daily', 'Expert guide', 'Airport transfers'],
-    notIncluded: ['International flights', 'Visa fees', 'Personal expenses', 'Tips'],
+    slug: 'red-sea-diving',
+    title: 'Red Sea Diving Adventure',
+    shortDesc: 'Explore the crystal clear waters of the Red Sea',
+    description: 'Discover the underwater paradise of Sharm El-Sheikh. This incredible diving experience takes you to world-famous dive sites with vibrant coral reefs and diverse marine life.',
+    highlights: ['Ras Mohamed National Park', 'Thistlegorm Wreck', 'Coral Gardens', 'Dolphin House', 'Blue Hole'],
+    included: ['Full diving equipment', 'Certified instructor', '2 dives per day', 'Lunch onboard', '酒店接送'],
+    notIncluded: ['个人消费', '小费', '证书费用'],
     itinerary: [
-      { day: 1, title: 'Arrival in Cairo', description: 'Arrive at Cairo International Airport. Transfer to your hotel. Evening welcome dinner.' },
-      { day: 2, title: 'Pyramids Day', description: 'Full day touring the Giza pyramids, Sphinx, and Egyptian Museum.' },
-      { day: 3, title: 'Fly to Luxor', description: 'Morning flight to Luxor. Afternoon tour of Karnak Temple.' },
-      { day: 4, title: 'Valley of the Kings', description: 'Full day exploring the West Bank tombs and temples.' },
-      { day: 5, title: 'Departure', description: 'Transfer to airport for departure.' },
+      { day: 1, title: 'Arrival in Sharm', description: 'Meet at dive center. Equipment fitting and briefing.' },
+      { day: 2, title: 'Two Dives', description: 'Morning dive at Ras Mohammed, afternoon at Shark Bay.' },
+      { day: 3, title: 'Wreck Dive', description: 'Dive the famous Thistlegorm wreck.' },
     ],
     price: 299,
     discountPrice: 249,
-    location: 'Cairo & Luxor',
-    duration: '5 days',
-    category: 'Historical',
-    images: ['https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=800'],
-    maxCapacity: 20,
+    location: 'Sharm El-Sheikh',
+    duration: '3 days',
+    category: 'Diving',
+    images: ['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800'],
+    maxCapacity: 12,
     isBestseller: true,
-    hasFreeCancellation: false,
-  },
-  'nile-cruise': {
-    id: '2',
-    slug: 'nile-cruise',
-    title: 'Luxury Nile Cruise',
-    shortDesc: 'Sail the Nile in style on this 4-day luxury cruise',
-    description: 'Experience the magic of the Nile River aboard a luxury cruise ship. Visit ancient temples and enjoy world-class amenities.',
-    highlights: ['Luxor Temple at sunset', 'Edfu Temple', 'Kom Ombo Temple', 'Philae Temple'],
-    included: ['All meals onboard', 'Luxury cabin', 'Guided excursions', 'Entrance fees'],
-    notIncluded: ['International flights', 'Visa', 'Tips'],
-    itinerary: [
-      { day: 1, title: 'Luxor Embarkation', description: 'Board your cruise ship. Evening Karnak visit.' },
-      { day: 2, title: 'Edfu & Kom Ombo', description: 'Visit Edfu and Kom Ombo temples.' },
-      { day: 3, title: 'Aswan', description: 'Visit Philae Temple and botanical gardens.' },
-      { day: 4, title: 'Disembarkation', description: 'Morning breakfast and disembarkation.' },
-    ],
-    price: 549,
-    location: 'Luxor to Aswan',
-    duration: '4 days',
-    category: 'Cruise',
-    images: ['https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800'],
-    maxCapacity: 16,
-    isFeatured: true,
     hasFreeCancellation: true,
   },
   'desert-safari': {
-    id: '3',
+    id: '2',
     slug: 'desert-safari',
-    title: 'White Desert Adventure',
-    shortDesc: 'Camp under the stars in the White Desert',
-    description: 'Journey into the Sahara to discover the unique white limestone formations of the White Desert.',
-    highlights: ['White Desert formations', 'Black Desert', 'Crystal Mountain', 'Desert camping'],
-    included: ['4x4 transfer', 'Meals', 'Camping equipment', 'Guide'],
-    notIncluded: ['Personal expenses'],
+    title: 'Sinai Desert Safari',
+    shortDesc: 'Camp under the stars in the Sinai Desert',
+    description: 'Journey into the beautiful Sinai Desert surrounding Sharm El-Sheikh. Experience traditional Bedouin culture and camp under the stars.',
+    highlights: ['Bedouin village visit', 'Sunset desert views', 'Starry night sky', 'Camel riding', 'Traditional dinner'],
+    included: ['4x4 transfer', 'Bedouin dinner', 'Camping equipment', 'Guide', '酒店接送'],
+    notIncluded: ['个人消费', '小费'],
     itinerary: [
-      { day: 1, title: 'Oasis Departure', description: 'Drive to Bahariya Oasis via the Black Desert.' },
-      { day: 2, title: 'White Desert', description: 'Full day exploring formations. Night camping.' },
+      { day: 1, title: 'Desert Departure', description: 'Afternoon pickup. Drive to desert camp.' },
+      { day: 2, title: 'Desert Experience', description: 'Morning camel ride, visit natural spring. Evening stars.' },
     ],
-    price: 199,
-    location: 'Bahariya Oasis',
+    price: 149,
+    location: 'Sinai Desert',
     duration: '2 days',
     category: 'Adventure',
     images: ['https://images.unsplash.com/photo-1547996663-6e5a6f232032?w=800'],
     maxCapacity: 10,
+    isFeatured: true,
+    hasFreeCancellation: true,
+  },
+  'snorkeling-trips': {
+    id: '3',
+    slug: 'snorkeling-trips',
+    title: 'Tiran Island Snorkeling',
+    shortDesc: 'Snorkel in the pristine waters of Tiran Island',
+    description: 'Explore the crystal-clear waters of Tiran Island, famous for its vibrant coral reefs and tropical fish. Perfect for all skill levels.',
+    highlights: ['Tiran Island', 'Coral reef', 'Tropical fish', 'Glass-bottom boat option', 'Lunch included'],
+    included: ['Boat trip', 'Snorkeling gear', 'Lunch', 'Guide', '酒店接送'],
+    notIncluded: ['个人消费', '小费'],
+    itinerary: [
+      { day: 1, title: 'Boat Trip', description: 'Morning departure to Tiran Island. 3 snorkeling stops.' },
+    ],
+    price: 89,
+    location: 'Tiran Island',
+    duration: '1 day',
+    category: 'Water Sports',
+    images: ['https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=800'],
+    maxCapacity: 20,
     isBestseller: true,
+    hasFreeCancellation: true,
   },
 };
 
@@ -183,6 +180,20 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
 
   return (
     <div className="min-h-screen bg-[var(--theme-bg)]">
+      {tour && (
+        <TourJsonLd
+          tour={{
+            name: getTourData()?.title || '',
+            description: getTourData()?.shortDesc || '',
+            image: tour.images?.[0],
+            price: tour.discountPrice || tour.price,
+            rating: tour.averageRating,
+            reviewCount: tour.reviewCount,
+            location: tour.location,
+            duration: tour.duration,
+          }}
+        />
+      )}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
         <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
