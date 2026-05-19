@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --theme-font-heading: 'Playfair Display', serif;
+  --theme-font-body: 'Inter', sans-serif;
+  
+  /* LIGHT MODE - Soft Off-White */
+  --theme-bg: #FAFAFA;
+  --theme-bg-secondary: #F5F5F5;
+  --theme-bg-tertiary: #EFEFEF;
+  --theme-card: #FFFFFF;
+  --theme-elevated: #F8F9FA;
+  
+  --theme-text: #000000;
+  --theme-text-secondary: #1A1A1A;
+  --theme-text-muted: #555555;
+  --theme-text-disabled: #999999;
+  --theme-gold: #B8860B;
+  
+  --theme-brand-gold: #FFD700;
+  --theme-brand-goldBright: #FFEA00;
+  --theme-brand-green: #059669;
+  --theme-brand-greenBright: #10B981;
+  
+  --theme-border: #E0E0E0;
+  --theme-border-soft: #EEEEEE;
+  --theme-focus: #FFD700;
+  
+  --theme-btn-primary-bg: #FFD700;
+  --theme-btn-primary-text: #000000;
+  --theme-btn-primary-hover: #FFEA00;
+  --theme-btn-secondary-bg: #FFFFFF;
+  --theme-btn-secondary-text: #000000;
+  --theme-btn-secondary-border: #FFD700;
+  --theme-btn-secondary-hover: #FFFAF0;
+  --theme-btn-success-bg: #059669;
+  --theme-btn-success-text: #FFFFFF;
+  --theme-btn-success-hover: #10B981;
+  
+  --theme-status-success: #059669;
+  --theme-status-warning: #D97706;
+  --theme-status-error: #DC2626;
+  --theme-status-info: #2563EB;
+  
+  --theme-gradient-hero: linear-gradient(180deg, #FAFAFA 0%, #F5F5F5 100%);
+  --theme-gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFEA00 100%);
+  --theme-gradient-premium: linear-gradient(180deg, #FAFAFA 0%, #F5F5F5 100%);
+  
+  --theme-shadow-soft: 0 4px 20px rgba(0,0,0,0.08);
+  --theme-shadow-goldGlow: 0 0 20px rgba(255,215,0,0.3);
+  
+  --theme-focus-ring: #FFD700;
+  --theme-selection: #FFD70033;
+  
+  --primary: #FFD700;
+  --secondary: #059669;
+  --golden: #FFD700;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--theme-bg);
+  color: var(--theme-text);
+  font-family: var(--theme-font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--theme-font-heading);
+}
+
+html.dark,
+body.dark {
+  /* DARK MODE - True Noir */
+  --theme-bg: #000000;
+  --theme-bg-secondary: #0A0A0A;
+  --theme-bg-tertiary: #141414;
+  --theme-card: #0C0C0C;
+  --theme-elevated: #141414;
+  
+  --theme-text: #FFFFFF;
+  --theme-text-secondary: #E5E5E5;
+  --theme-text-muted: #B0B0B0;
+  --theme-text-disabled: #707070;
+  --theme-gold: #FFD700;
+  
+  --theme-brand-gold: #FFD700;
+  --theme-brand-goldBright: #FFEA00;
+  --theme-brand-green: #10B981;
+  --theme-brand-greenBright: #34D399;
+  
+  --theme-border: #1F1F1F;
+  --theme-border-soft: #141414;
+  --theme-focus: #FFD700;
+  
+  --theme-btn-primary-bg: #FFD700;
+  --theme-btn-primary-text: #000000;
+  --theme-btn-primary-hover: #FFEA00;
+  --theme-btn-secondary-bg: #0C0C0C;
+  --theme-btn-secondary-text: #FFFFFF;
+  --theme-btn-secondary-border: #FFD700;
+  --theme-btn-secondary-hover: #1A1A1A;
+  --theme-btn-success-bg: #059669;
+  --theme-btn-success-text: #FFFFFF;
+  --theme-btn-success-hover: #10B981;
+  
+  --theme-status-success: #10B981;
+  --theme-status-warning: #FBBF24;
+  --theme-status-error: #F87171;
+  --theme-status-info: #60A5FA;
+  
+  --theme-gradient-hero: linear-gradient(180deg, #000000 0%, #0A0A0A 100%);
+  --theme-gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFEA00 100%);
+  --theme-gradient-premium: linear-gradient(180deg, #0C0C0C 0%, #141414 100%);
+  
+  --theme-shadow-soft: 0 4px 20px rgba(0,0,0,0.5);
+  --theme-shadow-goldGlow: 0 0 30px rgba(255,215,0,0.2);
+  
+  --theme-focus-ring: #FFD700;
+  --theme-selection: #FFD70033;
+}
+
+:focus {
+  outline: 2px solid var(--theme-focus-ring);
+  outline-offset: 2px;
+}
+
+::selection {
+  background-color: var(--theme-selection);
+}
+
+@keyframes light-move {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes light-move-reverse {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-light {
+  animation: light-move 8s linear infinite;
+}
+
+.glass {
+  background: var(--theme-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--theme-border);
+}
+
+.gradient-text {
+  background: var(--theme-gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}

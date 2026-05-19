@@ -1,0 +1,182 @@
+{
+  "navigation": {
+    "home": "Главная",
+    "tours": "Туры",
+    "about": "О нас",
+    "contact": "Контакты",
+    "wishlist": "Избранное",
+    "login": "Войти",
+    "logout": "Выйти"
+  },
+  "home": {
+    "reviews": "Отзывы",
+    "hero": {
+      "subtitle": "Откройте чудеса Египта",
+      "title": "Откройте магию",
+      "description": "Древние пирамиды, круизы по Нилу и незабываемые приключения ждут вас",
+      "statTours": "Туров",
+      "statTravelers": "Довольных путешественников",
+      "statDestinations": "Направлений"
+    }
+  },
+  "about": {
+    "title": "О Traveloo",
+    "subtitle": "Откройте магию Египта с нашими экспертными турами",
+    "storyTitle": "Наша история",
+    "storyText": "Traveloo — ведущая платформа для бронирования туров по Египту, посвящённая незабываемым впечатлениям в древней стране пирамид.",
+    "whyChooseTitle": "Почему выбирают нас",
+    "reasons": [
+      "Экскурсоводы с глубокими знаниями истории Египта",
+      "Тщательно подобранные маршруты",
+      "Круглосуточная поддержка",
+      "Гибкое бронирование и бесплатная отмена",
+      "Небольшие группы для комфортного отдыха"
+    ],
+    "teamTitle": "Наша команда",
+    "teamText": "Наша команда состоит из увлечённых египтологов, опытных гидов и преданных своему делу специалистов по туризму.",
+    "ctaButton": "Смотреть туры"
+  },
+  "contact": {
+    "title": "Связаться с нами",
+    "subtitle": "Есть вопросы о турах? Будем рады услышать вас!",
+    "infoTitle": "Контактная информация",
+    "email": "Email",
+    "phone": "Телефон",
+    "address": "Адрес",
+    "hours": "Время работы",
+    "hoursValue": "Пн-Пт: 9:00 - 18:00",
+    "formTitle": "Написать нам",
+    "nameLabel": "Имя",
+    "namePlaceholder": "Иван Иванов",
+    "emailLabel": "Email",
+    "emailPlaceholder": "ivan@example.com",
+    "messageLabel": "Сообщение",
+    "messagePlaceholder": "Ваше сообщение...",
+    "submitButton": "Отправить сообщение",
+    "successTitle": "Сообщение отправлено!",
+    "successText": "Мы свяжемся с вами в ближайшее время."
+  },
+  "auth": {
+    "signin": {
+      "title": "С возвращением",
+      "subtitle": "Войдите, чтобы продолжить приключение",
+      "googleButton": "Продолжить с Google",
+      "or": "или",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Пароль",
+      "passwordPlaceholder": "••••••••",
+      "submitButton": "Войти",
+      "submitLoading": "Вход...",
+      "signupLink": "Нет аккаунта?",
+      "signupLinkText": "Регистрация"
+    },
+    "signup": {
+      "title": "Создать аккаунт",
+      "subtitle": "Присоединяйтесь, чтобы исследовать чудеса Египта",
+      "googleButton": "Продолжить с Google",
+      "or": "или",
+      "nameLabel": "Полное имя",
+      "namePlaceholder": "Иван Иванов",
+      "emailLabel": "Email",
+      "emailPlaceholder": "ivan@example.com",
+      "passwordLabel": "Пароль",
+      "passwordPlaceholder": "••••••••••",
+      "confirmPasswordLabel": "Подтвердите пароль",
+      "confirmPasswordPlaceholder": "••••••••••",
+      "submitButton": "Создать аккаунт",
+      "submitLoading": "Создание аккаунта...",
+      "signinLink": "Уже есть аккаунт?",
+      "signinLinkText": "Войти",
+      "passwordMismatch": "Пароли не совпадают",
+      "passwordTooShort": "Пароль должен быть не менее 8 символов"
+    }
+  },
+  "booking": {
+    "bookNow": "Забронировать",
+    "selectDate": "Выберите дату",
+    "people": "Гости",
+    "person": "человек",
+    "pricePerPerson": "цена за человека",
+    "totalPrice": "Итого",
+    "contactName": "Имя",
+    "contactEmail": "Email",
+    "contactPhone": "Телефон",
+    "notes": "Особые пожелания",
+    "confirmBooking": "Подтвердить бронь",
+    "bookingConfirmed": "Бронирование подтверждено",
+    "pendingApproval": "Ожидает подтверждения",
+    "confirm": "Подтвердить",
+    "cancel": "Отменить"
+  },
+  "reviews": {
+    "reviews": "Отзывы",
+    "writeReview": "Написать отзыв",
+    "rating": "Оценка",
+    "comment": "Комментарий",
+    "submit": "Отправить отзыв",
+    "averageRating": "Средняя оценка",
+    "basedOnReviews": "на основе {count} отзывов",
+    "adminReply": "Ответ администратора",
+    "pending": "На модерации",
+    "approved": "Одобрен",
+    "rejected": "Отклонен",
+    "approve": "Одобрить",
+    "reject": "Отклонить",
+    "reply": "Ответить"
+  },
+  "wishlist": {
+    "wishlist": "Избранное",
+    "addToWishlist": "В избранное",
+    "removeFromWishlist": "Удалить из избранного",
+    "emptyWishlist": "Ваше избранное пусто",
+    "emptyWishlistDesc": "Начните добавлять понравившиеся туры!"
+  },
+  "filters": {
+    "filters": "Фильтры",
+    "category": "Категория",
+    "location": "Локация",
+    "priceRange": "Диапазон цен",
+    "duration": "Продолжительн��сть",
+    "sortBy": "Сортировать по",
+    "priceAsc": "Цена: по возрастанию",
+    "priceDesc": "Цена: по убыванию",
+    "rating": "Рейтинг",
+    "popularity": "Популярность",
+    "all": "Все"
+  },
+  "common": {
+    "search": "Поиск",
+    "searchPlaceholder": "Поиск туров...",
+    "viewAll": "Смотреть все",
+    "learnMore": "Подробнее",
+    "included": "Включено",
+    "notIncluded": "Не включено",
+    "itinerary": "Маршрут",
+    "highlights": "Особенности",
+    "description": "Описание",
+    "days": "дней",
+    "day": "день",
+    "from": "От",
+    "bestseller": "Хит продаж",
+    "freeCancellation": "Бесплатная отмена",
+    "featured": "Рекомендуем",
+    "loading": "Загрузка...",
+    "noResults": "Ничего не найдено",
+    "error": "Произошла ошибка",
+    "success": "Успешно",
+    "viewDetails": "Подробнее",
+    "perPerson": "/человек"
+  },
+  "auth_ts": {
+    "loginRequired": "Пожалуйста, войдите для продолжения",
+    "loginPrompt": "Войдите для бронирования",
+    "signInWithGoogle": "Войти через Google"
+  },
+  "errors": {
+    "notFound": "Не найдено",
+    "unauthorized": "Доступ запрещен",
+    "serverError": "Ошибка сервера",
+    "capacityExceeded": "Извините, мест на эту дату больше нет"
+  }
+}

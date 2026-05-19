@@ -1,0 +1,182 @@
+{
+  "navigation": {
+    "home": "Home",
+    "tours": "Tours",
+    "about": "About",
+    "contact": "Contact",
+    "wishlist": "Wishlist",
+    "login": "Log in",
+    "logout": "Log out"
+  },
+  "home": {
+    "reviews": "Reviews",
+    "hero": {
+      "subtitle": "Discover the Wonders of Egypt",
+      "title": "Discover the Magic",
+      "description": "Ancient pyramids, Nile cruises & unforgettable adventures await you",
+      "statTours": "Tours",
+      "statTravelers": "Happy Travelers",
+      "statDestinations": "Destinations"
+    }
+  },
+  "about": {
+    "title": "About Traveloo",
+    "subtitle": "Discover the magic of Egypt with our expert-curated tours",
+    "storyTitle": "Our Story",
+    "storyText": "Traveloo is a premier Egypt tours booking platform, dedicated to providing unforgettable experiences across the ancient land of Egypt.",
+    "whyChooseTitle": "Why Choose Us",
+    "reasons": [
+      "Expert local guides with deep knowledge of Egyptian history",
+      "Carefully curated tour itineraries",
+      "24/7 customer support",
+      "Flexible booking and free cancellation on selected tours",
+      "Small group sizes for an intimate experience"
+    ],
+    "teamTitle": "Our Team",
+    "teamText": "Our team consists of passionate Egyptologists, experienced tour guides, and dedicated travel professionals all united by our love for this incredible country.",
+    "ctaButton": "Explore Our Tours"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "Have questions about our tours? We'd love to hear from you!",
+    "infoTitle": "Contact Info",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "hours": "Hours",
+    "hoursValue": "Mon-Fri: 9AM - 6PM",
+    "formTitle": "Send us a Message",
+    "nameLabel": "Name",
+    "namePlaceholder": "John Doe",
+    "emailLabel": "Email",
+    "emailPlaceholder": "john@example.com",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Your message...",
+    "submitButton": "Send Message",
+    "successTitle": "Message Sent!",
+    "successText": "We'll get back to you soon."
+  },
+  "auth": {
+    "signin": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to continue your adventure",
+      "googleButton": "Continue with Google",
+      "or": "or",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "submitButton": "Sign In",
+      "submitLoading": "Signing in...",
+      "signupLink": "Don't have an account?",
+      "signupLinkText": "Sign up"
+    },
+    "signup": {
+      "title": "Create Account",
+      "subtitle": "Join us to explore Egypt's wonders",
+      "googleButton": "Continue with Google",
+      "or": "or",
+      "nameLabel": "Full Name",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••���•••••",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "••••••••",
+      "submitButton": "Create Account",
+      "submitLoading": "Creating account...",
+      "signinLink": "Already have an account?",
+      "signinLinkText": "Sign in",
+      "passwordMismatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 8 characters"
+    }
+  },
+  "booking": {
+    "bookNow": "Book Now",
+    "selectDate": "Select Date",
+    "people": "People",
+    "person": "person",
+    "pricePerPerson": "price per person",
+    "totalPrice": "Total Price",
+    "contactName": "Full Name",
+    "contactEmail": "Email",
+    "contactPhone": "Phone",
+    "notes": "Special Requests",
+    "confirmBooking": "Confirm Booking",
+    "bookingConfirmed": "Booking Confirmed",
+    "pendingApproval": "Pending Approval",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "reviews": {
+    "reviews": "Reviews",
+    "writeReview": "Write a Review",
+    "rating": "Rating",
+    "comment": "Comment",
+    "submit": "Submit Review",
+    "averageRating": "Average Rating",
+    "basedOnReviews": "based on {count} reviews",
+    "adminReply": "Admin Reply",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "approve": "Approve",
+    "reject": "Reject",
+    "reply": "Reply"
+  },
+  "wishlist": {
+    "wishlist": "Wishlist",
+    "addToWishlist": "Add to Wishlist",
+    "removeFromWishlist": "Remove from Wishlist",
+    "emptyWishlist": "Your wishlist is empty",
+    "emptyWishlistDesc": "Start adding tours you love!"
+  },
+  "filters": {
+    "filters": "Filters",
+    "category": "Category",
+    "location": "Location",
+    "priceRange": "Price Range",
+    "duration": "Duration",
+    "sortBy": "Sort by",
+    "priceAsc": "Price: Low to High",
+    "priceDesc": "Price: High to Low",
+    "rating": "Rating",
+    "popularity": "Popularity",
+    "all": "All"
+  },
+  "common": {
+    "search": "Search",
+    "searchPlaceholder": "Search tours...",
+    "viewAll": "View All",
+    "learnMore": "Learn More",
+    "included": "Included",
+    "notIncluded": "Not Included",
+    "itinerary": "Itinerary",
+    "highlights": "Highlights",
+    "description": "Description",
+    "days": "days",
+    "day": "day",
+    "from": "From",
+    "bestseller": "Bestseller",
+    "freeCancellation": "Free Cancellation",
+    "featured": "Featured",
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "error": "An error occurred",
+    "success": "Success",
+    "viewDetails": "View Details",
+    "perPerson": "/person"
+  },
+  "auth_ts": {
+    "loginRequired": "Please log in to continue",
+    "loginPrompt": "Log in to book this tour",
+    "signInWithGoogle": "Sign in with Google"
+  },
+  "errors": {
+    "notFound": "Not Found",
+    "unauthorized": "Unauthorized",
+    "serverError": "Server Error",
+    "capacityExceeded": "Sorry, no more spots available for this date"
+  }
+}
