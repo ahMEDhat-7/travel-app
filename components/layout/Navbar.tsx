@@ -100,7 +100,7 @@ export default function Navbar({ locale, translations }: NavbarProps) {
             </span>
           </Link>
           
-          <div className="hidden md:flex items-center gap-6 lg:gap-8">
+          <div className="hidden lg:flex items-center gap-6 lg:gap-8">
             {['tours', 'about', 'contact'].map((key) => (
               <Link 
                 key={key} 
@@ -114,13 +114,19 @@ export default function Navbar({ locale, translations }: NavbarProps) {
             ))}
           </div>
 
-          <div className="flex items-center gap-2 md:gap-3">
-            <ThemeToggle />
-            <CurrencySelector />
-            <LanguageSwitcher currentLocale={locale} />
+          <div className="flex items-center gap-1 md:gap-3">
+            <div className="hidden lg:block">
+              <ThemeToggle />
+            </div>
+            <div className="hidden lg:block">
+              <CurrencySelector />
+            </div>
+            <div className="hidden lg:block">
+              <LanguageSwitcher currentLocale={locale} />
+            </div>
             <Link 
               href={`/${locale}/wishlist`}
-              className="p-2 hover:opacity-80 transition-all"
+              className="hidden lg:block p-2 hover:opacity-80 transition-all"
               style={{ color: 'var(--theme-brand-gold)' }}
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -130,7 +136,7 @@ export default function Navbar({ locale, translations }: NavbarProps) {
             {session && (
               <Link 
                 href={`/${locale}/messages`}
-                className="p-2 hover:opacity-80 transition-all relative"
+                className="hidden lg:block p-2 hover:opacity-80 transition-all relative"
                 style={{ color: 'var(--theme-brand-gold)' }}
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -140,7 +146,7 @@ export default function Navbar({ locale, translations }: NavbarProps) {
               </Link>
             )}
             {session ? (
-              <div className="relative">
+              <div className="hidden lg:block relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
                   className="user-menu flex items-center gap-2 px-3 py-1.5 md:py-2.5 text-xs md:text-sm font-semibold rounded-lg transition-all"
@@ -152,7 +158,7 @@ export default function Navbar({ locale, translations }: NavbarProps) {
                   <div className="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center text-black text-xs font-bold">
                     {session.user?.name?.[0]?.toUpperCase() || session.user?.email?.[0]?.toUpperCase() || 'U'}
                   </div>
-                  <span className="hidden md:inline">{session.user?.name || 'Profile'}</span>
+                  <span className="hidden lg:inline">{session.user?.name || 'Profile'}</span>
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -198,7 +204,7 @@ export default function Navbar({ locale, translations }: NavbarProps) {
             ) : (
               <Link 
                 href={`/${locale}/auth/signin`}
-                className="px-3 md:px-5 py-1.5 md:py-2.5 text-xs md:text-sm font-semibold rounded-lg transition-all"
+                className="hidden lg:block px-3 md:px-5 py-1.5 md:py-2.5 text-xs md:text-sm font-semibold rounded-lg transition-all"
                 style={{ 
                   background: 'var(--theme-btn-primary-bg)',
                   color: 'var(--theme-btn-primary-text)'
@@ -209,7 +215,7 @@ export default function Navbar({ locale, translations }: NavbarProps) {
             )}
             
             <button 
-              className="md:hidden p-2 cursor-pointer"
+              className="lg:hidden p-2 cursor-pointer"
               style={{ color: 'var(--theme-text)' }}
               onClick={() => setMenuOpen(!menuOpen)}
             >
@@ -225,29 +231,95 @@ export default function Navbar({ locale, translations }: NavbarProps) {
         </div>
         
         {menuOpen && (
-          <div className="md:hidden py-4 border-t" style={{ borderColor: 'var(--theme-border)' }}>
-            <div className="flex flex-col gap-4">
-              {['tours', 'about', 'contact', 'wishlist'].map((key) => (
+          <div className="lg:hidden py-4 border-t" style={{ backgroundColor: 'var(--theme-bg)', borderColor: 'var(--theme-border)' }}>
+            <div className="grid grid-cols-3 gap-4 text-sm">
+              <div className="flex flex-col gap-2">
+                <span className="text-xs font-semibold uppercase" style={{ color: 'var(--theme-text-secondary)' }}>Navigate</span>
+                {['tours', 'about', 'contact'].map((key) => (
+                  <Link 
+                    key={key} 
+                    href={`/${locale}/${key}`}
+                    className="py-2 px-3 rounded-lg hover:bg-[var(--theme-bg-secondary)] transition-colors"
+                    style={{ color: 'var(--theme-text)' }}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {translations[key as keyof typeof translations] || key}
+                  </Link>
+                ))}
+              </div>
+              
+              <div className="flex flex-col gap-2">
+                <span className="text-xs font-semibold uppercase" style={{ color: 'var(--theme-text-secondary)' }}>Settings</span>
+                <div className="py-2 px-3 rounded-lg hover:bg-[var(--theme-bg-secondary)] transition-colors">
+                  <ThemeToggle />
+                </div>
+                <div className="py-2 px-3 rounded-lg hover:bg-[var(--theme-bg-secondary)] transition-colors">
+                  <CurrencySelector />
+                </div>
+                <div className="py-2 px-3 rounded-lg hover:bg-[var(--theme-bg-secondary)] transition-colors">
+                  <LanguageSwitcher currentLocale={locale} />
+                </div>
+              </div>
+              
+              <div className="flex flex-col gap-2">
+                <span className="text-xs font-semibold uppercase" style={{ color: 'var(--theme-text-secondary)' }}>Account</span>
                 <Link 
-                  key={key} 
-                  href={`/${locale}/${key}`}
-                  className="py-2"
-                  style={{ color: 'var(--theme-text)' }}
+                  href={`/${locale}/wishlist`}
+                  className="py-2 px-3 rounded-lg hover:bg-[var(--theme-bg-secondary)] transition-colors flex items-center gap-2"
+                  style={{ color: 'var(--theme-brand-gold)' }}
                   onClick={() => setMenuOpen(false)}
                 >
-                  {translations[key as keyof typeof translations] || key}
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                  {translations.wishlist}
                 </Link>
-              ))}
-              {session && (
-                <Link 
-                  href={`/${locale}/profile`}
-                  className="py-2"
-                  style={{ color: 'var(--theme-text)' }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Profile
-                </Link>
-              )}
+                
+                {session ? (
+                  <>
+                    <Link 
+                      href={`/${locale}/messages`}
+                      className="py-2 px-3 rounded-lg hover:bg-[var(--theme-bg-secondary)] transition-colors flex items-center gap-2"
+                      style={{ color: 'var(--theme-brand-gold)' }}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                      </svg>
+                      Messages
+                    </Link>
+                    <Link 
+                      href={`/${locale}/profile`}
+                      className="py-2 px-3 rounded-lg hover:bg-[var(--theme-bg-secondary)] transition-colors flex items-center gap-2"
+                      style={{ color: 'var(--theme-text)' }}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      Profile
+                    </Link>
+                    <button 
+                      onClick={() => { signOut({ callbackUrl: `/${locale}` }); setMenuOpen(false); }}
+                      className="py-2 px-3 rounded-lg hover:bg-[var(--theme-bg-secondary)] transition-colors flex items-center gap-2 text-left text-red-500"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      {translations.logout}
+                    </button>
+                  </>
+                ) : (
+                  <Link 
+                    href={`/${locale}/auth/signin`}
+                    className="py-2 px-3 text-center font-semibold rounded-lg"
+                    style={{ background: 'var(--theme-btn-primary-bg)', color: 'var(--theme-btn-primary-text)' }}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {translations.login}
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         )}

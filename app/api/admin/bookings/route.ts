@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { sendBookingStatusUpdate } from "@/lib/email";
 
 async function checkAdmin() {
   const session = await getServerSession(authOptions);
@@ -193,10 +194,34 @@ export async function PUT(request: NextRequest) {
     if (input.contactPhone) updateData.contactPhone = input.contactPhone;
     if (input.notes !== undefined) updateData.notes = input.notes;
 
+    const currentBooking = await db.booking.findUnique({
+      where: { id: input.id },
+      include: { tour: { select: { title: true } } },
+    });
+
     const booking = await db.booking.update({
       where: { id: input.id },
       data: updateData,
+      include: { tour: { select: { title: true } } },
     });
+
+    if (input.status && currentBooking && currentBooking.status !== input.status) {
+      const tourDate = booking.tourDate 
+        ? new Date(booking.tourDate).toISOString().split('T')[0] 
+        : 'N/A';
+      
+      sendBookingStatusUpdate({
+        to: booking.contactEmail,
+        customerName: booking.contactName,
+        tourName: booking.tour?.title || 'Unknown Tour',
+        tourDate,
+        people: booking.people,
+        totalPrice: booking.totalPrice,
+        bookingId: booking.id,
+        status: input.status as 'CONFIRMED' | 'CANCELLED',
+        adminNotes: booking.notes || undefined,
+      }).catch(err => console.error('Failed to send status update email:', err));
+    }
 
     return NextResponse.json({ success: true, data: booking });
   } catch (error: any) {

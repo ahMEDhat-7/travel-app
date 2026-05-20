@@ -31,6 +31,7 @@ export default function BookingWidget({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -63,6 +64,7 @@ export default function BookingWidget({
           contactName: name,
           contactEmail: email,
           contactPhone: phone,
+          notes: notes || null,
         }),
       });
 
@@ -263,6 +265,19 @@ export default function BookingWidget({
             placeholder="+20 123 456 789"
             required
             className="w-full px-3 md:px-4 py-2 md:py-3 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-xl text-[var(--theme-text)] placeholder-[var(--theme-text-muted)] focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm md:text-base"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-1">
+            Special Requests <span className="text-[var(--theme-text-muted)]">(optional)</span>
+          </label>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Any special requests or requirements..."
+            rows={3}
+            className="w-full px-3 md:px-4 py-2 md:py-3 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-xl text-[var(--theme-text)] placeholder-[var(--theme-text-muted)] focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm md:text-base resize-none"
           />
         </div>
 

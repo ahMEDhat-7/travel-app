@@ -365,3 +365,104 @@ export async function sendReviewReplyNotification(options: {
     html,
   });
 }
+
+export async function sendBookingStatusUpdate(options: {
+  to: string;
+  customerName: string;
+  tourName: string;
+  tourDate: string;
+  people: number;
+  totalPrice: number;
+  currency?: string;
+  bookingId: string;
+  status: 'CONFIRMED' | 'CANCELLED';
+  adminNotes?: string;
+}) {
+  const { to, customerName, tourName, tourDate, people, totalPrice, currency = 'EGP', bookingId, status, adminNotes } = options;
+  
+  const statusColor = status === 'CONFIRMED' ? '#22c55e' : '#ef4444';
+  const statusText = status === 'CONFIRMED' ? 'Confirmed' : 'Cancelled';
+  const statusMessage = status === 'CONFIRMED' 
+    ? 'Great news! Your booking has been confirmed by our team.'
+    : 'Your booking has been cancelled. Please contact us if you have any questions.';
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Booking Status Update</title>
+    </head>
+    <body style="font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden;">
+        <div style="background: ${statusColor}; padding: 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0; font-size: 28px;">Booking ${statusText}</h1>
+        </div>
+        
+        <div style="padding: 30px;">
+          <p style="color: #333333; font-size: 16px; margin-bottom: 20px;">
+            Dear <strong>${customerName}</strong>,
+          </p>
+          
+          <p style="color: #333333; font-size: 16px;">
+            ${statusMessage}
+          </p>
+          
+          <div style="background-color: #f9f9f9; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #000000; margin-top: 0;">Booking Details</h3>
+            
+            <p style="color: #555555; margin: 10px 0;">
+              <strong>Booking ID:</strong> ${bookingId}
+            </p>
+            <p style="color: #555555; margin: 10px 0;">
+              <strong>Tour:</strong> ${tourName}
+            </p>
+            <p style="color: #555555; margin: 10px 0;">
+              <strong>Date:</strong> ${tourDate}
+            </p>
+            <p style="color: #555555; margin: 10px 0;">
+              <strong>Number of People:</strong> ${people}
+            </p>
+            <p style="color: #555555; margin: 10px 0;">
+              <strong>Total Price:</strong> ${currency} ${totalPrice.toLocaleString()}
+            </p>
+            <p style="color: #555555; margin: 10px 0;">
+              <strong>Status:</strong> <span style="color: ${statusColor}; font-weight: bold;">${statusText}</span>
+            </p>
+          </div>
+          
+          ${adminNotes ? `
+          <div style="background-color: #fffbeb; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #FFD700;">
+            <p style="color: #333333; margin: 0;">
+              <strong>Note from Admin:</strong><br/>
+              ${adminNotes}
+            </p>
+          </div>
+          ` : ''}
+          
+          <p style="color: #666666; font-size: 14px; margin-top: 20px;">
+            If you have any questions, please don't hesitate to contact us at support@sharmcloudtours.com or call us directly.
+          </p>
+          
+          <p style="color: #666666; font-size: 14px;">
+            Thank you for choosing Sharm Cloud Tours!
+          </p>
+        </div>
+        
+        <div style="background-color: #1a1a1a; padding: 20px; text-align: center;">
+          <p style="color: #888888; margin: 0; font-size: 12px;">
+            © 2026 Sharm Cloud Tours. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return sendEmail({
+    to,
+    subject: `Your Booking (${bookingId.slice(0, 8)}) - ${statusText}`,
+    html,
+  });
+}
