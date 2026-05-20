@@ -17,7 +17,7 @@ export default function AdminContactPage() {
     whatsapp: '',
     address: '',
   });
-  const { notification, showNotification } = useNotification();
+  const { showNotification } = useNotification();
 
   useEffect(() => {
     fetchProfile();
@@ -86,17 +86,7 @@ export default function AdminContactPage() {
         </p>
       </div>
 
-      {notification && (
-        <div
-          className={`mb-6 p-4 rounded-lg ${
-            notification.type === 'success'
-              ? 'bg-green-500/20 text-green-400'
-              : 'bg-red-500/20 text-red-400'
-          }`}
-        >
-          {notification.message}
-        </div>
-      )}
+      
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-[var(--theme-card)] rounded-xl p-6 border border-[var(--theme-border)]">
