@@ -7,7 +7,7 @@ import { db } from '@/lib/db';
 const updateBookingSchema = z.object({
   people: z.number().min(1).max(50).optional(),
   tourDate: z.string().optional(),
-  notes: z.string().optional(),
+  notes: z.string().nullable().optional(),
 });
 
 export async function PUT(

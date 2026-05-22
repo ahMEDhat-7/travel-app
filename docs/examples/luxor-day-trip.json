@@ -1,0 +1,86 @@
+{
+  "slug": "luxor-day-trip-sharm",
+  "title": "Luxor Day Trip from Sharm El-Sheikh",
+  "shortDesc": "Explore ancient Egyptian wonders including Valley of the Kings, Karnak Temple, and Luxor Temple on this full-day adventure.",
+  "description": "Experience the grandeur of ancient Egypt with our premium day trip to Luxor. Depart early morning from Sharm El-Sheikh and return the same evening. Visit the world-famous Valley of the Kings, where pharaohs were buried in elaborate tombs. Explore the magnificent Karnak Temple complex, one of the largest religious buildings ever constructed. End your day at the stunning Luxor Temple, beautifully illuminated at night. Our expert Egyptologist guides will bring history to life as you explore these incredible sites.",
+  "ruTitle": "Люксор однодневная поездка из Шарм-эль-Шейха",
+  "ruShortDesc": "Исследуйте древнеегипетские чудеса, включая Долину Царей, Карнакский храм и Луксорский храм, в этом полнодневном приключении.",
+  "ruDescription": "Ощутите величие Древнего Египта с нашей премиум-поездкой в Луксор. Отправление рано утром из Шарм-эль-Шейха и возвращение в тот же вечер. Посетите всемирно известную Долину Царей, где фараоны были похоронены в elaborate гробницах. Исследуйте величественный комплекс храма Карнак, один из крупнейших религиозных объектов когда-либо построенных.",
+  "highlights": [
+    "Valley of the Kings admission included",
+    "Professional Egyptologist guide",
+    "Buffet lunch at local restaurant",
+    "Visit Karnak and Luxor Temples",
+    "Comfortable air-conditioned transport",
+    "Small group experience (max 15 people)",
+    "All entrance fees included"
+  ],
+  "ruHighlights": "Долина Царей включена в стоимость\nПрофессиональный египтолог-гид\nШведский стол в местном ресторане\nПосещение храмов Карнак и Луксор\nКомфортабельный кондиционированный транспорт\nМалогрупповой тур (максимум 15 человек)\nВсе входные билеты включены",
+  "included": [
+    "Hotel pickup and drop-off in Sharm El-Sheikh",
+    "Round-trip air-conditioned vehicle",
+    "Professional Egyptologist guide (English/Russian)",
+    "Buffet lunch with soft drinks",
+    "All entrance fees to monuments",
+    "Bottled water during the tour",
+    "Travel insurance"
+  ],
+  "ruIncluded": "Трансфер из/в отель в Шарм-эль-Шейхе\nКондиционированный автомобиль в обе стороны\nПрофессиональный египтолог-гид (английский/русский)\nШведский стол с безалкогольными напитками\nВсе входные билеты\nБутилированная вода во время тура\nСтраховка путешественника",
+  "notIncluded": [
+    "Personal expenses and souvenirs",
+    "Gratuities for guide (optional but appreciated)",
+    "Additional drinks beyond those provided"
+  ],
+  "ruNotIncluded": "Личные расходы и сувениры\nЧаевые гиду (необязательно, но приветствуется)\nДополнительные напитки сверх предоставленных",
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "Early Morning Departure",
+      "description": "Pickup from your hotel at 4:00 AM. Enjoy refreshments during the scenic 4-hour drive through the Eastern Desert. Stop for a short break at a traditional rest area."
+    },
+    {
+      "day": 2,
+      "title": "Valley of the Kings",
+      "description": "Arrive at the Valley of the Kings around 8:30 AM. Explore 3 royal tombs (additional tombs available for extra fee). Learn about ancient burial traditions and the discovery of Tutankhamun's tomb."
+    },
+    {
+      "day": 3,
+      "title": "Karnak Temple",
+      "description": "Visit the massive Karnak Temple complex, the largest religious site ever built. See the famous Hypostyle Hall with 134 massive columns. Your guide will explain the significance of each section."
+    },
+    {
+      "day": 4,
+      "title": "Lunch & Luxor Temple",
+      "description": "Enjoy a delicious buffet lunch at a local restaurant. Then tour the beautiful Luxor Temple, built around 1400 BC. Depart for Sharm El-Sheikh around 4:00 PM with arrival at 8:00 PM."
+    }
+  ],
+  "translations": {
+    "en": {
+      "title": "Luxor Day Trip from Sharm El-Sheikh",
+      "shortDesc": "Explore ancient Egyptian wonders including Valley of the Kings, Karnak Temple, and Luxor Temple on this full-day adventure.",
+      "description": "Experience the grandeur of ancient Egypt..."
+    },
+    "ru": {
+      "title": "Люксор однодневная поездка из Шарм-эль-Шейха",
+      "shortDesc": "Исследуйте древнеегипетские чудеса...",
+      "description": "Ощутите величие Древнего Египта..."
+    }
+  },
+  "price": 150,
+  "childPrice": 85,
+  "discountPrice": 129,
+  "duration": "16 hours",
+  "location": "Sharm El-Sheikh, Egypt",
+  "category": "Historical",
+  "images": [
+    "/images/tours-images/luxor-valley-of-kings.jpg",
+    "/images/tours-images/luxor-karnak-temple.jpg",
+    "/images/tours-images/luxor-temple.jpg",
+    "/images/tours-images/egypt-desert.jpg"
+  ],
+  "maxCapacity": 30,
+  "isActive": true,
+  "isFeatured": true,
+  "isBestseller": true,
+  "hasFreeCancellation": true
+}

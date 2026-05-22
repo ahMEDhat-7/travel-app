@@ -22,7 +22,7 @@ const createBookingSchema = z.object({
   contactName: z.string().min(2),
   contactEmail: z.string().email(),
   contactPhone: z.string().min(5),
-  notes: z.string().optional(),
+  notes: z.string().nullable().optional(),
 });
 
 const updateBookingSchema = z.object({
@@ -31,11 +31,11 @@ const updateBookingSchema = z.object({
   tourDate: z.string().optional(),
   people: z.number().min(1).max(50).optional(),
   totalPrice: z.number().min(0).optional(),
-  status: z.enum(["PENDING", "CONFIRMED", "CANCELLED"]).optional(),
+  status: z.enum(["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"]).optional(),
   contactName: z.string().min(2).optional(),
   contactEmail: z.string().email().optional(),
   contactPhone: z.string().min(5).optional(),
-  notes: z.string().optional(),
+  notes: z.string().nullable().optional(),
 });
 
 export async function GET(request: NextRequest) {
@@ -218,7 +218,7 @@ export async function PUT(request: NextRequest) {
         people: booking.people,
         totalPrice: booking.totalPrice,
         bookingId: booking.id,
-        status: input.status as 'CONFIRMED' | 'CANCELLED',
+        status: input.status as 'CONFIRMED' | 'COMPLETED' | 'CANCELLED',
         adminNotes: booking.notes || undefined,
       }).catch(err => console.error('Failed to send status update email:', err));
     }

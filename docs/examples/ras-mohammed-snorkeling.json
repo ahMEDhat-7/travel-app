@@ -1,0 +1,73 @@
+{
+  "slug": "snorkeling-ras-mohammed",
+  "title": "Ras Mohammed Snorkeling Adventure",
+  "shortDesc": "Discover the stunning coral reefs and marine life of Ras Mohammed National Park. Crystal-clear waters and colorful fish await!",
+  "description": "Dive into the underwater paradise of Ras Mohammed National Park, one of the world's most famous snorkeling and diving destinations. Located at the tip of the Sinai Peninsula, this protected area boasts pristine coral reefs, dramatic underwater cliffs, and an incredible diversity of marine life. Swim among vibrant coral formations, encounter sea turtles, and marvel at schools of tropical fish in their natural habitat.",
+  "ruTitle": "Сноркелинг в Рас-Мухаммед",
+  "ruShortDesc": "Откройте для себя потрясающие коралловые рифы и морскую жизнь национального парка Рас-Мухаммед. Кристально чистая вода и разноцветные рыбы ждут вас!",
+  "ruDescription": "Погрузитесь в подводный рай национального парка Рас-Мухаммед, одно из самых известных мест для сноркелинга и дайвинга в мире. Расположенный на оконечности Синайского полуострова, этот охраняемый район может похвастаться нетронутыми коралловыми рифами, драматическими подводными скалами и невероятным разнообразием морской жизни.",
+  "highlights": [
+    "Visit 3 prime snorkeling spots",
+    "Professional snorkeling guide",
+    "All equipment provided",
+    "Lunch included on boat",
+    "Swim with tropical fish",
+    "See vibrant coral reefs",
+    "Possibility to see sea turtles"
+  ],
+  "ruHighlights": "Посещение 3 лучших мест для сноркелинга\nПрофессиональный гид по сноркелингу\nВсе снаряжение предоставляется\nОбед на борту катера\nПлавание с тропическими рыбами\nПотрясающие коралловые рифы\nВозможность увидеть морских черепах",
+  "included": [
+    "Hotel pickup and drop-off",
+    "Air-conditioned boat transfer",
+    "Professional snorkeling guide",
+    "Full snorkeling equipment (mask, fins, snorkel)",
+    "Lunch on board ( BBQ fish, chicken, salads)",
+    "Unlimited soft drinks and water",
+    "National park fees"
+  ],
+  "ruIncluded": "Трансфер из/в отель\nТрансфер на кондиционированном катере\nПрофессиональный гид по сноркелингу\nПолное снаряжение для сноркелинга (маска, ласты, трубка)\nОбед на борту (барбекю из рыбы, курица, салаты)\nБесплатные безалкогольные напитки и вода\nВходные билеты в национальный парк",
+  "notIncluded": [
+    "Personal expenses",
+    "Tips for crew",
+    "Alcoholic beverages"
+  ],
+  "ruNotIncluded": "Личные расходы\nЧаевые для экипажа\nАлкогольные напитки",
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "Departure from Sharm",
+      "description": "Pickup from your hotel between 7:30-8:00 AM. Drive to the marina and board our comfortable snorkeling boat."
+    },
+    {
+      "day": 2,
+      "title": "Snorkeling at Shark Bay",
+      "description": "First stop at Shark Bay, famous for its crystal-clear waters and abundant marine life. Swim among colorful corals and tropical fish."
+    },
+    {
+      "day": 3,
+      "title": "Eel Garden & Yolanda Reef",
+      "description": "Visit Eel Garden for close encounters with garden eels, then explore the famous Yolanda Reef, known for its impressive drop-off and diverse species."
+    },
+    {
+      "day": 4,
+      "title": "Lunch & Return",
+      "description": "Enjoy a delicious BBQ lunch on board while cruising to another beautiful spot. Return to Sharm El-Sheikh around 4:00 PM."
+    }
+  ],
+  "price": 65,
+  "childPrice": 40,
+  "discountPrice": 55,
+  "duration": "8 hours",
+  "location": "Ras Mohammed, Sinai Peninsula",
+  "category": "Water Sports",
+  "images": [
+    "/images/tours-images/ras-mohammed-snorkeling.jpg",
+    "/images/tours-images/red-sea-coral.jpg",
+    "/images/tours-images/tropical-fish.jpg"
+  ],
+  "maxCapacity": 25,
+  "isActive": true,
+  "isFeatured": true,
+  "isBestseller": false,
+  "hasFreeCancellation": true
+}

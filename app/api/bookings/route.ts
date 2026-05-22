@@ -15,7 +15,7 @@ const createBookingSchema = z.object({
   contactName: z.string().min(2),
   contactEmail: z.string().email(),
   contactPhone: z.string().min(5),
-  notes: z.string().optional(),
+  notes: z.string().nullable().optional(),
 });
 
 const updateBookingSchema = z.object({

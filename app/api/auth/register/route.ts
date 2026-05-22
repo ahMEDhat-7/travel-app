@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { hashPassword } from '@/lib/password';
-import { generateToken, getTokenExpiry } from '@/lib/token';
+import { generateVerificationCode, getTokenExpiry } from '@/lib/token';
 import { sendVerificationEmail } from '@/lib/email';
 import { withRateLimit, RATE_LIMITS } from '@/lib/api-rate-limit';
 
@@ -10,6 +10,7 @@ const registerSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(6),
+  phone: z.string().min(5).max(30),
 });
 
 export async function POST(request: NextRequest) {
@@ -34,25 +35,30 @@ export async function POST(request: NextRequest) {
     }
 
     const hashedPassword = hashPassword(input.password);
-    const verificationToken = generateToken();
-    const verificationTokenExpiry = getTokenExpiry(60);
+    const verificationCode = generateVerificationCode();
+    const verificationTokenExpiry = getTokenExpiry(15);
 
     const user = await db.user.create({
       data: {
         name: input.name,
         email: input.email,
         password: hashedPassword,
+        phone: input.phone,
         role: 'USER',
-        verificationToken,
+        verificationToken: verificationCode,
         verificationTokenExpiry,
       },
     });
 
-    sendVerificationEmail({
+    const emailResult = await sendVerificationEmail({
       to: input.email,
-      verificationToken,
+      verificationCode,
       userName: input.name,
     });
+
+    if (!emailResult.success) {
+      console.error('[Register] Failed to send verification email:', emailResult.error);
+    }
 
     return NextResponse.json({
       success: true,
@@ -62,7 +68,7 @@ export async function POST(request: NextRequest) {
         email: user.email,
         emailVerified: false,
       },
-      message: 'Registration successful. Please check your email to verify your account.',
+      message: 'Registration successful. Please verify your email with the code sent to your inbox.',
     });
   } catch (error: any) {
     console.error('Registration error:', error);

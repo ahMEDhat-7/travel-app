@@ -1,0 +1,81 @@
+{
+  "slug": "desert-safari-sharm",
+  "title": "Sharm El-Sheikh Desert Safari Adventure",
+  "shortDesc": "Experience the thrill of riding a quad bike through the Sinai desert, visit a Bedouin village, and enjoy a magical starlit dinner.",
+  "description": "Escape the city and discover the magic of the Sinai Desert on this exciting safari adventure. Ride powerful quad bikes across golden sand dunes, visit a traditional Bedouin village where you'll learn about their unique culture and way of life, and end the evening with a magical starlit dinner under the desert sky. This unforgettable experience combines adventure, culture, and natural beauty in one action-packed excursion.",
+  "ruTitle": "Сафари по пустыне Шарм-эль-Шейха",
+  "ruShortDesc": "Испытайте острые ощущения от езды на квадроцикле по синайской пустыне, посетите бедуинскую деревню и насладитесь ужином под звёздами.",
+  "ruDescription": "Покиньте город и откройте для себя магию Синайской пустыни в этом захватывающем сафари-приключении. Гоняйте на мощных квадроциклах по золотым песчаным дюнам.",
+  "highlights": [
+    "Thrilling quad bike ride across dunes",
+    "Visit authentic Bedouin village",
+    "Camel riding experience",
+    "Traditional Bedouin dinner",
+    "Stargazing experience",
+    "Shisha smoking experience",
+    "Henna tattoo (optional)",
+    "Professional desert guides"
+  ],
+  "ruHighlights": "Захватывающая поездка на квадроцикле по дюнам\nПосещение настоящей бедуинской деревни\nПоездка на верблюде\nТрадиционный бедуинский ужин\nНаблюдение за звёздами\nКурение кальяна\nТату хной (по желанию)\nПрофессиональные гиды пустыни",
+  "included": [
+    "Hotel pickup and drop-off (4x4 vehicle)",
+    "Quad bike riding (approximately 45 mins)",
+    "Camel riding (15 minutes)",
+    "Visit Bedouin village",
+    "Traditional Bedouin dinner (BBQ, salads, bread)",
+    "Unlimited tea and soft drinks",
+    "Henna tattoo",
+    "All-terrain vehicle support team"
+  ],
+  "ruIncluded": "Трансфер из/в отель (внедорожник)\nЕзда на квадроцикле (примерно 45 мин)\nПоездка на верблюде (15 минут)\nПосещение бедуинской деревни\nТрадиционный бедуинский ужин (шашлык, салаты, хлеб)\nБесконечный чай и безалкогольные напитки\nТату хной\nГруппа поддержки на внедорожниках",
+  "notIncluded": [
+    "Personal expenses",
+    "Additional drinks",
+    "Tips for guides",
+    "Private photos from professional photographer"
+  ],
+  "ruNotIncluded": "Личные расходы\nДополнительные напитки\nЧаевые гидам\nПриватные фото от профессионального фотографа",
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "Desert Pickup",
+      "description": "Pickup from your hotel between 3:00-4:00 PM in a 4x4 vehicle. Begin your journey into the desert, stopping at a scenic viewpoint for photos."
+    },
+    {
+      "day": 2,
+      "title": "Quad Bike Adventure",
+      "description": "Arrive at the quad bike station, receive safety briefing and equipment. Ride across stunning sand dunes, experiencing the thrill of the desert terrain."
+    },
+    {
+      "day": 3,
+      "title": "Bedouin Village",
+      "description": "Visit a traditional Bedouin village. Learn about their customs, taste traditional tea, and experience camel riding through the surrounding landscape."
+    },
+    {
+      "day": 4,
+      "title": "Starlit Dinner",
+      "description": "As the sun sets, enjoy a delicious traditional BBQ dinner under the open sky. Experience shisha, stargaze with telescope, and enjoy Bedouin music around a bonfire."
+    },
+    {
+      "day": 5,
+      "title": "Return",
+      "description": "After an unforgettable evening, board your 4x4 vehicle for the return journey to Sharm El-Sheikh, arriving at your hotel around 9:00 PM."
+    }
+  ],
+  "price": 55,
+  "childPrice": 35,
+  "discountPrice": 45,
+  "duration": "7 hours",
+  "location": "Sinai Desert, Sharm El-Sheikh",
+  "category": "Adventure",
+  "images": [
+    "/images/tours-images/desert-safari-quad.jpg",
+    "/images/tours-images/bedouin-village.jpg",
+    "/images/tours-images/desert-stars.jpg"
+  ],
+  "maxCapacity": 20,
+  "isActive": true,
+  "isFeatured": true,
+  "isBestseller": true,
+  "hasFreeCancellation": true
+}

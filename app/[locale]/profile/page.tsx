@@ -12,6 +12,7 @@ interface User {
   image: string | null;
   role: string;
   createdAt: string;
+  phone: string | null;
 }
 
 interface Booking {
@@ -60,8 +61,17 @@ export default function ProfilePage(props: { params: Promise<{ locale: string }>
   const [saving, setSaving] = useState(false);
   const [editName, setEditName] = useState('');
   const [editEmail, setEditEmail] = useState('');
+  const [editPhone, setEditPhone] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [reviewableBookings, setReviewableBookings] = useState<Booking[]>([]);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewBooking, setReviewBooking] = useState<Booking | null>(null);
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewHoverRating, setReviewHoverRating] = useState(0);
+  const [reviewComment, setReviewComment] = useState('');
+  const [reviewError, setReviewError] = useState('');
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -91,9 +101,14 @@ export default function ProfilePage(props: { params: Promise<{ locale: string }>
         setUser(userData.data);
         setEditName(userData.data.name || '');
         setEditEmail(userData.data.email || '');
+        setEditPhone(userData.data.phone || '');
       }
       if (bookingsData.success) {
         setBookings(bookingsData.data);
+        const completed = (bookingsData.data || []).filter(
+          (b: Booking) => b.status === 'COMPLETED'
+        );
+        setReviewableBookings(completed);
       }
       if (reviewsData.success) {
         setReviews(reviewsData.data);
@@ -115,7 +130,7 @@ export default function ProfilePage(props: { params: Promise<{ locale: string }>
       const res = await fetch('/api/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: editName, email: editEmail }),
+        body: JSON.stringify({ name: editName, email: editEmail, phone: editPhone }),
       });
 
       const data = await res.json();
@@ -144,11 +159,53 @@ export default function ProfilePage(props: { params: Promise<{ locale: string }>
 
       if (data.success) {
         setBookings(bookings.map((b) => (b.id === bookingId ? { ...b, status: 'CANCELLED' } : b)));
+        setReviewableBookings(reviewableBookings.filter((b) => b.id !== bookingId));
       } else {
         alert(data.error || 'Failed to cancel booking');
       }
     } catch (error) {
       alert('An error occurred');
+    }
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewBooking || reviewRating === 0) return;
+    if (reviewComment.length < 10) {
+      setReviewError('Review must be at least 10 characters');
+      return;
+    }
+
+    setSubmittingReview(true);
+    setReviewError('');
+
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tourId: reviewBooking.tourId,
+          rating: reviewRating,
+          comment: reviewComment,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setReviewableBookings(reviewableBookings.filter((b) => b.id !== reviewBooking.id));
+        setShowReviewForm(false);
+        setReviewBooking(null);
+        setReviewRating(0);
+        setReviewComment('');
+        setSuccessMessage('Review submitted! It will appear after admin approval.');
+        fetchData();
+      } else {
+        setReviewError(data.error || 'Failed to submit review');
+      }
+    } catch {
+      setReviewError('An error occurred');
+    } finally {
+      setSubmittingReview(false);
     }
   };
 
@@ -296,6 +353,92 @@ export default function ProfilePage(props: { params: Promise<{ locale: string }>
 
             {activeTab === 'reviews' && (
               <div>
+                {successMessage && (
+                  <div className="mb-4 p-3 bg-green-500/20 text-green-400 rounded-lg">{successMessage}</div>
+                )}
+
+                {reviewableBookings.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-[var(--theme-text)] mb-3">Tours You Can Review</h3>
+                    <div className="space-y-3">
+                      {reviewableBookings.map((booking) => (
+                        <div key={booking.id} className="flex items-center justify-between p-4 bg-[var(--theme-bg-secondary)] rounded-xl">
+                          <div className="flex items-center gap-3">
+                            {booking.tourImage && (
+                              <img src={booking.tourImage} alt={booking.tourTitle} className="w-16 h-12 object-cover rounded-lg" />
+                            )}
+                            <div>
+                              <p className="font-medium text-[var(--theme-text)]">{booking.tourTitle}</p>
+                              <p className="text-xs text-[var(--theme-text-muted)]">Completed: {formatDate(booking.createdAt)}</p>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => {
+                              setReviewBooking(booking);
+                              setShowReviewForm(true);
+                              setReviewError('');
+                            }}
+                            className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 text-sm font-medium transition-colors"
+                          >
+                            Write Review
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {showReviewForm && reviewBooking && (
+                  <div className="mb-6 p-6 bg-[var(--theme-bg-secondary)] rounded-xl border border-amber-500/30">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold text-[var(--theme-text)]">Review: {reviewBooking.tourTitle}</h3>
+                      <button type="button" onClick={() => { setShowReviewForm(false); setReviewBooking(null); setReviewError(''); }} className="text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] text-xl">&times;</button>
+                    </div>
+                    {reviewError && (
+                      <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 text-sm">{reviewError}</div>
+                    )}
+                    <form onSubmit={handleSubmitReview}>
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-2">Your Rating</label>
+                        <div className="flex gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              type="button"
+                              onClick={() => setReviewRating(star)}
+                              onMouseEnter={() => setReviewHoverRating(star)}
+                              onMouseLeave={() => setReviewHoverRating(0)}
+                            >
+                              <svg className={`w-8 h-8 ${star <= (reviewHoverRating || reviewRating) ? 'text-amber-500' : 'text-gray-400'}`} fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-2">Your Review</label>
+                        <textarea
+                          value={reviewComment}
+                          onChange={(e) => setReviewComment(e.target.value)}
+                          placeholder="Share your experience..."
+                          rows={4}
+                          className="w-full px-4 py-3 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)] placeholder:text-[var(--theme-text-muted)] focus:outline-none focus:border-amber-500 resize-none"
+                          required
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={submittingReview || reviewRating === 0}
+                        className="px-6 py-2.5 bg-amber-500 text-white rounded-lg hover:bg-amber-600 disabled:opacity-50 font-medium"
+                      >
+                        {submittingReview ? 'Submitting...' : 'Submit Review'}
+                      </button>
+                    </form>
+                  </div>
+                )}
+
+                <h3 className="text-lg font-semibold text-[var(--theme-text)] mb-3">Your Reviews</h3>
                 {reviews.length > 0 ? (
                   <div className="space-y-4">
                     {reviews.map((review) => (
@@ -347,6 +490,19 @@ export default function ProfilePage(props: { params: Promise<{ locale: string }>
 
             {activeTab === 'settings' && (
               <form onSubmit={handleUpdateProfile} className="max-w-md">
+                {!user?.phone && (
+                  <div className="mb-4 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      <div>
+                        <p className="text-amber-400 font-medium text-sm">Phone number required</p>
+                        <p className="text-[var(--theme-text-muted)] text-xs mt-1">Please add your phone number so admins can contact you regarding your bookings.</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {successMessage && (
                   <div className="mb-4 p-3 bg-green-500/20 text-green-400 rounded-lg">{successMessage}</div>
                 )}
@@ -368,6 +524,16 @@ export default function ProfilePage(props: { params: Promise<{ locale: string }>
                     type="email"
                     value={editEmail}
                     onChange={(e) => setEditEmail(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-[var(--theme-bg-secondary)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)] focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-[var(--theme-text)] mb-2">Phone</label>
+                  <input
+                    type="tel"
+                    value={editPhone}
+                    onChange={(e) => setEditPhone(e.target.value)}
+                    placeholder="+20 123 456 789"
                     className="w-full px-4 py-2.5 bg-[var(--theme-bg-secondary)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)] focus:outline-none focus:border-amber-500"
                   />
                 </div>

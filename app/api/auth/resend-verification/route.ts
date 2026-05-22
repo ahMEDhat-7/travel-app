@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/lib/db';
-import { generateToken, getTokenExpiry } from '@/lib/token';
+import { generateVerificationCode, getTokenExpiry } from '@/lib/token';
 import { sendVerificationEmail } from '@/lib/email';
 import { withRateLimit, RATE_LIMITS } from '@/lib/api-rate-limit';
 
@@ -37,25 +37,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const verificationToken = generateToken();
-    const verificationTokenExpiry = getTokenExpiry(60);
+    const verificationCode = generateVerificationCode();
+    const verificationTokenExpiry = getTokenExpiry(15);
 
     await db.user.update({
       where: { email: input.email },
       data: {
-        verificationToken,
+        verificationToken: verificationCode,
         verificationTokenExpiry,
       },
     });
 
     await sendVerificationEmail({
       to: input.email,
-      verificationToken,
+      verificationCode,
       userName: user.name,
     });
 
     return NextResponse.json(
-      { success: true, message: 'Verification email sent' },
+      { success: true, message: 'Verification code sent' },
       { status: 200 }
     );
   } catch (error: any) {

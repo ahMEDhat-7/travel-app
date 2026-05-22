@@ -4,7 +4,8 @@ import { db } from '@/lib/db';
 import { isTokenExpired } from '@/lib/token';
 
 const verifyEmailSchema = z.object({
-  token: z.string().min(1),
+  email: z.string().email(),
+  code: z.string().length(6),
 });
 
 export async function POST(request: NextRequest) {
@@ -12,22 +13,34 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const input = verifyEmailSchema.parse(body);
 
-    const user = await db.user.findFirst({
-      where: {
-        verificationToken: input.token,
-      },
+    const user = await db.user.findUnique({
+      where: { email: input.email },
     });
 
     if (!user) {
       return NextResponse.json(
-        { success: false, error: 'Invalid verification token' },
+        { success: false, error: 'User not found' },
+        { status: 404 }
+      );
+    }
+
+    if (user.emailVerified) {
+      return NextResponse.json(
+        { success: false, error: 'Email is already verified' },
+        { status: 400 }
+      );
+    }
+
+    if (!user.verificationToken || user.verificationToken !== input.code) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid verification code' },
         { status: 400 }
       );
     }
 
     if (isTokenExpired(user.verificationTokenExpiry)) {
       return NextResponse.json(
-        { success: false, error: 'Verification token has expired' },
+        { success: false, error: 'Verification code has expired. Please request a new one.' },
         { status: 400 }
       );
     }

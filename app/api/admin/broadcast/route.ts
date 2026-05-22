@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       type: 'BROADCAST' as NotificationType,
       title: input.title,
       message: input.message,
-      data: JSON.stringify({ broadcast: true }),
+      data: { broadcast: true },
     }));
 
     await db.notification.createMany({

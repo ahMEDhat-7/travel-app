@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 
 interface ReviewFormProps {
@@ -16,6 +16,32 @@ export default function ReviewForm({ tourId, onSuccess }: ReviewFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [canReview, setCanReview] = useState(false);
+  const [checkingBookings, setCheckingBookings] = useState(true);
+
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user) {
+      fetch('/api/profile/bookings')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.data) {
+            const hasCompleted = data.data.some(
+              (b: any) => b.tourId === tourId && b.status === 'COMPLETED'
+            );
+            setCanReview(hasCompleted);
+          } else {
+            setCanReview(false);
+          }
+          setCheckingBookings(false);
+        })
+        .catch(() => {
+          setCanReview(false);
+          setCheckingBookings(false);
+        });
+    } else if (status !== 'loading') {
+      setCheckingBookings(false);
+    }
+  }, [status, session, tourId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,6 +107,31 @@ export default function ReviewForm({ tourId, onSuccess }: ReviewFormProps) {
         >
           Sign In
         </a>
+      </div>
+    );
+  }
+
+  if (checkingBookings) {
+    return (
+      <div className="bg-[var(--theme-card)] rounded-xl border border-[var(--theme-border)] p-5 text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto mb-3"></div>
+        <p className="text-[var(--theme-text-muted)]">Checking booking status...</p>
+      </div>
+    );
+  }
+
+  if (!canReview) {
+    return (
+      <div className="bg-[var(--theme-card)] rounded-xl border border-[var(--theme-border)] p-5 text-center">
+        <div className="w-12 h-12 bg-gray-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+          <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <h3 className="font-semibold text-[var(--theme-text)] mb-2">Complete a booking first</h3>
+        <p className="text-[var(--theme-text-secondary)] text-sm">
+          You can only review this tour after completing a booking.
+        </p>
       </div>
     );
   }

@@ -1,0 +1,76 @@
+{
+  "slug": "cairo-pyramids-day-trip",
+  "title": "Cairo & Pyramids Day Trip by Flight",
+  "shortDesc": "Fly to Cairo and visit the Great Pyramids of Giza, the Sphinx, and the Egyptian Museum. A full day of ancient wonders!",
+  "description": "Experience the wonder of ancient Egypt on this comprehensive day trip to Cairo by air. Depart from Sharm El-Sheikh in the early morning and arrive in Cairo just in time to begin your adventure. Visit the legendary Great Pyramids of Giza, the only surviving wonder of the ancient world, and meet the enigmatic Sphinx. Explore the world-renowned Egyptian Museum, home to thousands of artifacts including the treasure of Tutankhamun. This action-packed day offers an unforgettable immersion into Egypt's rich history and civilization.",
+  "ruTitle": "Поездка в Каир и Пирамиды на самолёте",
+  "ruShortDesc": "Самолёт в Каир и посещение Великих пирамид Гизы, Сфинкса и Египетского музея. Полный день древних чудес!",
+  "ruDescription": "Ощутите чудо Древнего Египта в этой комплексной однодневной поездке в Каир на самолёте. Отправление из Шарм-эль-Шейха рано утром, и вы прибудете в Каир как раз вовремя, чтобы начать приключение.",
+  "highlights": [
+    "Round-trip flights included",
+    "Great Pyramids of Giza",
+    "Visit the Sphinx",
+    "Egyptian Museum tour",
+    "See King Tutankhamun's treasures",
+    "Lunch at local restaurant",
+    "Expert Egyptologist guide",
+    "Private air-conditioned transport in Cairo"
+  ],
+  "ruHighlights": "Перелёт в обе стороны включён\nВеликие пирамиды Гизы\nПосещение Сфинкса\nЭкскурсия по Египетскому музею\nСокровища Тутанхамона\nОбед в местном ресторане\nПрофессиональный египтолог-гид\nПриватный кондиционированный транспорт в Каире",
+  "included": [
+    "Round-trip domestic flights (Sharm-Cairo-Sharm)",
+    "All ground transportation in Cairo",
+    "Professional Egyptologist guide",
+    "Lunch at 5-star hotel restaurant",
+    "Entrance to the Great Pyramids area",
+    "Entrance to Egyptian Museum",
+    "Bottled water throughout the day",
+    "All fees and permits"
+  ],
+  "ruIncluded": "Внутренние рейсы туда и обратно\nВесь наземный транспорт в Каире\nПрофессиональный египтолог-гид\nОбед в ресторане 5-звёздочного отеля\nВход на территорию Великих пирамид\nВход в Египетский музей\nБутилированная вода в течение дня\nВсе сборы и разрешения",
+  "notIncluded": [
+    "Optional pyramid inner chamber entry",
+    "Personal shopping expenses",
+    "Tips for guide and driver",
+    "Travel insurance"
+  ],
+  "ruNotIncluded": "Вход внутрь пирамид (по желанию)\nЛичные покупки\nЧаевые гиду и водителю\nСтраховка путешественника",
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "Morning Flight to Cairo",
+      "description": "Pickup from hotel at 4:00 AM and transfer to Sharm El-Sheikh airport. Fly to Cairo (approximately 1 hour flight). Arrive at 6:00 AM."
+    },
+    {
+      "day": 2,
+      "title": "Great Pyramids of Giza",
+      "description": "Visit the iconic Pyramids of Cheops, Chephren, and Mycerinus. Walk around the plateau and learn about their construction. See the Sphinx from multiple angles."
+    },
+    {
+      "day": 3,
+      "title": "Egyptian Museum",
+      "description": "Explore the Egyptian Museum, home to over 120,000 items. See the legendary Tutankhamun collection, mummies, and ancient artifacts spanning 5,000 years of history."
+    },
+    {
+      "day": 4,
+      "title": "Lunch & Return",
+      "description": "Enjoy a delicious lunch at a quality restaurant. After lunch, enjoy some free time for shopping at Khan El-Khalili bazaar. Transfer to Cairo airport for evening flight back to Sharm."
+    }
+  ],
+  "price": 250,
+  "childPrice": 180,
+  "discountPrice": 220,
+  "duration": "18 hours",
+  "location": "Cairo, Egypt",
+  "category": "Historical",
+  "images": [
+    "/images/tours-images/giza-pyramids.jpg",
+    "/images/tours-images/sphinx.jpg",
+    "/images/tours-images/egyptian-museum.jpg"
+  ],
+  "maxCapacity": 15,
+  "isActive": true,
+  "isFeatured": true,
+  "isBestseller": true,
+  "hasFreeCancellation": false
+}

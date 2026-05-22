@@ -109,7 +109,28 @@
     "bookingConfirmed": "Бронирование подтверждено",
     "pendingApproval": "Ожидает подтверждения",
     "confirm": "Подтвердить",
-    "cancel": "Отменить"
+    "cancel": "Отменить",
+    "thankYou": "Спасибо за ваше бронирование!",
+    "bookingReceived": "Ваше бронирование получено и обрабатывается.",
+    "bookingId": "ID бронирования",
+    "statusPending": "В ожидании",
+    "statusConfirmed": "Подтверждено",
+    "statusCancelled": "Отменено",
+    "tourDetails": "Детали тура",
+    "tour": "Тур",
+    "date": "Дата",
+    "guests": "Гости",
+    "duration": "Продолжительность",
+    "location": "Местоположение",
+    "contactInfo": "Контактная информация",
+    "name": "Имя",
+    "email": "Email",
+    "phone": "Телефон",
+    "notes": "Примечания",
+    "totalPrice": "Итого",
+    "viewTour": "Посмотреть тур",
+    "browseMore": "Посмотреть больше туров",
+    "title": "Подтверждение бронирования | Sharm Cloud Tours"
   },
   "reviews": {
     "reviews": "Отзывы",
@@ -158,7 +179,7 @@
     "highlights": "Особенности",
     "description": "Описание",
     "days": "дней",
-    "day": "день",
+    "day": "День",
     "from": "От",
     "bestseller": "Хит продаж",
     "freeCancellation": "Бесплатная отмена",
@@ -169,7 +190,9 @@
     "success": "Успешно",
     "viewDetails": "Подробнее",
     "perPerson": "/человек",
-    "livePreview": "Предпросмотр"
+    "livePreview": "Предпросмотр",
+    "shareThisTour": "Поделиться туром:",
+    "adventure": "Приключения"
   },
   "auth_ts": {
     "loginRequired": "Пожалуйста, войдите для продолжения",
@@ -184,7 +207,16 @@
   },
   "tourDetail": {
     "tourNotFound": "Тур не найден",
-    "shareTour": "Поделиться:"
+    "shareTour": "Поделиться:",
+    "highlights": "Особенности",
+    "description": "Описание",
+    "included": "Включено",
+    "notIncluded": "Не включено",
+    "itinerary": "Маршрут",
+    "freeCancellation": "Бесплатная отмена",
+    "featured": "Рекомендуем",
+    "bestseller": "Хит продаж",
+    "day": "День"
   },
   "profile": {
     "myBookings": "Мои бронирования",

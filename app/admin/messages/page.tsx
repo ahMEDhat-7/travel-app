@@ -318,7 +318,7 @@ export default function AdminMessagesPage() {
 
       {showBroadcast && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-[var(--theme-bg-secondary)] rounded-xl p-6 w-full max-w-md mx-4 shadow-xl">
+          <div className="bg-[var(--theme-bg-secondary)] rounded-xl p-6 w-full max-w-lg mx-4 shadow-xl">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold" style={{ color: 'var(--theme-text)' }}>
                 Send Broadcast Message

@@ -15,6 +15,7 @@ enum Role {
 enum BookingStatus {
   PENDING
   CONFIRMED
+  COMPLETED
   CANCELLED
 }
 
@@ -51,6 +52,7 @@ model User {
   phone     String?
   whatsapp  String?
   address   String?
+  lastActiveAt DateTime?
 
   bookings     Booking[]
   reviews      Review[]

@@ -36,7 +36,32 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json({ success: true, data: messages });
+    const broadcasts = await db.notification.findMany({
+      where: {
+        userId: session.user.id as string,
+        type: 'BROADCAST',
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const broadcastsAsMessages = broadcasts.map(b => ({
+      id: b.id,
+      subject: b.title,
+      content: b.message,
+      senderType: 'ADMIN' as const,
+      isRead: b.isRead,
+      isBroadcast: true,
+      createdAt: b.createdAt,
+      updatedAt: b.createdAt,
+      replyToId: null,
+      userId: session.user.id as string,
+      replies: [],
+    }));
+
+    const combined = [...messages, ...broadcastsAsMessages];
+    combined.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    return NextResponse.json({ success: true, data: combined });
   } catch (error: any) {
     console.error('Error fetching messages:', error);
     return NextResponse.json(

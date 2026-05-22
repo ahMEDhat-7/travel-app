@@ -1,0 +1,74 @@
+{
+  "slug": "introductory-scuba-dive",
+  "title": "Red Sea Introductory Scuba Dive",
+  "shortDesc": "Experience your first scuba dive in the crystal-clear waters of the Red Sea with certified professional instructors.",
+  "description": "Take your first breath underwater on this PADI-certified introductory scuba diving experience in the Red Sea. Perfect for beginners with no previous diving experience required. Our certified instructors will provide comprehensive training in shallow water before guiding you through a real dive at one of Sharm El-Sheikh's beautiful dive sites. Discover the magic of weightlessness as you explore vibrant coral gardens and encounter colorful marine life up close.",
+  "ruTitle": "Ознакомительный дайвинг в Красном море",
+  "ruShortDesc": "Испытайте свой первый подводный погружение в кристально чистых водах Красного моря с сертифицированными профессиональными инструкторами.",
+  "ruDescription": "Сделайте свой первый вдох под водой на этом ознакомительном погружении с сертификацией PADI в Красном море. Идеально для начинающих без предыдущего опыта дайвинга.",
+  "highlights": [
+    "No diving experience required",
+    "PADI-certified professional instructors",
+    "All diving equipment included",
+    "Shallow water training session",
+    "Real dive at beautiful reef",
+    "Maximum 2 divers per instructor",
+    "Underwater photos included"
+  ],
+  "ruHighlights": "Опыт дайвинга не требуется\nПрофессиональные инструкторы с сертификацией PADI\nВсё снаряжение включено\nОбучение на мелководье\nРеальное погружение на красивом рифе\nМаксимум 2 дайвера на инструктора\nПодводные фото включены",
+  "included": [
+    "Hotel pickup and drop-off",
+    "All diving equipment (BCD, regulator, wetsuit, mask, fins)",
+    "PADI-certified instructor",
+    "Shallow water training session",
+    "One open water dive (30-40 min)",
+    "Underwater photos and video",
+    "International diving insurance",
+    "Light lunch and refreshments"
+  ],
+  "ruIncluded": "Трансфер из/в отель\nВсё снаряжение для дайвинга (BCD, регулятор, гидрокостюм, маска, ласты)\nИнструктор с сертификацией PADI\nОбучение на мелководье\nОдно погружение на открытой воде (30-40 мин)\nПодводные фото и видео\nМеждународная страховка для дайвинга\nЛёгкий обед и освежающие напитки",
+  "notIncluded": [
+    "Personal expenses",
+    "Additional dives",
+    "Certification card (optional)"
+  ],
+  "ruNotIncluded": "Личные расходы\nДополнительные погружения\nСертификационная карта (по желанию)",
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "Hotel Pickup & Transfer",
+      "description": "Pickup from your hotel around 8:00 AM. Meet your certified instructor and receive a briefing about the day's activities."
+    },
+    {
+      "day": 2,
+      "title": "Training Session",
+      "description": "At the dive center, receive equipment fitting and comprehensive training in shallow water. Learn basic breathing techniques, equalization, and underwater communication."
+    },
+    {
+      "day": 3,
+      "title": "Open Water Dive",
+      "description": "Board the dive boat and head to a beautiful reef site. Descend with your instructor to explore vibrant coral formations, swim with tropical fish, and discover underwater wonders. Maximum depth of 12 meters."
+    },
+    {
+      "day": 4,
+      "title": "Debrief & Return",
+      "description": "Return to the dive center for debriefing and photo viewing. Enjoy light refreshments before transfer back to your hotel around 1:00 PM."
+    }
+  ],
+  "price": 95,
+  "childPrice": 0,
+  "discountPrice": 85,
+  "duration": "5 hours",
+  "location": "Red Sea, Sharm El-Sheikh",
+  "category": "Water Sports",
+  "images": [
+    "/images/tours-images/scuba-dive-red-sea.jpg",
+    "/images/tours-images/coral-reef.jpg",
+    "/images/tours-images/tropical-fish-scuba.jpg"
+  ],
+  "maxCapacity": 8,
+  "isActive": true,
+  "isFeatured": false,
+  "isBestseller": true,
+  "hasFreeCancellation": true
+}

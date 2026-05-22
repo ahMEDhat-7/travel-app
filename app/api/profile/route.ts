@@ -85,10 +85,9 @@ export async function PUT(request: NextRequest) {
     const updateData: { name?: string; email?: string; phone?: string; whatsapp?: string; address?: string } = {};
     if (input.name) updateData.name = input.name;
     if (input.email) updateData.email = input.email;
+    if (input.phone !== undefined) updateData.phone = input.phone;
     
-    // Only admins can update contact fields
     if (isAdmin) {
-      if (input.phone !== undefined) updateData.phone = input.phone;
       if (input.whatsapp !== undefined) updateData.whatsapp = input.whatsapp;
       if (input.address !== undefined) updateData.address = input.address;
     }

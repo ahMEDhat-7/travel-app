@@ -24,6 +24,8 @@ export default function SignUpPage({ params }: SignUpPageProps) {
       namePlaceholder: 'John Doe',
       emailLabel: 'Email',
       emailPlaceholder: 'you@example.com',
+      phoneLabel: 'Phone Number',
+      phonePlaceholder: '+20 123 456 789',
       passwordLabel: 'Password',
       passwordPlaceholder: '••••••••',
       confirmPasswordLabel: 'Confirm Password',
@@ -34,16 +36,19 @@ export default function SignUpPage({ params }: SignUpPageProps) {
       signinLinkText: 'Sign in',
       passwordMismatch: 'Passwords do not match',
       passwordTooShort: 'Password must be at least 8 characters',
+      verifyRedirect: 'Registration successful! Redirecting to email verification...',
     },
     ru: {
       title: 'Создать аккаунт',
-      subtitle: 'Присоединяйтесь, чтобы исследовать чудеса Египта',
+      subtitle: 'Присоединяйтесь, чтобы исследовать чудаса Египта',
       googleButton: 'Продолжить с Google',
       or: 'или',
       nameLabel: 'Полное имя',
       namePlaceholder: 'Иван Иванов',
       emailLabel: 'Email',
       emailPlaceholder: 'ivan@example.com',
+      phoneLabel: 'Номер телефона',
+      phonePlaceholder: '+7 999 123 4567',
       passwordLabel: 'Пароль',
       passwordPlaceholder: '••••••••••',
       confirmPasswordLabel: 'Подтвердите пароль',
@@ -54,6 +59,7 @@ export default function SignUpPage({ params }: SignUpPageProps) {
       signinLinkText: 'Войти',
       passwordMismatch: 'Пароли не совпадают',
       passwordTooShort: 'Пароль должен быть не менее 8 символов',
+      verifyRedirect: 'Регистрация успешна! Перенаправление на проверку email...',
     },
   };
   
@@ -61,6 +67,7 @@ export default function SignUpPage({ params }: SignUpPageProps) {
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -107,7 +114,7 @@ export default function SignUpPage({ params }: SignUpPageProps) {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, phone, password }),
       });
 
       const data = await res.json();
@@ -117,17 +124,11 @@ export default function SignUpPage({ params }: SignUpPageProps) {
         return;
       }
 
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        setError('Failed to sign in after registration');
-      } else {
-        router.push(`/${locale}`);
-      }
+      setError('');
+      setIsLoading(true);
+      setTimeout(() => {
+        router.push(`/${locale}/auth/verify-email?email=${encodeURIComponent(email)}`);
+      }, 1000);
     } catch {
       setError('An error occurred. Please try again.');
     } finally {
@@ -216,6 +217,20 @@ export default function SignUpPage({ params }: SignUpPageProps) {
 
             <div>
               <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-1">
+                {t.phoneLabel}
+              </label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full px-4 py-3 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-xl text-[var(--theme-text)] placeholder-[var(--theme-text-secondary)] focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                placeholder={t.phonePlaceholder}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-1">
                 {t.passwordLabel}
               </label>
               <div className="relative">
@@ -278,13 +293,13 @@ export default function SignUpPage({ params }: SignUpPageProps) {
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 font-bold rounded-xl hover:from-amber-400 hover:to-yellow-400 transition-all shadow-lg shadow-amber-500/30 disabled:opacity-50"
-            >
-              {isLoading ? t.submitLoading : t.submitButton}
-            </button>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 font-bold rounded-xl hover:from-amber-400 hover:to-yellow-400 transition-all shadow-lg shadow-amber-500/30 disabled:opacity-50"
+              >
+                {isLoading ? t.verifyRedirect : t.submitButton}
+              </button>
           </form>
 
           <p className="mt-6 text-center text-sm text-[var(--theme-text-secondary)]">

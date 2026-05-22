@@ -4,15 +4,17 @@ import type { Locale } from '@/lib/constants';
 
 export function getLocalizedTour(tour: any, locale: Locale): TourWithLocale {
   const translations = tour.translations?.[locale] || {};
+  const localePrefix = locale === 'ru' ? 'ru' : '';
+  
   return {
     ...tour,
-    localeTitle: translations.title || tour.title,
-    localeShortDesc: translations.shortDesc || tour.shortDesc,
-    localeDescription: translations.description || tour.description,
-    localeHighlights: translations.highlights || tour.highlights,
-    localeIncluded: translations.included || tour.included,
-    localeNotIncluded: translations.notIncluded || tour.notIncluded,
-    localeItinerary: translations.itinerary || tour.itinerary,
+    localeTitle: translations.title || (localePrefix ? tour[`${localePrefix}Title`] : tour.title),
+    localeShortDesc: translations.shortDesc || (localePrefix ? tour[`${localePrefix}ShortDesc`] : tour.shortDesc),
+    localeDescription: translations.description || (localePrefix ? tour[`${localePrefix}Description`] : tour.description),
+    localeHighlights: translations.highlights || (localePrefix ? tour[`${localePrefix}Highlights`]?.split('\n') : tour.highlights),
+    localeIncluded: translations.included || (localePrefix ? tour[`${localePrefix}Included`]?.split('\n') : tour.included),
+    localeNotIncluded: translations.notIncluded || (localePrefix ? tour[`${localePrefix}NotIncluded`]?.split('\n') : tour.notIncluded),
+    localeItinerary: translations.itinerary || (localePrefix ? tour[`${localePrefix}Itinerary`] : tour.itinerary),
   };
 }
 

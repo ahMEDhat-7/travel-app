@@ -12,7 +12,12 @@ interface EmailOptions {
 
 export async function sendEmail({ to, subject, html }: EmailOptions) {
   if (!features.EMAIL_ENABLED || !resend) {
-    console.log('[Email] Disabled - would send to:', to, 'subject:', subject);
+    console.log('');
+    console.log('═══════════════════════════════════════════════════');
+    console.log('  [DEV MODE] Email disabled — would send to:', to);
+    console.log('  Subject:', subject);
+    console.log('═══════════════════════════════════════════════════');
+    console.log('');
     return { success: true, disabled: true };
   }
 
@@ -24,6 +29,7 @@ export async function sendEmail({ to, subject, html }: EmailOptions) {
       html,
     });
 
+    console.log('[Email] Sent successfully to:', to);
     return { success: true, data };
   } catch (error: any) {
     console.error('[Email] Error:', error.message);
@@ -167,11 +173,10 @@ export async function sendPasswordReset(options: {
 
 export async function sendVerificationEmail(options: {
   to: string;
-  verificationToken: string;
+  verificationCode: string;
   userName: string;
 }) {
-  const { to, verificationToken, userName } = options;
-  const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/verify-email?token=${verificationToken}`;
+  const { to, verificationCode, userName } = options;
 
   const html = `
     <!DOCTYPE html>
@@ -192,22 +197,22 @@ export async function sendVerificationEmail(options: {
           </p>
           
           <p style="color: #333333; font-size: 16px;">
-            Thank you for creating an account with Sharm Cloud Tours. Please verify your email address by clicking the button below:
+            Thank you for creating an account with Sharm Cloud Tours. Please use the verification code below to verify your email address:
           </p>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${verifyUrl}" style="display: inline-block; background: linear-gradient(135deg, #FFD700 0%, #FFEA00 100%); color: #000000; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold;">
-              Verify Email
-            </a>
+            <div style="display: inline-block; background-color: #f9f9f9; border: 2px dashed #FFD700; border-radius: 12px; padding: 20px 40px;">
+              <p style="color: #999999; font-size: 14px; margin: 0 0 8px 0;">Your Verification Code</p>
+              <p style="color: #000000; font-size: 48px; font-weight: bold; letter-spacing: 8px; margin: 0; font-family: monospace;">${verificationCode}</p>
+            </div>
           </div>
           
           <p style="color: #666666; font-size: 14px;">
-            This link will expire in 1 hour. If you didn't create an account with Sharm Cloud Tours, please ignore this email.
+            This code will expire in 15 minutes. If you didn't create an account with Sharm Cloud Tours, please ignore this email.
           </p>
           
           <p style="color: #999999; font-size: 12px; margin-top: 30px;">
-            If the button doesn't work, copy and paste this link into your browser:<br>
-            ${verifyUrl}
+            Sharm Cloud Tours - Your Trusted Sharm El-Sheikh Travel Partner
           </p>
         </div>
       </div>
@@ -215,11 +220,18 @@ export async function sendVerificationEmail(options: {
     </html>
   `;
 
-  return sendEmail({
+  const result = await sendEmail({
     to,
     subject: 'Verify Your Sharm Cloud Tours Account',
     html,
   });
+
+  if (result.disabled || !result.success) {
+    console.log('  [DEV] Verification Code:', verificationCode);
+    console.log('═══════════════════════════════════════════════════');
+  }
+
+  return result;
 }
 
 export async function sendAdminBookingNotification(options: {
@@ -375,13 +387,13 @@ export async function sendBookingStatusUpdate(options: {
   totalPrice: number;
   currency?: string;
   bookingId: string;
-  status: 'CONFIRMED' | 'CANCELLED';
+  status: 'CONFIRMED' | 'COMPLETED' | 'CANCELLED';
   adminNotes?: string;
 }) {
   const { to, customerName, tourName, tourDate, people, totalPrice, currency = 'EGP', bookingId, status, adminNotes } = options;
   
-  const statusColor = status === 'CONFIRMED' ? '#22c55e' : '#ef4444';
-  const statusText = status === 'CONFIRMED' ? 'Confirmed' : 'Cancelled';
+  const statusColor = status === 'CONFIRMED' ? '#22c55e' : status === 'COMPLETED' ? '#3b82f6' : '#ef4444';
+  const statusText = status === 'CONFIRMED' ? 'Confirmed' : status === 'COMPLETED' ? 'Completed' : 'Cancelled';
   const statusMessage = status === 'CONFIRMED' 
     ? 'Great news! Your booking has been confirmed by our team.'
     : 'Your booking has been cancelled. Please contact us if you have any questions.';

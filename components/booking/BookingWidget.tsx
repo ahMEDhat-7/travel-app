@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface BookingWidgetProps {
   tourId: string;
   price: number;
+  discountPrice?: number;
   childPrice?: number;
   maxCapacity: number;
   locale: string;
@@ -16,6 +18,7 @@ interface BookingWidgetProps {
 export default function BookingWidget({
   tourId,
   price,
+  discountPrice,
   childPrice,
   maxCapacity,
   locale,
@@ -23,6 +26,7 @@ export default function BookingWidget({
   const router = useRouter();
   const { data: session, status } = useSession();
   const { formatPrice } = useCurrency();
+  const t = useTranslations('bookingWidget');
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const defaultDate = new Date();
@@ -40,11 +44,22 @@ export default function BookingWidget({
     if (session?.user) {
       setName(session.user.name || '');
       setEmail(session.user.email || '');
+      setPhone(session.user.phone || '');
     }
   }, [session]);
 
-  const effectiveChildPrice = childPrice ?? price;
-  const total = (adults * price) + (children * effectiveChildPrice);
+  const basePrice = discountPrice ?? price;
+  const getChildPrice = () => {
+    if (!childPrice) return basePrice;
+    if (discountPrice && discountPrice < price) {
+      return childPrice * (discountPrice / price);
+    }
+    return childPrice;
+  };
+  const effectiveChildPrice = getChildPrice();
+  const total = (adults * basePrice) + (children * effectiveChildPrice);
+  const hasDiscount = discountPrice && discountPrice < price;
+  const discountPercentage = hasDiscount ? Math.round((1 - discountPrice! / price) * 100) : 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,13 +123,13 @@ export default function BookingWidget({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h3 className="text-xl font-bold text-[var(--theme-text)] mb-2">Login Required</h3>
-          <p className="text-[var(--theme-text-muted)] mb-6">Please login to book this tour</p>
+          <h3 className="text-xl font-bold text-[var(--theme-text)] mb-2">{t('loginRequired')}</h3>
+          <p className="text-[var(--theme-text-muted)] mb-6">{t('loginToBook')}</p>
           <button
             onClick={handleLoginRedirect}
             className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 font-bold rounded-xl hover:from-amber-400 hover:to-yellow-400 transition-all shadow-lg shadow-amber-500/30"
           >
-            Login to Book
+            {locale === 'ru' ? 'Войти для бронирования' : 'Login to Book'}
           </button>
         </div>
       </div>
@@ -130,8 +145,8 @@ export default function BookingWidget({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h3 className="text-xl font-bold text-[var(--theme-text)] mb-2">Booking Submitted!</h3>
-          <p className="text-[var(--theme-text-muted)]">Redirecting to your bookings...</p>
+          <h3 className="text-xl font-bold text-[var(--theme-text)] mb-2">{t('bookingSubmitted')}</h3>
+          <p className="text-[var(--theme-text-muted)]">{t('redirecting')}</p>
         </div>
       </div>
     );
@@ -140,18 +155,27 @@ export default function BookingWidget({
   return (
     <div className="bg-[var(--theme-card)] backdrop-blur-lg rounded-2xl p-4 md:p-6 border border-[var(--theme-border)] sticky top-4">
       <div className="flex items-center gap-3 mb-4 md:mb-6">
-        <div>
+        <div className="flex items-baseline gap-2">
+          {hasDiscount && (
+            <span className="text-xl md:text-2xl font-bold text-[var(--theme-text-muted)] line-through">
+              {formatPrice(price, locale)}
+            </span>
+          )}
           <span className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-amber-500 to-yellow-400 bg-clip-text text-transparent">
-            {formatPrice(price, locale)}
+            {formatPrice(hasDiscount ? discountPrice! : price, locale)}
           </span>
-          <span className="text-[var(--theme-text-muted)] text-sm md:text-base"> /person</span>
         </div>
+        {hasDiscount && (
+          <span className="px-2 py-1 bg-green-500 text-white text-xs font-bold rounded-full">
+            {locale === 'ru' ? 'Скидка' : 'Save'} {discountPercentage}%
+          </span>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
         <div>
           <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-1">
-            Select Date
+            {locale === 'ru' ? 'Выберите дату' : 'Select Date'}
           </label>
           <input
             type="date"
@@ -165,7 +189,7 @@ export default function BookingWidget({
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-1">
-              Adults
+              {locale === 'ru' ? 'Взрослые' : 'Adults'}
             </label>
             <div className="flex items-center gap-2">
               <button
@@ -191,7 +215,7 @@ export default function BookingWidget({
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-1">
-              Children {childPrice && childPrice < price && `(-$${price - childPrice})`}
+              {locale === 'ru' ? 'Дети' : 'Children'} {childPrice && childPrice < price && `${locale === 'ru' ? `(-${formatPrice(price - childPrice, locale)})` : `(-${formatPrice(price - childPrice, locale)})`}`}
             </label>
             <div className="flex items-center gap-2">
               <button
@@ -219,7 +243,7 @@ export default function BookingWidget({
 
         <div className="border-t border-[var(--theme-border)] pt-3 md:pt-4">
           <div className="flex justify-between mb-3 md:mb-4">
-            <span className="text-[var(--theme-text-secondary)] text-sm md:text-base">Total Price</span>
+            <span className="text-[var(--theme-text-secondary)] text-sm md:text-base">{locale === 'ru' ? 'Итого' : 'Total Price'}</span>
             <span className="text-2xl font-bold bg-gradient-to-r from-amber-500 to-yellow-400 bg-clip-text text-transparent">
               {formatPrice(total, locale)}
             </span>
@@ -228,13 +252,13 @@ export default function BookingWidget({
 
         <div>
           <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-1">
-            Full Name
+            {locale === 'ru' ? 'Полное имя' : 'Full Name'}
           </label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="John Doe"
+            placeholder={locale === 'ru' ? 'Иван Иванов' : 'John Doe'}
             required
             className="w-full px-3 md:px-4 py-2 md:py-3 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-xl text-[var(--theme-text)] placeholder-[var(--theme-text-muted)] focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm md:text-base"
           />
@@ -242,13 +266,13 @@ export default function BookingWidget({
 
         <div>
           <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-1">
-            Email
+            {locale === 'ru' ? 'Email' : 'Email'}
           </label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="john@example.com"
+            placeholder={locale === 'ru' ? 'ivan@example.com' : 'john@example.com'}
             required
             className="w-full px-3 md:px-4 py-2 md:py-3 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-xl text-[var(--theme-text)] placeholder-[var(--theme-text-muted)] focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm md:text-base"
           />
@@ -256,13 +280,13 @@ export default function BookingWidget({
 
         <div>
           <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-1">
-            Phone
+            {locale === 'ru' ? 'Телефон' : 'Phone'}
           </label>
           <input
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="+20 123 456 789"
+            placeholder={locale === 'ru' ? '+7 999 123 4567' : '+20 123 456 789'}
             required
             className="w-full px-3 md:px-4 py-2 md:py-3 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-xl text-[var(--theme-text)] placeholder-[var(--theme-text-muted)] focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm md:text-base"
           />
@@ -270,12 +294,12 @@ export default function BookingWidget({
 
         <div>
           <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-1">
-            Special Requests <span className="text-[var(--theme-text-muted)]">(optional)</span>
+            {locale === 'ru' ? 'Особые пожелания' : 'Special Requests'} <span className="text-[var(--theme-text-muted)]">({locale === 'ru' ? 'необязательно' : 'optional'})</span>
           </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Any special requests or requirements..."
+            placeholder={locale === 'ru' ? 'Ваши особые пожелания...' : 'Any special requests or requirements...'}
             rows={3}
             className="w-full px-3 md:px-4 py-2 md:py-3 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-xl text-[var(--theme-text)] placeholder-[var(--theme-text-muted)] focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm md:text-base resize-none"
           />
@@ -292,7 +316,7 @@ export default function BookingWidget({
           disabled={loading}
           className="w-full py-3 md:py-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 font-bold rounded-xl hover:from-amber-400 hover:to-yellow-400 transition-all shadow-lg shadow-amber-500/30 disabled:opacity-50 text-sm md:text-base"
         >
-          {loading ? 'Processing...' : 'Book Now'}
+          {loading ? (locale === 'ru' ? 'Обработка...' : 'Processing...') : (locale === 'ru' ? 'Забронировать' : 'Book Now')}
         </button>
       </form>
     </div>

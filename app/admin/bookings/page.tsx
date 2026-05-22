@@ -57,6 +57,7 @@ function AdminBookingsContent() {
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+  const [viewingBooking, setViewingBooking] = useState<Booking | null>(null);
   const [updatingStatusId, setUpdatingStatusId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -125,6 +126,10 @@ function AdminBookingsContent() {
       notes: booking.notes || '',
     });
     setShowModal(true);
+  };
+
+  const handleView = (booking: Booking) => {
+    setViewingBooking(booking);
   };
 
   const handleCreate = () => {
@@ -207,6 +212,7 @@ function AdminBookingsContent() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'CONFIRMED': return 'bg-green-500/20 text-green-500';
+      case 'COMPLETED': return 'bg-blue-500/20 text-blue-500';
       case 'CANCELLED': return 'bg-red-500/20 text-red-500';
       default: return 'bg-yellow-500/20 text-yellow-500';
     }
@@ -338,6 +344,28 @@ function AdminBookingsContent() {
                           </button>
                         </div>
                       )}
+                      {booking.status === 'CONFIRMED' && (
+                        <div className="flex gap-2 justify-end">
+                          <button
+                            onClick={() => handleStatusChange(booking.id, 'COMPLETED')}
+                            className="px-3 py-1.5 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition-colors"
+                          >
+                            Mark Completed
+                          </button>
+                          <button
+                            onClick={() => handleStatusChange(booking.id, 'CANCELLED')}
+                            className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 transition-colors"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                      <button
+                        onClick={() => handleView(booking)}
+                        className="text-amber-500 hover:text-amber-600 text-sm mr-3"
+                      >
+                        View
+                      </button>
                       <button
                         onClick={() => handleEdit(booking)}
                         className="text-blue-500 hover:text-blue-600 text-sm mr-3"
@@ -362,7 +390,7 @@ function AdminBookingsContent() {
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-[var(--theme-card)] rounded-2xl p-6 w-full max-w-lg">
+          <div className="bg-[var(--theme-card)] rounded-2xl p-6 w-full max-w-3xl">
             <h2 className="text-2xl font-bold text-[var(--theme-text)] mb-4">
               {editingBooking ? 'Edit Booking' : 'Create New Booking'}
             </h2>
@@ -464,6 +492,102 @@ function AdminBookingsContent() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {viewingBooking && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-[var(--theme-card)] rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-[var(--theme-text)]">Booking Details</h2>
+              <button
+                onClick={() => setViewingBooking(null)}
+                className="text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] text-2xl"
+              >
+                &times;
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(viewingBooking.status)}`}>
+                  {viewingBooking.status}
+                </span>
+                <span className="text-sm text-[var(--theme-text-muted)]">
+                  Created: {formatDate(viewingBooking.createdAt)}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 bg-[var(--theme-bg-secondary)] rounded-lg">
+                  <p className="text-sm text-[var(--theme-text-muted)] mb-1">Tour</p>
+                  <p className="font-medium text-[var(--theme-text)]">{viewingBooking.tourTitle}</p>
+                </div>
+                <div className="p-4 bg-[var(--theme-bg-secondary)] rounded-lg">
+                  <p className="text-sm text-[var(--theme-text-muted)] mb-1">Tour Date</p>
+                  <p className="font-medium text-[var(--theme-text)]">{formatDate(viewingBooking.tourDate)}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div className="p-4 bg-[var(--theme-bg-secondary)] rounded-lg">
+                  <p className="text-sm text-[var(--theme-text-muted)] mb-1">Guests</p>
+                  <p className="font-medium text-[var(--theme-text)]">{viewingBooking.people}</p>
+                </div>
+                <div className="p-4 bg-[var(--theme-bg-secondary)] rounded-lg">
+                  <p className="text-sm text-[var(--theme-text-muted)] mb-1">Total Price</p>
+                  <p className="font-medium text-amber-500">${viewingBooking.totalPrice.toFixed(2)}</p>
+                </div>
+                <div className="p-4 bg-[var(--theme-bg-secondary)] rounded-lg">
+                  <p className="text-sm text-[var(--theme-text-muted)] mb-1">User Email</p>
+                  <p className="font-medium text-[var(--theme-text)] text-sm">{viewingBooking.userEmail}</p>
+                </div>
+              </div>
+
+              <div className="p-4 bg-[var(--theme-bg-secondary)] rounded-lg">
+                <p className="text-sm text-[var(--theme-text-muted)] mb-2">Contact Information</p>
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <p className="text-xs text-[var(--theme-text-muted)]">Name</p>
+                    <p className="font-medium text-[var(--theme-text)]">{viewingBooking.contactName}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-[var(--theme-text-muted)]">Email</p>
+                    <p className="font-medium text-[var(--theme-text)] text-sm">{viewingBooking.contactEmail}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-[var(--theme-text-muted)]">Phone</p>
+                    <p className="font-medium text-[var(--theme-text)]">{viewingBooking.contactPhone}</p>
+                  </div>
+                </div>
+              </div>
+
+              {viewingBooking.notes && (
+                <div className="p-4 bg-[var(--theme-bg-secondary)] rounded-lg">
+                  <p className="text-sm text-[var(--theme-text-muted)] mb-1">Notes</p>
+                  <p className="text-[var(--theme-text)]">{viewingBooking.notes}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-3 pt-6 mt-6 border-t border-[var(--theme-border)]">
+              <button
+                onClick={() => {
+                  setViewingBooking(null);
+                  handleEdit(viewingBooking);
+                }}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              >
+                Edit Booking
+              </button>
+              <button
+                onClick={() => setViewingBooking(null)}
+                className="px-4 py-2 bg-[var(--theme-bg-tertiary)] text-[var(--theme-text)] rounded-lg hover:bg-[var(--theme-border)]"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

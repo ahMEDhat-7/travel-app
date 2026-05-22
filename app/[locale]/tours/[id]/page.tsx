@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { use } from 'react';
+import { useTranslations } from 'next-intl';
 import BookingWidget from '@/components/booking/BookingWidget';
 import ItineraryAccordion from '@/components/tours/ItineraryAccordion';
 import TourJsonLd from '@/components/tours/TourJsonLd';
@@ -20,6 +21,7 @@ interface TourData {
   itinerary: { day: number; title: string; description: string }[];
   price: number;
   discountPrice?: number;
+  childPrice?: number;
   location: string;
   duration: string;
   category: string;
@@ -34,79 +36,10 @@ interface TourData {
   localeHighlights?: string[];
   localeIncluded?: string[];
   localeNotIncluded?: string[];
+  localeItinerary?: { day: number; title: string; description: string }[];
   averageRating?: number;
   reviewCount?: number;
 }
-
-const SAMPLE_TOURS: Record<string, TourData> = {
-  'red-sea-diving': {
-    id: '1',
-    slug: 'red-sea-diving',
-    title: 'Red Sea Diving Adventure',
-    shortDesc: 'Explore the crystal clear waters of the Red Sea',
-    description: 'Discover the underwater paradise of Sharm El-Sheikh. This incredible diving experience takes you to world-famous dive sites with vibrant coral reefs and diverse marine life.',
-    highlights: ['Ras Mohamed National Park', 'Thistlegorm Wreck', 'Coral Gardens', 'Dolphin House', 'Blue Hole'],
-    included: ['Full diving equipment', 'Certified instructor', '2 dives per day', 'Lunch onboard', '酒店接送'],
-    notIncluded: ['个人消费', '小费', '证书费用'],
-    itinerary: [
-      { day: 1, title: 'Arrival in Sharm', description: 'Meet at dive center. Equipment fitting and briefing.' },
-      { day: 2, title: 'Two Dives', description: 'Morning dive at Ras Mohammed, afternoon at Shark Bay.' },
-      { day: 3, title: 'Wreck Dive', description: 'Dive the famous Thistlegorm wreck.' },
-    ],
-    price: 299,
-    discountPrice: 249,
-    location: 'Sharm El-Sheikh',
-    duration: '3 days',
-    category: 'Diving',
-    images: ['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800'],
-    maxCapacity: 12,
-    isBestseller: true,
-    hasFreeCancellation: true,
-  },
-  'desert-safari': {
-    id: '2',
-    slug: 'desert-safari',
-    title: 'Sinai Desert Safari',
-    shortDesc: 'Camp under the stars in the Sinai Desert',
-    description: 'Journey into the beautiful Sinai Desert surrounding Sharm El-Sheikh. Experience traditional Bedouin culture and camp under the stars.',
-    highlights: ['Bedouin village visit', 'Sunset desert views', 'Starry night sky', 'Camel riding', 'Traditional dinner'],
-    included: ['4x4 transfer', 'Bedouin dinner', 'Camping equipment', 'Guide', '酒店接送'],
-    notIncluded: ['个人消费', '小费'],
-    itinerary: [
-      { day: 1, title: 'Desert Departure', description: 'Afternoon pickup. Drive to desert camp.' },
-      { day: 2, title: 'Desert Experience', description: 'Morning camel ride, visit natural spring. Evening stars.' },
-    ],
-    price: 149,
-    location: 'Sinai Desert',
-    duration: '2 days',
-    category: 'Adventure',
-    images: ['https://images.unsplash.com/photo-1547996663-6e5a6f232032?w=800'],
-    maxCapacity: 10,
-    isFeatured: true,
-    hasFreeCancellation: true,
-  },
-  'snorkeling-trips': {
-    id: '3',
-    slug: 'snorkeling-trips',
-    title: 'Tiran Island Snorkeling',
-    shortDesc: 'Snorkel in the pristine waters of Tiran Island',
-    description: 'Explore the crystal-clear waters of Tiran Island, famous for its vibrant coral reefs and tropical fish. Perfect for all skill levels.',
-    highlights: ['Tiran Island', 'Coral reef', 'Tropical fish', 'Glass-bottom boat option', 'Lunch included'],
-    included: ['Boat trip', 'Snorkeling gear', 'Lunch', 'Guide', '酒店接送'],
-    notIncluded: ['个人消费', '小费'],
-    itinerary: [
-      { day: 1, title: 'Boat Trip', description: 'Morning departure to Tiran Island. 3 snorkeling stops.' },
-    ],
-    price: 89,
-    location: 'Tiran Island',
-    duration: '1 day',
-    category: 'Water Sports',
-    images: ['https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=800'],
-    maxCapacity: 20,
-    isBestseller: true,
-    hasFreeCancellation: true,
-  },
-};
 
 interface TourDetailPageProps {
   params: Promise<{ locale: string; id: string }>;
@@ -114,6 +47,8 @@ interface TourDetailPageProps {
 
 export default function TourDetailPage({ params }: TourDetailPageProps) {
   const { locale, id } = use(params);
+  const t = useTranslations('common');
+  const tTourDetail = useTranslations('tourDetail');
   const { formatPrice } = useCurrency();
   const [tour, setTour] = useState<TourData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -137,6 +72,7 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
       highlights: tour.localeHighlights || tour.highlights,
       included: tour.localeIncluded || tour.included,
       notIncluded: tour.localeNotIncluded || tour.notIncluded,
+      itinerary: tour.localeItinerary || tour.itinerary,
     };
   };
 
@@ -169,7 +105,7 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
     return (
       <div className="min-h-screen bg-[var(--theme-bg)] flex items-center justify-center py-24">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-[var(--theme-text)] mb-4">Tour Not Found</h1>
+          <h1 className="text-3xl font-bold text-[var(--theme-text)] mb-4">{tTourDetail('tourNotFound')}</h1>
           <Link href={`/${locale}/tours`} className="text-amber-400 hover:text-amber-300">
             View All Tours
           </Link>
@@ -223,7 +159,7 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
               <p className="text-xl text-[var(--theme-text-secondary)] mb-4">{getTourData()?.shortDesc}</p>
 
               <div className="flex items-center gap-4 mb-6">
-                <span className="text-sm text-[var(--theme-text-muted)]">Share this tour:</span>
+                <span className="text-sm text-[var(--theme-text-muted)]">{t('shareThisTour')}</span>
                 <div className="flex gap-2">
                   <a
                     href={`https://www.facebook.com/sharer/sharer.php?u=${typeof window !== 'undefined' ? window.location.href : ''}`}
@@ -273,27 +209,27 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
               <div className="flex flex-wrap gap-2 md:gap-3 mb-6">
                 {tour.isBestseller && (
                   <span className="px-4 py-1.5 bg-amber-500 text-slate-900 text-sm font-bold rounded-full shadow-lg shadow-amber-500/30">
-                    Bestseller
+                    {t('bestseller')}
                   </span>
                 )}
                 {tour.isFeatured && (
                   <span className="px-4 py-1.5 bg-yellow-500 text-slate-900 text-sm font-bold rounded-full shadow-lg shadow-yellow-500/30">
-                    Featured
+                    {t('featured')}
                   </span>
                 )}
                 {tour.hasFreeCancellation && (
                   <span className="px-4 py-1.5 bg-green-500/20 border border-green-500/50 text-green-400 text-sm rounded-full">
-                    Free Cancellation
+                    {t('freeCancellation')}
                   </span>
                 )}
               </div>
 
               <section className="mb-8">
-                <h2 className="text-2xl font-bold text-[var(--theme-text)] mb-4">Highlights</h2>
+                <h2 className="text-2xl font-bold text-[var(--theme-text)] mb-4">{t('highlights')}</h2>
                 <ul className="space-y-3">
-                  {tour.highlights?.map((item: string, i: number) => (
+                  {getTourData()?.highlights?.map((item: string, i: number) => (
                     <li key={i} className="flex items-center gap-3">
-                      <span className="w-6 h-6 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 text-sm">✓</span>
+                      <span className="w-6 h-6 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-500 text-sm">✓</span>
                       <span className="text-[var(--theme-text-secondary)]">{item}</span>
                     </li>
                   ))}
@@ -301,16 +237,16 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
               </section>
 
               <section className="mb-8">
-                <h2 className="text-2xl font-bold text-[var(--theme-text)] mb-4">Description</h2>
-                <p className="text-[var(--theme-text-secondary)] whitespace-pre-wrap leading-relaxed">{tour.description}</p>
+                <h2 className="text-2xl font-bold text-[var(--theme-text)] mb-4">{t('description')}</h2>
+                <p className="text-[var(--theme-text-secondary)] whitespace-pre-wrap leading-relaxed">{getTourData()?.description}</p>
               </section>
 
               <section className="mb-8">
-                <h2 className="text-2xl font-bold text-[var(--theme-text)] mb-4">Included</h2>
+                <h2 className="text-2xl font-bold text-[var(--theme-text)] mb-4">{t('included')}</h2>
                 <ul className="space-y-3">
-                  {tour.included?.map((item: string, i: number) => (
+                  {getTourData()?.included?.map((item: string, i: number) => (
                     <li key={i} className="flex items-center gap-3">
-                      <span className="w-6 h-6 bg-green-500/20 rounded-full flex items-center justify-center text-green-400 text-sm">✓</span>
+                      <span className="w-6 h-6 bg-green-500/20 rounded-full flex items-center justify-center text-green-500 text-sm">✓</span>
                       <span className="text-[var(--theme-text-secondary)]">{item}</span>
                     </li>
                   ))}
@@ -318,19 +254,26 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
               </section>
 
               <section className="mb-8">
-                <h2 className="text-2xl font-bold text-[var(--theme-text)] mb-4">Not Included</h2>
+                <h2 className="text-2xl font-bold text-[var(--theme-text)] mb-4">{t('notIncluded')}</h2>
                 <ul className="space-y-3">
-                  {tour.notIncluded?.map((item: string, i: number) => (
+                  {getTourData()?.notIncluded?.map((item: string, i: number) => (
                     <li key={i} className="flex items-center gap-3">
-                      <span className="w-6 h-6 bg-red-500/20 rounded-full flex items-center justify-center text-red-400 text-sm">✗</span>
-                      <span className="text-[var(--theme-text-muted)]">{item}</span>
+                      <span className="w-6 h-6 bg-red-500/20 rounded-full flex items-center justify-center text-red-500 text-sm">✗</span>
+                      <span className="text-[var(--theme-text-secondary)]">{item}</span>
                     </li>
                   ))}
                 </ul>
               </section>
 
-              {tour.itinerary && tour.itinerary.length > 0 ? (
-                <ItineraryAccordion itinerary={tour.itinerary} />
+              {getTourData()?.itinerary && getTourData()!.itinerary.length > 0 ? (
+<ItineraryAccordion 
+                itinerary={getTourData()!.itinerary.map(item => ({
+                  day: item.day,
+                  title: locale === 'ru' ? (tour.localeItinerary?.find(i => i.day === item.day)?.title || item.title) : item.title,
+                  description: locale === 'ru' ? (tour.localeItinerary?.find(i => i.day === item.day)?.description || item.description) : item.description,
+                }))} 
+                locale={locale} 
+              />
               ) : null}
             </div>
           </div>
@@ -338,7 +281,9 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
           <div>
             <BookingWidget
               tourId={tour.id}
-              price={tour.discountPrice || tour.price}
+              price={tour.price}
+              discountPrice={tour.discountPrice}
+              childPrice={tour.childPrice}
               maxCapacity={tour.maxCapacity}
               locale={locale}
             />

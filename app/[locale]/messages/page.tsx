@@ -11,6 +11,8 @@ interface Message {
   isRead: boolean;
   createdAt: string;
   isNew?: boolean;
+  isBroadcast?: boolean;
+  subject?: string;
 }
 
 export default function MessagesPage(props: { params: Promise<{ locale: string }> }) {
@@ -43,6 +45,23 @@ export default function MessagesPage(props: { params: Promise<{ locale: string }
         const seenIds = new Set<string>();
         
         data.data.forEach((thread: any) => {
+          if (thread.isBroadcast) {
+            const broadcastId = `broadcast-${thread.id}`;
+            if (!seenIds.has(broadcastId)) {
+              seenIds.add(broadcastId);
+              allMessages.push({
+                id: broadcastId,
+                content: thread.content,
+                senderType: 'ADMIN',
+                isRead: thread.isRead,
+                createdAt: thread.createdAt,
+                isBroadcast: true,
+                subject: thread.subject || 'Announcement',
+              });
+            }
+            return;
+          }
+
           const threadId = `msg-${thread.id}`;
           if (!seenIds.has(threadId)) {
             seenIds.add(threadId);
@@ -183,20 +202,27 @@ export default function MessagesPage(props: { params: Promise<{ locale: string }
                 >
                   <div
                     className={`max-w-[80%] px-4 py-3 rounded-2xl shadow-sm transition-all duration-300 ${
-                      msg.senderType === 'USER'
-                        ? msg.isNew
-                          ? 'bg-amber-500/80 text-white rounded-br-sm animate-slide-in-right'
-                          : 'bg-amber-500/80 text-white rounded-br-sm'
-                        : msg.isNew
-                          ? 'bg-[var(--theme-bg-secondary)]/80 text-[var(--theme-text)] border border-[var(--theme-border)] rounded-bl-sm animate-slide-in-left'
-                          : 'bg-[var(--theme-bg-secondary)]/80 text-[var(--theme-text)] border border-[var(--theme-border)] rounded-bl-sm'
+                      msg.isBroadcast
+                        ? 'bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-500/30 text-[var(--theme-text)] rounded-bl-sm'
+                        : msg.senderType === 'USER'
+                          ? msg.isNew
+                            ? 'bg-amber-500/80 text-white rounded-br-sm animate-slide-in-right'
+                            : 'bg-amber-500/80 text-white rounded-br-sm'
+                          : msg.isNew
+                            ? 'bg-[var(--theme-bg-secondary)]/80 text-[var(--theme-text)] border border-[var(--theme-border)] rounded-bl-sm animate-slide-in-left'
+                            : 'bg-[var(--theme-bg-secondary)]/80 text-[var(--theme-text)] border border-[var(--theme-border)] rounded-bl-sm'
                     }`}
-                    style={msg.isNew ? {
+                    style={msg.isNew && !msg.isBroadcast ? {
                       animation: msg.senderType === 'USER' 
                         ? 'slideInRight 0.3s ease-out' 
                         : 'slideInLeft 0.3s ease-out'
                     } : undefined}
                   >
+                    {msg.isBroadcast && msg.subject && (
+                      <p className="text-xs font-semibold text-amber-400 mb-1">
+                        📢 {msg.subject}
+                      </p>
+                    )}
                     <p className="whitespace-pre-wrap break-words">{msg.content}</p>
                     <p className={`text-[10px] mt-1 ${
                       msg.senderType === 'USER' ? 'text-white/70' : 'text-[var(--theme-text-muted)]'

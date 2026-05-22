@@ -1,0 +1,95 @@
+{
+  "slug": "mount-sinai-sunrise-trek",
+  "title": "Mount Sinai Sunrise Trek",
+  "shortDesc": "Hike to the summit of Mount Sinai and witness a breathtaking sunrise over the Sinai Peninsula and the mountains of Egypt.",
+  "description": "Embark on an unforgettable spiritual and physical journey to the summit of Mount Sinai, where Moses is believed to have received the Ten Commandments. This iconic trek begins in the early morning hours, allowing you to hike under the stars and reach the summit just in time for sunrise. As the first rays of light break over the mountains, you'll be rewarded with panoramic views that stretch across the Sinai Peninsula. The experience combines adventure, history, and spiritual significance in one remarkable journey.",
+  "ruTitle": "Восхождение на гору Синай на рассвете",
+  "ruShortDesc": "Поднимитесь на вершину горы Синай и станьте свидетелем захватывающего восхода солнца над Синайским полуостровом.",
+  "ruDescription": "Отправьтесь в незабываемое духовное и физическое путешествие на вершину горы Синай, где, по преданию, Моисей получил Десять заповедей. Это культовое восхождение начинается в ранние утренние часы, позволяя вам подняться под звёздами и достичь вершины как раз к восходу солнца.",
+  "highlights": [
+    "Summit at sunrise for breathtaking views",
+    "Camel ride to starting point (optional)",
+    "Visit St. Catherine's Monastery",
+    "Professional Bedouin guide",
+    "Traditional Bedouin tea ceremony",
+    "See ancient rock inscriptions",
+    "Panoramic views of two continents"
+  ],
+  "ruHighlights": "Вершина на восходе солнца с захватывающими видами\nПоездка на верблюде до точки старта (по желанию)\nПосещение монастыря Святой Екатерины\nПрофессиональный бедуинский гид\nТрадиционная бедуинская чайная церемония\nДревние наскальные надписи\nПанорамные виды на два континента",
+  "included": [
+    "Hotel pickup and drop-off",
+    "Air-conditioned transportation",
+    "Professional Bedouin guide",
+    "Entry to St. Catherine's Monastery",
+    "Bedouin tea during trek",
+    "Light breakfast at summit",
+    "All fees and permits"
+  ],
+  "ruIncluded": "Трансфер из/в отель\nКондиционированный транспорт\nПрофессиональный бедуинский гид\nВход в монастырь Святой Екатерины\nБедуинский чай во время похода\nЛёгкий завтрак на вершине\nВсе сборы и разрешения",
+  "notIncluded": [
+    "Camel ride (additional fee)",
+    "Personal expenses",
+    "Tips for guide"
+  ],
+  "ruNotIncluded": "Поездка на верблюде (дополнительная плата)\nЛичные расходы\nЧаевые гиду",
+  "itinerary": [
+    {
+      "day": 1,
+      "title": "Night Departure",
+      "description": "Depart from Sharm El-Sheikh around 10:00 PM. The journey takes approximately 3 hours through the desert to the foot of Mount Sinai."
+    },
+    {
+      "day": 2,
+      "title": "Begin the Trek",
+      "description": "Arrive at the starting point around 1:00 AM. Begin the hike up the 3,750 steps (or camel path) as stars light the way. Your guide will share stories and history along the path."
+    },
+    {
+      "day": 3,
+      "title": "Summit & Sunrise",
+      "description": "Reach the summit around 3:30 AM. Rest and enjoy hot tea while waiting for the magical moment of sunrise over the Sinai Peninsula. Witness colors change across the mountains."
+    },
+    {
+      "day": 4,
+      "title": "Descent & Monastery",
+      "description": "Descend around 7:00 AM and visit St. Catherine's Monastery, one of the oldest in the world. Return to Sharm El-Sheikh by noon."
+    }
+  ],
+  "ruItinerary": [
+    {
+      "day": 1,
+      "title": "Выезд ночью",
+      "description": "Отправление из Шарм-эль-Шейха около 22:00. Путешествие занимает около 3 часов через пустыню к подножию горы Синай."
+    },
+    {
+      "day": 2,
+      "title": "Начало похода",
+      "description": "Прибытие к начальной точке около 01:00. Начните подъём по 3750 ступеням (или верблюжьей тропе) под звёздным светом. Гид расскажет истории и историю вдоль маршрута."
+    },
+    {
+      "day": 3,
+      "title": "Вершина и рассвет",
+      "description": "Прибытие на вершину около 03:30. Отдых и горячий чай в ожидании волшебного момента восхода солнца над Синайским полуостровом. Наблюдайте за сменой цветов на горах."
+    },
+    {
+      "day": 4,
+      "title": "Спуск и монастырь",
+      "description": "Спуск около 07:00 и посещение монастыря Святой Екатерины, одного из древнейших в мире. Возвращение в Шарм-эль-Шейх к полудню."
+    }
+  ],
+  "price": 75,
+  "childPrice": 45,
+  "discountPrice": 65,
+  "duration": "12 hours",
+  "location": "Mount Sinai, Sinai Peninsula",
+  "category": "Adventure",
+  "images": [
+    "/images/tours-images/mount-sinai-sunrise.jpg",
+    "/images/tours-images/sinai-desert.jpg",
+    "/images/tours-images/st-catherine-monastery.jpg"
+  ],
+  "maxCapacity": 20,
+  "isActive": true,
+  "isFeatured": true,
+  "isBestseller": false,
+  "hasFreeCancellation": true
+}

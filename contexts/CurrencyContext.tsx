@@ -8,6 +8,9 @@ interface CurrencyContextType {
   setCurrency: (currency: CurrencyCode) => void;
   convertPrice: (priceUSD: number) => number;
   formatPrice: (priceUSD: number, locale?: string) => string;
+  rates: Record<string, number>;
+  lastUpdated: Date | null;
+  isLoading: boolean;
 }
 
 const CurrencyContext = createContext<CurrencyContextType | null>(null);
@@ -44,11 +47,43 @@ interface CurrencyProviderProps {
 export function CurrencyProvider({ children }: CurrencyProviderProps) {
   const [currency, setCurrencyState] = useState<CurrencyCode>('USD');
   const [mounted, setMounted] = useState(false);
+  const [rates, setRates] = useState<Record<string, number>>({
+    USD: 1,
+    EGP: 48.5,
+    RUB: 91.5,
+  });
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchFailed, setFetchFailed] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     setCurrencyState(getCurrencyFromLocale());
+    fetchRates();
   }, []);
+
+  const fetchRates = async () => {
+    if (fetchFailed) return;
+    
+    try {
+      const res = await fetch('/api/currency/rates', {
+        signal: AbortSignal.timeout(5000),
+      });
+      const data = await res.json();
+      if (data.success && data.rates) {
+        setRates(data.rates);
+        setFetchFailed(false);
+        if (data.timestamp) {
+          setLastUpdated(new Date(data.timestamp));
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch exchange rates:', error);
+      setFetchFailed(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const setCurrency = (newCurrency: CurrencyCode) => {
     setCurrencyState(newCurrency);
@@ -58,7 +93,8 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
   };
 
   const convertPrice = (priceUSD: number): number => {
-    return Math.round(priceUSD * currencies[currency].rate * 100) / 100;
+    const rate = rates[currency] || 1;
+    return Math.round(priceUSD * rate * 100) / 100;
   };
 
   const formatPrice = (priceUSD: number, locale: string = 'en'): string => {
@@ -80,7 +116,7 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
   };
 
   return (
-    <CurrencyContext.Provider value={{ currency, setCurrency, convertPrice, formatPrice }}>
+    <CurrencyContext.Provider value={{ currency, setCurrency, convertPrice, formatPrice, rates, lastUpdated, isLoading }}>
       {children}
     </CurrencyContext.Provider>
   );
