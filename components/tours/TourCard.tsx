@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface TourCardProps {
   tour: {
@@ -26,6 +27,7 @@ interface TourCardProps {
 
 export default function TourCard({ tour, locale }: TourCardProps) {
   const t = useTranslations('common');
+  const { formatPrice } = useCurrency();
   const displayPrice = tour.discountPrice || tour.price;
 
   return (
@@ -71,11 +73,11 @@ export default function TourCard({ tour, locale }: TourCardProps) {
           <div>
             {tour.discountPrice && (
               <span className="text-gray-400 line-through text-sm mr-2">
-                ${tour.price}
+                {formatPrice(tour.price, locale)}
               </span>
             )}
             <span className="text-xl font-bold text-sky-500">
-              ${displayPrice}
+              {formatPrice(displayPrice, locale)}
             </span>
             <span className="text-gray-500 text-sm"> {t('from')}</span>
           </div>

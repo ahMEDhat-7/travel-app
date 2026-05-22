@@ -14,9 +14,15 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '6');
+    const tourId = searchParams.get('tourId');
+    
+    const where: any = { status: 'APPROVED' };
+    if (tourId) {
+      where.tourId = tourId;
+    }
     
     const reviews = await db.review.findMany({
-      where: { status: 'APPROVED' },
+      where,
       take: limit,
       orderBy: { createdAt: 'desc' },
       include: {
@@ -32,6 +38,7 @@ export async function GET(request: NextRequest) {
       createdAt: r.createdAt,
       userName: r.user?.name || 'Anonymous',
       tourTitle: r.tour?.title || 'Tour',
+      adminReply: r.adminReply,
     }));
     
     return NextResponse.json({ success: true, data: reviewsWithDetails });

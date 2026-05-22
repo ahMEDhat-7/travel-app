@@ -1,57 +1,90 @@
 import { NextResponse } from 'next/server';
 
-const API_URL = 'https://api.frankfurter.app/latest?from=USD&to=EGP,RUB';
+const CDN_API = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json';
+const ER_API = 'https://open.er-api.com/v6/latest/USD';
 
-interface ExchangeRates {
-  USD: number;
-  EGP: number;
-  RUB: number;
-}
+const FETCH_TIMEOUT = 5000;
 
-const FALLBACK_RATES: ExchangeRates = {
+const FALLBACK_RATES = {
   USD: 1,
-  EGP: 48.5,
-  RUB: 91.5,
+  EGP: Number(process.env.CURRENCY_EGP_RATE) || 48.5,
+  RUB: Number(process.env.CURRENCY_RUB_RATE) || 91.5,
 };
 
-export async function GET() {
+let cachedRates: typeof FALLBACK_RATES | null = null;
+let cacheTimestamp = 0;
+let lastSource = '';
+const CACHE_DURATION = 60 * 60 * 1000;
+
+function fetchWithTimeout(url: string, timeout = FETCH_TIMEOUT) {
+  return fetch(url, { signal: AbortSignal.timeout(timeout) });
+}
+
+async function tryCdnApi(): Promise<{ rates: typeof FALLBACK_RATES; source: string } | null> {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-    const response = await fetch(API_URL, {
-      signal: controller.signal,
-      next: { revalidate: 3600 },
-    });
-
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      throw new Error(`API returned ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    const rates: ExchangeRates = {
-      USD: 1,
-      EGP: Math.round((data.rates?.EGP || FALLBACK_RATES.EGP) * 100) / 100,
-      RUB: Math.round((data.rates?.RUB || FALLBACK_RATES.RUB) * 100) / 100,
+    const res = await fetchWithTimeout(CDN_API);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const egp = data?.usd?.egp;
+    const rub = data?.usd?.rub;
+    if (!egp || !rub) return null;
+    return {
+      rates: { USD: 1, EGP: Math.round(egp * 100) / 100, RUB: Math.round(rub * 100) / 100 },
+      source: 'cdn',
     };
+  } catch {
+    return null;
+  }
+}
 
+async function tryErApi(): Promise<{ rates: typeof FALLBACK_RATES; source: string } | null> {
+  try {
+    const res = await fetchWithTimeout(ER_API);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const egp = data?.rates?.EGP;
+    const rub = data?.rates?.RUB;
+    if (!egp || !rub) return null;
+    return {
+      rates: { USD: 1, EGP: Math.round(egp * 100) / 100, RUB: Math.round(rub * 100) / 100 },
+      source: 'er-api',
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function GET() {
+  const now = Date.now();
+
+  if (cachedRates && now - cacheTimestamp < CACHE_DURATION) {
     return NextResponse.json({
       success: true,
-      source: 'api',
-      rates,
-      timestamp: Date.now(),
-    });
-  } catch (error) {
-    console.error('Currency API error:', error);
-
-    return NextResponse.json({
-      success: true,
-      source: 'fallback',
-      rates: FALLBACK_RATES,
-      timestamp: Date.now(),
+      source: `cache (${lastSource})`,
+      rates: cachedRates,
+      timestamp: now,
     });
   }
+
+  const result = (await tryCdnApi()) || (await tryErApi());
+
+  if (result) {
+    cachedRates = result.rates;
+    cacheTimestamp = now;
+    lastSource = result.source;
+    return NextResponse.json({
+      success: true,
+      source: result.source,
+      rates: result.rates,
+      timestamp: now,
+    });
+  }
+
+  console.warn('Currency API: all sources failed, using env/default rates');
+  return NextResponse.json({
+    success: true,
+    source: 'fallback',
+    rates: FALLBACK_RATES,
+    timestamp: now,
+  });
 }

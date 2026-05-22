@@ -1,13 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { use } from 'react';
 import { useTranslations } from 'next-intl';
 import BookingWidget from '@/components/booking/BookingWidget';
 import ItineraryAccordion from '@/components/tours/ItineraryAccordion';
 import TourJsonLd from '@/components/tours/TourJsonLd';
+import ReviewCard from '@/components/reviews/ReviewCard';
+import RatingBreakdown from '@/components/reviews/RatingBreakdown';
+import ReviewForm from '@/components/reviews/ReviewForm';
 import { useCurrency } from '@/contexts/CurrencyContext';
+
+interface ReviewData {
+  id: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  userName: string;
+  adminReply: string | null;
+}
 
 interface TourData {
   id: string;
@@ -37,6 +49,9 @@ interface TourData {
   localeIncluded?: string[];
   localeNotIncluded?: string[];
   localeItinerary?: { day: number; title: string; description: string }[];
+  localeLocation?: string;
+  localeDuration?: string;
+  localeCategory?: string;
   averageRating?: number;
   reviewCount?: number;
 }
@@ -49,10 +64,13 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
   const { locale, id } = use(params);
   const t = useTranslations('common');
   const tTourDetail = useTranslations('tourDetail');
+  const tReviews = useTranslations('reviews');
   const { formatPrice } = useCurrency();
   const [tour, setTour] = useState<TourData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [reviews, setReviews] = useState<ReviewData[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
 
   useEffect(() => {
     fetchTour();
@@ -92,6 +110,42 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
       setLoading(false);
     }
   };
+
+  const fetchReviews = async () => {
+    try {
+      const res = await fetch(`/api/reviews?tourId=${id}&limit=50`);
+      const data = await res.json();
+      if (data.success) {
+        setReviews(data.data);
+      }
+    } catch (err) {
+      console.error('Error fetching reviews:', err);
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchReviews();
+    }
+  }, [id]);
+
+  const ratingDistribution = useMemo(() => {
+    const dist = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    reviews.forEach((r) => {
+      if (dist[r.rating as keyof typeof dist] !== undefined) {
+        dist[r.rating as keyof typeof dist]++;
+      }
+    });
+    return dist;
+  }, [reviews]);
+
+  const avgRating = useMemo(() => {
+    if (reviews.length === 0) return 0;
+    const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+    return sum / reviews.length;
+  }, [reviews]);
 
   if (loading) {
     return (
@@ -147,12 +201,12 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  <span>{tour.location}</span>
+                  <span>{tour.localeLocation || tour.location}</span>
                 </div>
                 <span>•</span>
-                <span>{tour.duration}</span>
+                <span>{tour.localeDuration || tour.duration}</span>
                 <span>•</span>
-                <span className="px-2 md:px-3 py-1 bg-[var(--theme-bg-tertiary)] rounded-full text-xs md:text-sm">{tour.category}</span>
+                <span className="px-2 md:px-3 py-1 bg-[var(--theme-bg-tertiary)] rounded-full text-xs md:text-sm">{tour.localeCategory || tour.category}</span>
               </div>
 
               <h1 className="text-3xl md:text-4xl font-bold text-[var(--theme-text)] mb-4">{getTourData()?.title}</h1>
@@ -275,6 +329,40 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
                 locale={locale} 
               />
               ) : null}
+
+              <section className="mb-8 mt-8 pt-8 border-t border-[var(--theme-border)]">
+                <h2 className="text-2xl font-bold text-[var(--theme-text)] mb-6">{tReviews('reviews')}</h2>
+
+                {reviews.length > 0 && (
+                  <div className="mb-8">
+                    <RatingBreakdown
+                      ratings={ratingDistribution}
+                      totalReviews={reviews.length}
+                      averageRating={avgRating}
+                    />
+                  </div>
+                )}
+
+                <div className="space-y-4 mb-8">
+                  {reviewsLoading ? (
+                    <div className="text-center py-8">
+                      <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                    </div>
+                  ) : reviews.length > 0 ? (
+                    reviews.map((review) => (
+                      <ReviewCard key={review.id} review={review} />
+                    ))
+                  ) : (
+                    <p className="text-center text-[var(--theme-text-muted)] py-8">
+                      {tReviews('noReviews') || 'No reviews yet'}
+                    </p>
+                  )}
+                </div>
+
+                <div className="mt-8">
+                  <ReviewForm tourId={tour.id} onSuccess={fetchReviews} />
+                </div>
+              </section>
             </div>
           </div>
 

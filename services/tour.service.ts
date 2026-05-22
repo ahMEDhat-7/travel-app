@@ -15,6 +15,9 @@ export function getLocalizedTour(tour: any, locale: Locale): TourWithLocale {
     localeIncluded: translations.included || (localePrefix ? tour[`${localePrefix}Included`]?.split('\n') : tour.included),
     localeNotIncluded: translations.notIncluded || (localePrefix ? tour[`${localePrefix}NotIncluded`]?.split('\n') : tour.notIncluded),
     localeItinerary: translations.itinerary || (localePrefix ? tour[`${localePrefix}Itinerary`] : tour.itinerary),
+    localeLocation: translations.location || tour.location,
+    localeDuration: translations.duration || tour.duration,
+    localeCategory: translations.category || tour.category,
   };
 }
 
@@ -56,7 +59,15 @@ export async function getTourBySlug(slug: string, locale: Locale = 'en') {
 export async function getTourById(id: string, locale: Locale = 'en') {
   const tour = await tourRepo.findById(id);
   if (!tour) return null;
-  return getLocalizedTour(tour, locale);
+  
+  const rating = await tourRepo.getAverageRating(tour.id);
+  const localized = getLocalizedTour(tour, locale);
+  
+  return {
+    ...localized,
+    averageRating: rating?.avg ? Number(rating.avg) : undefined,
+    reviewCount: rating?.cnt ? Number(rating.cnt) : undefined,
+  };
 }
 
 export async function getStats() {

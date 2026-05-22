@@ -26,7 +26,7 @@ export async function GET() {
       }
     });
 
-    const languages = Array.from(langSet)
+    const dbLanguages = Array.from(langSet)
       .filter(code => LANGUAGE_NAMES[code])
       .map(code => ({
         code,
@@ -34,10 +34,15 @@ export async function GET() {
         nativeName: LANGUAGE_NAMES[code].nativeName,
       }));
 
-    if (languages.length === 0) {
-      languages.push({ code: 'en', name: 'English', nativeName: 'EN' });
-      languages.push({ code: 'ru', name: 'Russian', nativeName: 'RU' });
+    const supportedCodes = new Set(dbLanguages.map(l => l.code));
+    if (!supportedCodes.has('en')) {
+      dbLanguages.push({ code: 'en', name: 'English', nativeName: 'EN' });
     }
+    if (!supportedCodes.has('ru')) {
+      dbLanguages.push({ code: 'ru', name: 'Russian', nativeName: 'RU' });
+    }
+
+    const languages = dbLanguages;
 
     return NextResponse.json({ success: true, languages });
   } catch (error) {

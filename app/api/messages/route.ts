@@ -141,6 +141,15 @@ export async function PATCH(request: NextRequest) {
       data: { isRead: true },
     });
 
+    await db.notification.updateMany({
+      where: {
+        userId: session.user.id as string,
+        type: 'BROADCAST',
+        isRead: false,
+      },
+      data: { isRead: true },
+    });
+
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error('Error marking messages as read:', error);

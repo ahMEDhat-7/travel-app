@@ -146,7 +146,16 @@
     "rejected": "Rejected",
     "approve": "Approve",
     "reject": "Reject",
-    "reply": "Reply"
+    "reply": "Reply",
+    "noReviews": "No reviews yet",
+    "selectRating": "Please select a rating",
+    "minLength": "Minimum 10 characters",
+    "signInToReview": "Please sign in to leave a review",
+    "checkingBooking": "Checking booking status...",
+    "completeBooking": "Complete a booking first",
+    "completeBookingDesc": "You can only review this tour after completing a booking.",
+    "submitted": "Your review has been submitted and is pending approval.",
+    "shareExperience": "Share your experience with this tour..."
   },
   "wishlist": {
     "wishlist": "Wishlist",
@@ -192,7 +201,9 @@
     "perPerson": "/person",
     "livePreview": "Live Preview",
     "shareThisTour": "Share this tour:",
-    "adventure": "Adventure"
+    "adventure": "Adventure",
+    "user": "User",
+    "signIn": "Sign In"
   },
   "auth_ts": {
     "loginRequired": "Please log in to continue",
@@ -218,9 +229,31 @@
     "nameLabel": "Name",
     "emailLabel": "Email",
     "saveChanges": "Save Changes",
+    "saving": "Saving...",
     "changePassword": "Change Password",
     "currentPassword": "Current Password",
-    "newPassword": "New Password"
+    "newPassword": "New Password",
+    "memberSince": "Member since",
+    "phoneRequired": "Phone number required",
+    "phoneRequiredDesc": "Please add your phone number so admins can contact you regarding your bookings.",
+    "phoneLabel": "Phone",
+    "phonePlaceholder": "+20 123 456 789",
+    "confirmCancel": "Are you sure you want to cancel this booking?",
+    "cancelBooking": "Cancel Booking",
+    "people": "people",
+    "date": "Date:",
+    "booked": "Booked:",
+    "toursYouCanReview": "Tours You Can Review",
+    "completed": "Completed:",
+    "writeReview": "Write Review",
+    "yourRating": "Your Rating",
+    "yourReview": "Your Review",
+    "shareExperience": "Share your experience...",
+    "submitting": "Submitting...",
+    "submitReview": "Submit Review",
+    "adminReply": "Admin reply:",
+    "reviewSubmitted": "Review submitted! It will appear after admin approval.",
+    "minLength": "Review must be at least 10 characters"
   },
   "admin": {
     "adminPanel": "Admin Panel",

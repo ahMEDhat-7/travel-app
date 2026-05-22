@@ -7,10 +7,13 @@ export interface Currency {
   rate: number;
 }
 
+const FALLBACK_EGP = Number(process.env.CURRENCY_EGP_RATE) || 52.93;
+const FALLBACK_RUB = Number(process.env.CURRENCY_RUB_RATE) || 71.12;
+
 export const currencies: Record<CurrencyCode, Currency> = {
   USD: { code: 'USD', symbol: '$', name: 'US Dollar', rate: 1 },
-  EGP: { code: 'EGP', symbol: 'E£', name: 'Egyptian Pound', rate: 50 },
-  RUB: { code: 'RUB', symbol: '₽', name: 'Russian Ruble', rate: 92 },
+  EGP: { code: 'EGP', symbol: 'E£', name: 'Egyptian Pound', rate: FALLBACK_EGP },
+  RUB: { code: 'RUB', symbol: '₽', name: 'Russian Ruble', rate: FALLBACK_RUB },
 };
 
 export function convertPrice(priceUSD: number, targetCurrency: CurrencyCode): number {

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 
 interface ReviewFormProps {
   tourId: string;
@@ -10,6 +11,8 @@ interface ReviewFormProps {
 
 export default function ReviewForm({ tourId, onSuccess }: ReviewFormProps) {
   const { data: session, status } = useSession();
+  const t = useTranslations('reviews');
+  const tCommon = useTranslations('common');
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -47,12 +50,12 @@ export default function ReviewForm({ tourId, onSuccess }: ReviewFormProps) {
     e.preventDefault();
     
     if (rating === 0) {
-      setError('Please select a rating');
+      setError(t('selectRating') || 'Please select a rating');
       return;
     }
     
     if (comment.length < 10) {
-      setError('Please write at least 10 characters');
+      setError(t('minLength') || 'Please write at least 10 characters');
       return;
     }
 
@@ -90,7 +93,7 @@ export default function ReviewForm({ tourId, onSuccess }: ReviewFormProps) {
   if (status === 'loading') {
     return (
       <div className="bg-[var(--theme-card)] rounded-xl border border-[var(--theme-border)] p-5 text-center">
-        <p className="text-[var(--theme-text-muted)]">Loading...</p>
+        <p className="text-[var(--theme-text-muted)]">{tCommon('loading')}</p>
       </div>
     );
   }
@@ -99,13 +102,13 @@ export default function ReviewForm({ tourId, onSuccess }: ReviewFormProps) {
     return (
       <div className="bg-[var(--theme-card)] rounded-xl border border-[var(--theme-border)] p-5 text-center">
         <p className="text-[var(--theme-text-secondary)] mb-3">
-          Please sign in to leave a review
+          {t('signInToReview') || 'Please sign in to leave a review'}
         </p>
         <a
           href="/auth/signin"
           className="inline-block px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors"
         >
-          Sign In
+          {tCommon('signIn') || 'Sign In'}
         </a>
       </div>
     );
@@ -115,7 +118,7 @@ export default function ReviewForm({ tourId, onSuccess }: ReviewFormProps) {
     return (
       <div className="bg-[var(--theme-card)] rounded-xl border border-[var(--theme-border)] p-5 text-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto mb-3"></div>
-        <p className="text-[var(--theme-text-muted)]">Checking booking status...</p>
+        <p className="text-[var(--theme-text-muted)]">{t('checkingBooking') || 'Checking booking status...'}</p>
       </div>
     );
   }
@@ -128,9 +131,9 @@ export default function ReviewForm({ tourId, onSuccess }: ReviewFormProps) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
         </div>
-        <h3 className="font-semibold text-[var(--theme-text)] mb-2">Complete a booking first</h3>
+        <h3 className="font-semibold text-[var(--theme-text)] mb-2">{t('completeBooking') || 'Complete a booking first'}</h3>
         <p className="text-[var(--theme-text-secondary)] text-sm">
-          You can only review this tour after completing a booking.
+          {t('completeBookingDesc') || 'You can only review this tour after completing a booking.'}
         </p>
       </div>
     );
@@ -144,9 +147,9 @@ export default function ReviewForm({ tourId, onSuccess }: ReviewFormProps) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h3 className="font-semibold text-[var(--theme-text)] mb-2">Thank you!</h3>
+        <h3 className="font-semibold text-[var(--theme-text)] mb-2">{tCommon('success')}</h3>
         <p className="text-[var(--theme-text-secondary)] text-sm">
-          Your review has been submitted and is pending approval.
+          {t('submitted') || 'Your review has been submitted and is pending approval.'}
         </p>
       </div>
     );
@@ -155,13 +158,13 @@ export default function ReviewForm({ tourId, onSuccess }: ReviewFormProps) {
   return (
     <div className="bg-[var(--theme-card)] rounded-xl border border-[var(--theme-border)] p-5">
       <h3 className="text-lg font-semibold text-[var(--theme-text)] mb-4">
-        Write a Review
+        {t('writeReview')}
       </h3>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-2">
-            Your Rating
+            {t('rating')}
           </label>
           <div className="flex gap-2">
             {[1, 2, 3, 4, 5].map((star) => (
@@ -191,17 +194,17 @@ export default function ReviewForm({ tourId, onSuccess }: ReviewFormProps) {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-[var(--theme-text-secondary)] mb-2">
-            Your Review
+            {t('comment')}
           </label>
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Share your experience with this tour..."
+            placeholder={t('shareExperience') || 'Share your experience with this tour...'}
             rows={4}
             className="w-full px-4 py-3 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)] placeholder:text-[var(--theme-text-muted)] focus:outline-none focus:border-amber-500 resize-none"
           />
           <p className="text-sm text-[var(--theme-text-muted)] mt-1">
-            Minimum 10 characters
+            {t('minLength') || 'Minimum 10 characters'}
           </p>
         </div>
 
@@ -216,7 +219,7 @@ export default function ReviewForm({ tourId, onSuccess }: ReviewFormProps) {
           disabled={loading}
           className="w-full py-3 bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          {loading ? 'Submitting...' : 'Submit Review'}
+          {loading ? tCommon('loading') : t('submit')}
         </button>
       </form>
     </div>

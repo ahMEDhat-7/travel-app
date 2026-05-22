@@ -47,11 +47,9 @@ interface CurrencyProviderProps {
 export function CurrencyProvider({ children }: CurrencyProviderProps) {
   const [currency, setCurrencyState] = useState<CurrencyCode>('USD');
   const [mounted, setMounted] = useState(false);
-  const [rates, setRates] = useState<Record<string, number>>({
-    USD: 1,
-    EGP: 48.5,
-    RUB: 91.5,
-  });
+  const DEFAULT_RATES = { USD: 1, EGP: 52.93, RUB: 71.12 };
+
+  const [rates, setRates] = useState<Record<string, number>>(DEFAULT_RATES);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [fetchFailed, setFetchFailed] = useState(false);
