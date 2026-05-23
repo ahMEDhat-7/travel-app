@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { sendBookingStatusUpdate } from "@/lib/email";
+import { Prisma } from "@prisma/client";
 
 async function checkAdmin() {
   const session = await getServerSession(authOptions);
@@ -89,7 +90,7 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
 
-    const bookingsWithDetails = bookings.map((booking) => ({
+    const bookingsWithDetails = bookings.map((booking: Prisma.BookingGetPayload<{ include: { tour: { select: { title: true } }; user: { select: { email: true } } } }>) => ({
       id: booking.id,
       userId: booking.userId,
       tourId: booking.tourId,
