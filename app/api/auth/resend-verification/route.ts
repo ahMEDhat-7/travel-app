@@ -54,17 +54,18 @@ export async function POST(request: NextRequest) {
       userName: user.name,
     });
 
-    const emailSent = emailResult.success;
-
-    if (!emailSent) {
+    if (!emailResult.success) {
       console.error('[Resend] Failed to send verification email:', emailResult.error);
+      return NextResponse.json(
+        { success: false, error: 'Failed to send verification email. Please try again.' },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(
       {
         success: true,
-        message: emailSent ? 'Verification code sent' : 'Could not send email',
-        verificationCode: emailSent ? undefined : verificationCode,
+        message: 'Verification code sent. Please check your email inbox.',
       },
       { status: 200 }
     );

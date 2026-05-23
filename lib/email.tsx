@@ -27,6 +27,8 @@ async function sendEmail({ to, subject, react }: EmailOptions) {
     return { success: true, disabled: true };
   }
 
+  console.log('[Email] Attempting to send to:', to, 'from:', fromEmail);
+
   try {
     const { data, error } = await resend.emails.send({
       from: fromEmail,
@@ -36,14 +38,14 @@ async function sendEmail({ to, subject, react }: EmailOptions) {
     });
 
     if (error) {
-      console.error('[Email] Error:', error);
+      console.error('[Email] Resend API returned error:', JSON.stringify(error));
       return { success: false, error: error.message };
     }
 
-    console.log('[Email] Sent successfully to:', to);
+    console.log('[Email] Sent successfully to:', to, 'ID:', data?.id);
     return { success: true, data };
   } catch (error: any) {
-    console.error('[Email] Error:', error.message);
+    console.error('[Email] Exception while sending:', error.message, error.stack);
     return { success: false, error: error.message };
   }
 }

@@ -56,10 +56,14 @@ export async function POST(request: NextRequest) {
       userName: input.name,
     });
 
-    const emailSent = emailResult.success;
+    if (!emailResult.success) {
+      await db.user.delete({ where: { id: user.id } });
 
-    if (!emailSent) {
       console.error('[Register] Failed to send verification email:', emailResult.error);
+      return NextResponse.json(
+        { success: false, error: 'Failed to send verification email. Please try again.' },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({
@@ -69,12 +73,8 @@ export async function POST(request: NextRequest) {
         name: user.name,
         email: user.email,
         emailVerified: false,
-        emailSent,
-        verificationCode: emailSent ? undefined : verificationCode,
       },
-      message: emailSent
-        ? 'Registration successful. Please verify your email with the code sent to your inbox.'
-        : 'Registration successful. Could not send email — your verification code is shown below.',
+      message: 'Registration successful. Please verify your email with the code sent to your inbox.',
     });
   } catch (error: any) {
     console.error('Registration error:', error);

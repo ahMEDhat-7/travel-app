@@ -3,7 +3,6 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { use } from 'react';
-import { signIn } from 'next-auth/react';
 
 interface VerifyEmailPageProps {
   params: Promise<{ locale: string }>;
@@ -15,7 +14,6 @@ export default function VerifyEmailPage({ params }: VerifyEmailPageProps) {
   const router = useRouter();
   
   const email = searchParams.get('email') || '';
-  const prefillCode = searchParams.get('code') || '';
   
   const t: Record<string, string> = locale === 'ru' ? {
     title: 'Verify Your Email',
@@ -49,12 +47,7 @@ export default function VerifyEmailPage({ params }: VerifyEmailPageProps) {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    if (prefillCode.length === 6) {
-      setCode(prefillCode.split(''));
-      inputRefs.current[5]?.focus();
-    } else {
-      inputRefs.current[0]?.focus();
-    }
+    inputRefs.current[0]?.focus();
   }, []);
 
   const handleChange = (index: number, value: string) => {
@@ -112,15 +105,9 @@ export default function VerifyEmailPage({ params }: VerifyEmailPageProps) {
       }
 
       setSuccess(true);
-      
-      const result = await signIn('credentials', {
-        email,
-        password: '',
-        redirect: false,
-      });
 
       setTimeout(() => {
-        router.push(`/${locale}`);
+        router.push(`/${locale}/auth/signin?verified=true`);
       }, 1500);
     } catch {
       setError('An error occurred. Please try again.');
@@ -144,14 +131,9 @@ export default function VerifyEmailPage({ params }: VerifyEmailPageProps) {
       const data = await res.json();
       if (data.success) {
         setError('');
-        if (data.verificationCode) {
-          setCode(data.verificationCode.split(''));
-          inputRefs.current[5]?.focus();
-        } else {
-          setCode(['', '', '', '', '', '']);
-          inputRefs.current[0]?.focus();
-          alert(t.emailSent);
-        }
+        setCode(['', '', '', '', '', '']);
+        inputRefs.current[0]?.focus();
+        alert(t.emailSent);
       } else {
         setError(data.error || 'Failed to resend code');
       }

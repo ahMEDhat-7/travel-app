@@ -1,7 +1,7 @@
 'use client';
 
 import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { use } from 'react';
 
@@ -12,6 +12,7 @@ interface SignInPageProps {
 export default function SignInPage({ params }: SignInPageProps) {
   const { locale } = use(params);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   
   const translations: Record<string, Record<string, string>> = {
@@ -28,6 +29,7 @@ export default function SignInPage({ params }: SignInPageProps) {
       submitLoading: 'Signing in...',
       signupLink: "Don't have an account?",
       signupLinkText: 'Sign up',
+      verified: 'Email verified successfully! You can now sign in.',
     },
     ru: {
       title: 'С возвращением',
@@ -42,6 +44,7 @@ export default function SignInPage({ params }: SignInPageProps) {
       submitLoading: 'Вход...',
       signupLink: 'Нет аккаунта?',
       signupLinkText: 'Регистрация',
+      verified: 'Email подтверждён! Теперь вы можете войти.',
     },
   };
   
@@ -52,6 +55,7 @@ export default function SignInPage({ params }: SignInPageProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showVerified] = useState(searchParams.get('verified') === 'true');
 
   useEffect(() => {
     if (session) {
@@ -160,6 +164,12 @@ export default function SignInPage({ params }: SignInPageProps) {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {showVerified && (
+              <div className="p-3 bg-green-500/20 border border-green-500/50 rounded-xl text-green-300 text-sm">
+                {t.verified}
+              </div>
+            )}
+
             {error && (
               <div className="p-3 bg-red-500/20 border border-red-500/50 rounded-xl text-red-300 text-sm">
                 {error}
