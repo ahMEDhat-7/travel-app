@@ -74,6 +74,7 @@ export default function SignUpPage({ params }: SignUpPageProps) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [verificationCode, setVerificationCode] = useState<string | null>(null);
 
   useEffect(() => {
     if (session) {
@@ -121,14 +122,20 @@ export default function SignUpPage({ params }: SignUpPageProps) {
 
       if (!data.success) {
         setError(data.error || 'Registration failed');
+        setIsLoading(false);
         return;
       }
 
       setError('');
+      setVerificationCode(data.data.emailSent === false ? data.data.verificationCode : null);
       setIsLoading(true);
       setTimeout(() => {
-        router.push(`/${locale}/auth/verify-email?email=${encodeURIComponent(email)}`);
-      }, 1000);
+        const params = new URLSearchParams({ email });
+        if (data.data.verificationCode) {
+          params.set('code', data.data.verificationCode);
+        }
+        router.push(`/${locale}/auth/verify-email?${params.toString()}`);
+      }, data.data.emailSent === false ? 5000 : 1000);
     } catch {
       setError('An error occurred. Please try again.');
     } finally {
@@ -184,6 +191,16 @@ export default function SignUpPage({ params }: SignUpPageProps) {
             {error && (
               <div className="p-3 bg-red-500/20 border border-red-500/50 rounded-xl text-red-300 text-sm">
                 {error}
+              </div>
+            )}
+
+            {verificationCode && (
+              <div className="p-4 bg-amber-500/20 border border-amber-500/50 rounded-xl text-center">
+                <p className="text-amber-300 text-sm mb-2">Could not send email. Your verification code:</p>
+                <p className="text-4xl font-bold tracking-widest text-amber-400 font-mono select-all">
+                  {verificationCode}
+                </p>
+                <p className="text-amber-300/70 text-xs mt-2">Redirecting to verification page in a few seconds...</p>
               </div>
             )}
 

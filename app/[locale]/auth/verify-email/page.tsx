@@ -15,6 +15,7 @@ export default function VerifyEmailPage({ params }: VerifyEmailPageProps) {
   const router = useRouter();
   
   const email = searchParams.get('email') || '';
+  const prefillCode = searchParams.get('code') || '';
   
   const t: Record<string, string> = locale === 'ru' ? {
     title: 'Verify Your Email',
@@ -48,7 +49,12 @@ export default function VerifyEmailPage({ params }: VerifyEmailPageProps) {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    inputRefs.current[0]?.focus();
+    if (prefillCode.length === 6) {
+      setCode(prefillCode.split(''));
+      inputRefs.current[5]?.focus();
+    } else {
+      inputRefs.current[0]?.focus();
+    }
   }, []);
 
   const handleChange = (index: number, value: string) => {
@@ -138,9 +144,14 @@ export default function VerifyEmailPage({ params }: VerifyEmailPageProps) {
       const data = await res.json();
       if (data.success) {
         setError('');
-        setCode(['', '', '', '', '', '']);
-        inputRefs.current[0]?.focus();
-        alert(t.emailSent);
+        if (data.verificationCode) {
+          setCode(data.verificationCode.split(''));
+          inputRefs.current[5]?.focus();
+        } else {
+          setCode(['', '', '', '', '', '']);
+          inputRefs.current[0]?.focus();
+          alert(t.emailSent);
+        }
       } else {
         setError(data.error || 'Failed to resend code');
       }

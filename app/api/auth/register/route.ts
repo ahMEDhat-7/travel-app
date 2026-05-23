@@ -56,7 +56,9 @@ export async function POST(request: NextRequest) {
       userName: input.name,
     });
 
-    if (!emailResult.success) {
+    const emailSent = emailResult.success;
+
+    if (!emailSent) {
       console.error('[Register] Failed to send verification email:', emailResult.error);
     }
 
@@ -67,8 +69,12 @@ export async function POST(request: NextRequest) {
         name: user.name,
         email: user.email,
         emailVerified: false,
+        emailSent,
+        verificationCode: emailSent ? undefined : verificationCode,
       },
-      message: 'Registration successful. Please verify your email with the code sent to your inbox.',
+      message: emailSent
+        ? 'Registration successful. Please verify your email with the code sent to your inbox.'
+        : 'Registration successful. Could not send email — your verification code is shown below.',
     });
   } catch (error: any) {
     console.error('Registration error:', error);
