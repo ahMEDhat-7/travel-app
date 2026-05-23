@@ -36,6 +36,9 @@ interface TourFormData {
   ruHighlights: string;
   ruIncluded: string;
   ruNotIncluded: string;
+  ruDuration: string;
+  ruLocation: string;
+  ruCategory: string;
   ruItinerary: ItineraryDay[];
   highlights: string;
   included: string;
@@ -66,6 +69,9 @@ const initialFormData: TourFormData = {
   ruHighlights: '',
   ruIncluded: '',
   ruNotIncluded: '',
+  ruDuration: '',
+  ruLocation: '',
+  ruCategory: '',
   ruItinerary: [],
   highlights: '',
   included: '',
@@ -305,6 +311,9 @@ function AdminToursContent() {
       ruHighlights: '',
       ruIncluded: '',
       ruNotIncluded: '',
+      ruDuration: '',
+      ruLocation: '',
+      ruCategory: '',
       ruItinerary: [],
       highlights: '',
       included: '',
@@ -350,6 +359,9 @@ function AdminToursContent() {
           title: formData.ruTitle || formData.title, 
           shortDesc: formData.ruShortDesc || formData.shortDesc, 
           description: formData.ruDescription || formData.description || formData.shortDesc,
+          duration: formData.ruDuration || formData.duration,
+          location: formData.ruLocation || formData.location,
+          category: formData.ruCategory || formData.category,
           highlights: formData.ruHighlights ? formData.ruHighlights.split('\n').filter(h => h.trim()) : undefined,
           included: formData.ruIncluded ? formData.ruIncluded.split('\n').filter(i => i.trim()) : undefined,
           notIncluded: formData.ruNotIncluded ? formData.ruNotIncluded.split('\n').filter(n => n.trim()) : undefined,
@@ -776,7 +788,7 @@ function AdminToursContent() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Title</label>
+                  <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Title (EN)</label>
                   <input
                     type="text"
                     value={formData.title}
@@ -807,7 +819,7 @@ function AdminToursContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Short Description</label>
+                <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Short Description (EN)</label>
                 <input
                   type="text"
                   value={formData.shortDesc}
@@ -818,7 +830,7 @@ function AdminToursContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Description</label>
+                <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Description (EN)</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -862,7 +874,7 @@ function AdminToursContent() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Duration</label>
+                  <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Duration (EN)</label>
                   <input
                     type="text"
                     value={formData.duration}
@@ -876,7 +888,7 @@ function AdminToursContent() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Location</label>
+                  <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Location (EN)</label>
                   <input
                     type="text"
                     value={formData.location}
@@ -886,7 +898,7 @@ function AdminToursContent() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Category</label>
+                  <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Category (EN)</label>
                   <input
                     type="text"
                     value={formData.category}
@@ -949,7 +961,7 @@ function AdminToursContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Highlights (one per line)</label>
+                <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Highlights (EN) - one per line</label>
                 <textarea
                   value={formData.highlights}
                   onChange={(e) => setFormData({ ...formData, highlights: e.target.value })}
@@ -960,7 +972,7 @@ function AdminToursContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Included (one per line)</label>
+                <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Included (EN) - one per line</label>
                 <textarea
                   value={formData.included}
                   onChange={(e) => setFormData({ ...formData, included: e.target.value })}
@@ -971,7 +983,7 @@ function AdminToursContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Not Included (one per line)</label>
+                <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Not Included (EN) - one per line</label>
                 <textarea
                   value={formData.notIncluded}
                   onChange={(e) => setFormData({ ...formData, notIncluded: e.target.value })}
@@ -979,6 +991,47 @@ function AdminToursContent() {
                   rows={3}
                   placeholder="Enter each item on a new line"
                 />
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-[var(--theme-text)]">Itinerary (EN)</label>
+                  <button
+                    type="button"
+                    onClick={handleAddItineraryDay}
+                    className="text-sm text-amber-500 hover:text-amber-600"
+                  >
+                    + Add Day
+                  </button>
+                </div>
+                {formData.itinerary.map((day, idx) => (
+                  <div key={idx} className="mb-3 p-3 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-[var(--theme-text)]">Day {day.day}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveItineraryDay(idx)}
+                        className="text-red-500 hover:text-red-600 text-sm"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={day.title}
+                      onChange={(e) => handleItineraryChange(idx, 'title', e.target.value)}
+                      placeholder="Day title (EN)"
+                      className="w-full px-3 py-2 mb-2 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)]"
+                    />
+                    <textarea
+                      value={day.description}
+                      onChange={(e) => handleItineraryChange(idx, 'description', e.target.value)}
+                      placeholder="Day description (EN)"
+                      className="w-full px-3 py-2 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)]"
+                      rows={2}
+                    />
+                  </div>
+                ))}
               </div>
 
               <div className="border-t border-[var(--theme-border)] pt-6 mt-6">
@@ -1017,11 +1070,48 @@ function AdminToursContent() {
     onChange={(e) => setFormData({ ...formData, ruDescription: e.target.value })}
     className="w-full px-3 py-2 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)]"
     rows={3}
-    placeholder="Russian description"
+  placeholder="Russian description"
   />
 </div>
 
-<div className="mt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Duration (RU)</label>
+                    <input
+                      type="text"
+                      value={formData.ruDuration}
+                      onChange={(e) => setFormData({ ...formData, ruDuration: e.target.value })}
+                      className="w-full px-3 py-2 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)]"
+                      placeholder="Russian duration"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Location (RU)</label>
+                    <input
+                      type="text"
+                      value={formData.ruLocation}
+                      onChange={(e) => setFormData({ ...formData, ruLocation: e.target.value })}
+                      className="w-full px-3 py-2 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)]"
+                      placeholder="Russian location"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Category (RU)</label>
+                    <input
+                      type="text"
+                      value={formData.ruCategory}
+                      onChange={(e) => setFormData({ ...formData, ruCategory: e.target.value })}
+                      className="w-full px-3 py-2 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)]"
+                      placeholder="Russian category"
+                    />
+                  </div>
+                  <div></div>
+                </div>
+
+                <div className="mt-4">
   <div className="flex items-center justify-between mb-2">
     <label className="block text-sm font-medium text-[var(--theme-text)]">Itinerary (RU)</label>
     <button
@@ -1095,47 +1185,6 @@ function AdminToursContent() {
                     />
                   </div>
                 </div>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-[var(--theme-text)]">Itinerary</label>
-                  <button
-                    type="button"
-                    onClick={handleAddItineraryDay}
-                    className="text-sm text-amber-500 hover:text-amber-600"
-                  >
-                    + Add Day
-                  </button>
-                </div>
-                {formData.itinerary.map((day, idx) => (
-                  <div key={idx} className="mb-3 p-3 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-[var(--theme-text)]">Day {day.day}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveItineraryDay(idx)}
-                        className="text-red-500 hover:text-red-600 text-sm"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                    <input
-                      type="text"
-                      value={day.title}
-                      onChange={(e) => handleItineraryChange(idx, 'title', e.target.value)}
-                      placeholder="Day title"
-                      className="w-full px-3 py-2 mb-2 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)]"
-                    />
-                    <textarea
-                      value={day.description}
-                      onChange={(e) => handleItineraryChange(idx, 'description', e.target.value)}
-                      placeholder="Day description"
-                      className="w-full px-3 py-2 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)]"
-                      rows={2}
-                    />
-                  </div>
-                ))}
               </div>
 
               <div className="flex flex-wrap gap-4">
