@@ -1,9 +1,8 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import Link from 'next/link';
 import AdminProviders from '@/components/AdminProviders';
-import ThemeToggle from '@/components/ThemeToggle';
+import AdminShell from '@/components/AdminShell';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,69 +35,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <AdminProviders>
-      <div className="min-h-screen bg-[var(--theme-bg)]">
-        <div className="flex">
-          <aside className="w-64 bg-gradient-to-b from-[#1a1810] to-[#0d0c08] text-white min-h-screen fixed flex flex-col">
-            <div className="p-6 border-b border-amber-500/20">
-              <div>
-                <p className="text-lg font-bold bg-gradient-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent">Admin Panel</p>
-                <div className="flex items-center gap-2 text-xs text-white/60 mt-1">
-                  <span className="w-2 h-2 bg-green-400 rounded-full"></span>
-                  {session.user.email}
-                </div>
-              </div>
-              <div className="mt-3">
-                <ThemeToggle />
-              </div>
-            </div>
-            <nav className="flex-1 p-3 overflow-y-auto">
-              {navItems.map((item) => (
-                <Link 
-                  key={item.href} 
-                  href={item.href}
-                  className="flex items-center gap-3 px-4 py-3 text-white/80 hover:bg-amber-500/10 hover:text-[var(--theme-gold)] rounded-lg transition-all mb-1"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
-                  </svg>
-                  <span className="font-medium">{item.label}</span>
-                </Link>
-              ))}
-            </nav>
-            <div className="p-4 border-t border-amber-500/20">
-              <Link 
-                href="/"
-                className="flex items-center gap-2 text-sm text-white/60 hover:text-[var(--theme-gold)] transition-colors"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-                Back to Website
-              </Link>
-            </div>
-          </aside>
-          
-          <div className="flex-1 ml-64">
-            <header className="bg-[var(--theme-card)] border-b border-[var(--theme-border)] px-8 py-4">
-              <div className="flex items-center justify-between">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent">
-                  Sharm Cloud Tours
-                </h1>
-                <Link 
-                  href="/"
-                  className="text-sm text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] transition-colors"
-                >
-                  View Site &rarr;
-                </Link>
-              </div>
-            </header>
-            
-            <main className="p-8">
-              {children}
-            </main>
-          </div>
-        </div>
-      </div>
+      <AdminShell session={session} navItems={navItems}>
+        {children}
+      </AdminShell>
     </AdminProviders>
   );
 }
