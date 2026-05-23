@@ -36,7 +36,7 @@ interface TourFormData {
   ruHighlights: string;
   ruIncluded: string;
   ruNotIncluded: string;
-  ruItinerary: string;  // New field for Russian itinerary (JSON string)
+  ruItinerary: ItineraryDay[];
   highlights: string;
   included: string;
   notIncluded: string;
@@ -66,7 +66,7 @@ const initialFormData: TourFormData = {
   ruHighlights: '',
   ruIncluded: '',
   ruNotIncluded: '',
-  ruItinerary: '',  // New field for Russian itinerary (JSON string)
+  ruItinerary: [],
   highlights: '',
   included: '',
   notIncluded: '',
@@ -207,6 +207,30 @@ function AdminToursContent() {
     }));
   };
 
+  const handleAddRuItineraryDay = () => {
+    const newDay = formData.ruItinerary.length + 1;
+    setFormData(prev => ({
+      ...prev,
+      ruItinerary: [...prev.ruItinerary, { day: newDay, title: '', description: '' }]
+    }));
+  };
+
+  const handleRemoveRuItineraryDay = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      ruItinerary: prev.ruItinerary.filter((_, i) => i !== index).map((day, i) => ({ ...day, day: i + 1 }))
+    }));
+  };
+
+  const handleRuItineraryChange = (index: number, field: keyof ItineraryDay, value: string | number) => {
+    setFormData(prev => ({
+      ...prev,
+      ruItinerary: prev.ruItinerary.map((day, i) => 
+        i === index ? { ...day, [field]: field === 'day' ? Number(value) : value } : day
+      )
+    }));
+  };
+
   const handleToggleActive = async (tourId: string, isActive: boolean) => {
     try {
       await fetch(`/api/tours`, {
@@ -281,7 +305,7 @@ function AdminToursContent() {
       ruHighlights: '',
       ruIncluded: '',
       ruNotIncluded: '',
-      ruItinerary: '',  // Add the missing field
+      ruItinerary: [],
       highlights: '',
       included: '',
       notIncluded: '',
@@ -329,7 +353,7 @@ function AdminToursContent() {
           highlights: formData.ruHighlights ? formData.ruHighlights.split('\n').filter(h => h.trim()) : undefined,
           included: formData.ruIncluded ? formData.ruIncluded.split('\n').filter(i => i.trim()) : undefined,
           notIncluded: formData.ruNotIncluded ? formData.ruNotIncluded.split('\n').filter(n => n.trim()) : undefined,
-          itinerary: formData.ruItinerary && formData.ruItinerary.trim() !== '' ? JSON.parse(formData.ruItinerary) : undefined,
+          itinerary: formData.ruItinerary.length > 0 ? formData.ruItinerary : undefined,
         },
       },
       price: formData.price,
@@ -998,14 +1022,44 @@ function AdminToursContent() {
 </div>
 
 <div className="mt-4">
-  <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Itinerary (RU) - JSON array of objects</label>
-  <textarea
-    value={formData.ruItinerary}
-    onChange={(e) => setFormData({ ...formData, ruItinerary: e.target.value })}
-    className="w-full px-3 py-2 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)]"
-    rows={3}
-    placeholder='[{"day":1,"title":"Night Departure","description":"Depart from Sharm El-Sheikh around 10:00 PM. The journey takes approximately 3 hours through the desert to the foot of Mount Sinai."}]'
-  />
+  <div className="flex items-center justify-between mb-2">
+    <label className="block text-sm font-medium text-[var(--theme-text)]">Itinerary (RU)</label>
+    <button
+      type="button"
+      onClick={handleAddRuItineraryDay}
+      className="text-sm text-amber-500 hover:text-amber-600"
+    >
+      + Add Day
+    </button>
+  </div>
+  {formData.ruItinerary.map((day, idx) => (
+    <div key={idx} className="mb-3 p-3 bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm font-medium text-[var(--theme-text)]">Day {day.day}</span>
+        <button
+          type="button"
+          onClick={() => handleRemoveRuItineraryDay(idx)}
+          className="text-red-500 hover:text-red-600 text-sm"
+        >
+          Remove
+        </button>
+      </div>
+      <input
+        type="text"
+        value={day.title}
+        onChange={(e) => handleRuItineraryChange(idx, 'title', e.target.value)}
+        placeholder="Day title (RU)"
+        className="w-full px-3 py-2 mb-2 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)]"
+      />
+      <textarea
+        value={day.description}
+        onChange={(e) => handleRuItineraryChange(idx, 'description', e.target.value)}
+        placeholder="Day description (RU)"
+        className="w-full px-3 py-2 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-lg text-[var(--theme-text)]"
+        rows={2}
+      />
+    </div>
+  ))}
 </div>
 
                 <div className="mt-4">
