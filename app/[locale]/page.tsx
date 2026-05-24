@@ -108,7 +108,7 @@ const SAMPLE_TOURS: Tour[] = [
     location: 'Bahariya Oasis',
     duration: '2 days',
     category: 'Adventure',
-    images: ['https://images.unsplash.com/photo-1547996663-6e5a6f232032?w=800'],
+    images: ['https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=800'],
     isBestseller: true,
   },
   {

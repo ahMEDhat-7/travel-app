@@ -79,7 +79,7 @@ INSERT INTO tours (slug, title, short_desc, description, highlights, included, n
  '["Personal expenses", "Gratuities"]',
  '{"en": {"title": "White Desert Adventure", "shortDesc": "Explore the white desert formations and camp under the stars"}, "ru": {"title": "Приключение в Белой пустыне", "shortDesc": "Исследуйте белые пустынные образования и ночуйте под звездами"}}',
  199.00, '2 days', 'Bahariya Oasis', 'Adventure',
- '["https://images.unsplash.com/photo-1547996663-6e5a6f232032?w=800"]', 10, false, true),
+ '["https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=800"]', 10, false, true),
 
 ('alexander-tour', 'Alexandria Day Trip', 'Explore the historic Bibliotheca and Qaitbay Fort',
  'A day trip to Alexandria visiting major historical sites.',

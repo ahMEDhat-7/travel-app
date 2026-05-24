@@ -108,6 +108,7 @@ export default function Navbar({ locale, translations }: NavbarProps) {
                 href={`/${locale}/${key}`}
                 className="group relative text-sm lg:text-base hover:opacity-80 transition-opacity"
                 style={{ color: 'var(--theme-text)' }}
+                aria-current={pathname === `/${locale}/${key}` ? 'page' : undefined}
               >
                 {translations[key as keyof typeof translations]}
                 <span className="absolute -bottom-1 left-0 h-0.5 w-0 transition-all duration-300 group-hover:w-full" style={{ backgroundColor: gold }} />
@@ -129,8 +130,9 @@ export default function Navbar({ locale, translations }: NavbarProps) {
               href={`/${locale}/wishlist`}
               className="hidden lg:block p-2 hover:opacity-80 transition-all"
               style={{ color: 'var(--theme-brand-gold)' }}
+              aria-label={translations.wishlist}
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
             </Link>
@@ -139,8 +141,9 @@ export default function Navbar({ locale, translations }: NavbarProps) {
                 href={`/${locale}/messages`}
                 className="hidden lg:block p-2 hover:opacity-80 transition-all relative"
                 style={{ color: 'var(--theme-brand-gold)' }}
+                aria-label="Messages"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
                 <MessageBadge locale={locale} />
@@ -219,8 +222,10 @@ export default function Navbar({ locale, translations }: NavbarProps) {
               className="lg:hidden p-2 cursor-pointer"
               style={{ color: 'var(--theme-text)' }}
               onClick={() => setMenuOpen(!menuOpen)}
+              aria-label={menuOpen ? (locale === 'ru' ? 'Закрыть меню' : 'Close menu') : (locale === 'ru' ? 'Открыть меню' : 'Open menu')}
+              aria-expanded={menuOpen}
             >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 {menuOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 ) : (

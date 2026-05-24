@@ -69,7 +69,7 @@ const SAMPLE_TOURS: Tour[] = [
     price: 199,
     location: 'Bahariya Oasis',
     duration: '2 days',
-    images: ['https://images.unsplash.com/photo-1547996663-6e5a6f232032?w=800'],
+    images: ['https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=800'],
     category: 'Adventure',
     isBestseller: true,
   },
@@ -150,7 +150,7 @@ export default function ToursPage({ params }: ToursPageProps) {
   const bg = 'var(--theme-bg)';
   const text = 'var(--theme-text)';
   const textSecondary = 'var(--theme-text-secondary)';
-  const accent = 'var(--theme-brand-gold)';
+  const accent = 'var(--theme-gold)';
   const border = 'var(--theme-border)';
   const cardBg = 'var(--theme-card)';
 
