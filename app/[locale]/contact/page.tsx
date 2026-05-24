@@ -114,7 +114,7 @@ export default function ContactPage({ params }: ContactPageProps) {
 
       <div className="max-w-4xl mx-auto px-4 py-24 md:py-32 relative">
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent mb-4">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 bg-clip-text text-transparent mb-4">
             {t.title}
           </h1>
           <p className="text-[var(--theme-text-secondary)] text-lg">

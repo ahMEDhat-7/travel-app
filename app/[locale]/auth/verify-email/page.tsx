@@ -155,7 +155,7 @@ export default function VerifyEmailPage({ params }: VerifyEmailPageProps) {
 
       <div className="w-full max-w-md px-4 md:px-6 py-12 relative">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 bg-clip-text text-transparent">
             {t.title}
           </h1>
           <p className="text-[var(--theme-text-secondary)] mt-2">{t.subtitle}</p>

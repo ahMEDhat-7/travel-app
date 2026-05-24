@@ -65,6 +65,9 @@ export default function AdminShell({
           </div>
 
           <nav className="flex-1 p-3 overflow-y-auto">
+            <p className="px-4 pb-2 text-[11px] font-semibold uppercase tracking-widest text-[var(--theme-text-disabled)]">
+              Navigate
+            </p>
             {navItems.map((item) => {
               const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
               return (

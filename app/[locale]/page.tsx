@@ -250,7 +250,7 @@ export default async function HomePage(props: { params: Promise<{ locale: string
         <div className="relative z-10 text-center px-4 py-16 max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-lg border border-white/10 rounded-full mb-8">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            <span className="text-[var(--theme-text-secondary)] text-sm">{homeT('hero.subtitle')}</span>
+            <span className="text-white/80 text-sm">{homeT('hero.subtitle')}</span>
           </div>
           
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
@@ -258,7 +258,7 @@ export default async function HomePage(props: { params: Promise<{ locale: string
               {homeT('hero.title')}
             </span>
           </h1>
-          <p className="text-xl md:text-2xl text-[var(--theme-text-secondary)] mb-10 max-w-2xl mx-auto">
+          <p className="text-xl md:text-2xl text-white/70 mb-10 max-w-2xl mx-auto">
             {homeT('hero.description')}
           </p>
           
@@ -280,15 +280,15 @@ export default async function HomePage(props: { params: Promise<{ locale: string
           <div className="flex justify-center gap-8 md:gap-16">
             <div className="text-center">
               <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">{stats?.tours || '50'}+</div>
-              <div className="text-[var(--theme-text-secondary)] text-sm mt-1">{homeT('hero.statTours')}</div>
+              <div className="text-white/60 text-sm mt-1">{homeT('hero.statTours')}</div>
             </div>
             <div className="text-center">
               <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">{stats?.bookings || '2k'}+</div>
-              <div className="text-[var(--theme-text-secondary)] text-sm mt-1">{homeT('hero.statTravelers')}</div>
+              <div className="text-white/60 text-sm mt-1">{homeT('hero.statTravelers')}</div>
             </div>
             <div className="text-center">
               <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">{stats?.destinations || '15'}+</div>
-              <div className="text-[var(--theme-text-secondary)] text-sm mt-1">{homeT('hero.statDestinations')}</div>
+              <div className="text-white/60 text-sm mt-1">{homeT('hero.statDestinations')}</div>
             </div>
           </div>
         </div>
@@ -306,7 +306,7 @@ export default async function HomePage(props: { params: Promise<{ locale: string
         
         <div className="relative max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 bg-clip-text text-transparent mb-4">
               {commonT('featured')}
             </h2>
             <p className="text-[var(--theme-text-secondary)]">{homeT('featuredTours')}</p>
@@ -393,7 +393,7 @@ export default async function HomePage(props: { params: Promise<{ locale: string
         
         <div className="relative max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 bg-clip-text text-transparent mb-4">
               {homeT('reviews')}
             </h2>
             <p className="text-[var(--theme-text-secondary)]">{homeT('travelersSay')}</p>
