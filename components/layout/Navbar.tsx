@@ -19,6 +19,7 @@ interface NavbarProps {
     wishlist: string;
     login: string;
     logout: string;
+    dashboard: string;
   };
 }
 
@@ -246,6 +247,16 @@ export default function Navbar({ locale, translations }: NavbarProps) {
                     {translations[key as keyof typeof translations] || key}
                   </Link>
                 ))}
+                {session?.user?.role === 'ADMIN' && (
+                  <Link 
+                    href="/admin"
+                    className="py-2 px-3 rounded-lg hover:bg-[var(--theme-bg-secondary)] transition-colors"
+                    style={{ color: 'var(--theme-brand-gold)' }}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {translations.dashboard}
+                  </Link>
+                )}
               </div>
               
               <div className="flex flex-col gap-2">

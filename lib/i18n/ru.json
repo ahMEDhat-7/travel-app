@@ -6,7 +6,8 @@
     "contact": "Контакты",
     "wishlist": "Избранное",
     "login": "Войти",
-    "logout": "Выйти"
+    "logout": "Выйти",
+    "dashboard": "Панель управления"
   },
   "home": {
     "reviews": "Отзывы",

@@ -254,7 +254,7 @@ export default async function HomePage(props: { params: Promise<{ locale: string
           </div>
           
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-amber-200 via-yellow-300 via-orange-300 to-amber-200 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-amber-500 via-yellow-400 via-orange-400 to-amber-500 bg-clip-text text-transparent">
               {homeT('hero.title')}
             </span>
           </h1>
