@@ -58,12 +58,15 @@ export default function TourFilters({
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="p-2 rounded-lg hover:bg-[var(--theme-bg-tertiary)] text-[var(--theme-text-secondary)]"
+          aria-label={isExpanded ? 'Collapse filters' : 'Expand filters'}
+          aria-expanded={isExpanded}
         >
           <svg
             className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>

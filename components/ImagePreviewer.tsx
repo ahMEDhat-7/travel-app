@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 const SHARM_IMAGES = [
   '/images/preview1.jpeg',
@@ -40,18 +41,19 @@ export default function ImagePreviewer({ livePreview }: ImagePreviewerProps) {
 
           <div className="relative h-[60vh] md:h-[75vh] lg:h-[80vh] overflow-hidden">
             {SHARM_IMAGES.map((img, idx) => (
-              <img
-                key={idx}
-                src={img}
-                alt={`Sharm El-Sheikh ${idx + 1}`}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${idx === currentIndex ? 'opacity-100' : 'opacity-0'}`}
-                style={{
-                  opacity: idx === currentIndex ? 1 : 0,
-                  transition: 'opacity 1s ease-in-out'
-                }}
-              />
+              <div key={idx} className="absolute inset-0" style={{ opacity: idx === currentIndex ? 1 : 0, transition: 'opacity 1s ease-in-out' }}>
+                <Image
+                  src={img}
+                  alt={`Sharm El-Sheikh ${idx + 1}`}
+                  fill
+                  sizes="100vw"
+                  priority={idx === 0}
+                  loading={idx === 0 ? undefined : 'lazy'}
+                  className="object-cover"
+                />
+              </div>
             ))}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20 pointer-events-none" />
           </div>
 
           <div className="absolute bottom-4 left-4 right-4 z-20" style={{ bottom: '1rem', left: '1rem', right: '1rem' }}>

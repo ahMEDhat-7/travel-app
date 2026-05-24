@@ -8,8 +8,6 @@ import Providers from '@/components/Providers';
 import '../globals.css';
 import FooterController from '@/components/FooterController';
 
-export const dynamic = 'force-dynamic';
-
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }

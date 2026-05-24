@@ -2,10 +2,10 @@ import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { getStats, getBestsellingTours } from '@/services/tour.service';
 import ScrollButton from '@/components/ScrollButton';
-import ImagePreviewer from '@/components/ImagePreviewer';
+import dynamic from 'next/dynamic';
 import { Metadata } from 'next';
 
-export const dynamic = 'force-dynamic';
+const ImagePreviewer = dynamic(() => import('@/components/ImagePreviewer'), { ssr: true });
 
 export async function generateMetadata(props: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await props.params;
@@ -272,6 +272,7 @@ export default async function HomePage(props: { params: Promise<{ locale: string
             <Link 
               href={`/${locale}/about`}
               className="px-8 py-4 bg-white/5 border border-white/20 text-[var(--theme-text)] font-semibold rounded-xl hover:bg-white/10 transition-all backdrop-blur-lg"
+              aria-label={locale === 'ru' ? 'Узнать больше о нас' : 'Learn more about us'}
             >
               {commonT('learnMore')}
             </Link>

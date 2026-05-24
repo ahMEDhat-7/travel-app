@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import ThemeToggle from '@/components/ThemeToggle';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
-import CurrencySelector from '@/components/CurrencySelector';
 import MessageBadge from '@/components/MessageBadge';
+
+const LanguageSwitcher = lazy(() => import('@/components/LanguageSwitcher'));
+const CurrencySelector = lazy(() => import('@/components/CurrencySelector'));
 
 interface NavbarProps {
   locale: string;
@@ -121,10 +122,14 @@ export default function Navbar({ locale, translations }: NavbarProps) {
               <ThemeToggle />
             </div>
             <div className="hidden lg:block">
-              <CurrencySelector />
+              <Suspense fallback={<div className="w-16 h-8" />}>
+                <CurrencySelector />
+              </Suspense>
             </div>
             <div className="hidden lg:block">
-              <LanguageSwitcher currentLocale={locale} />
+              <Suspense fallback={<div className="w-16 h-8" />}>
+                <LanguageSwitcher currentLocale={locale} />
+              </Suspense>
             </div>
             <Link 
               href={`/${locale}/wishlist`}
@@ -270,10 +275,14 @@ export default function Navbar({ locale, translations }: NavbarProps) {
                   <ThemeToggle />
                 </div>
                 <div className="py-2 px-3 rounded-lg hover:bg-[var(--theme-bg-secondary)] transition-colors">
-                  <CurrencySelector />
+                  <Suspense fallback={<div className="w-16 h-8" />}>
+                    <CurrencySelector />
+                  </Suspense>
                 </div>
                 <div className="py-2 px-3 rounded-lg hover:bg-[var(--theme-bg-secondary)] transition-colors">
-                  <LanguageSwitcher currentLocale={locale} />
+                  <Suspense fallback={<div className="w-16 h-8" />}>
+                    <LanguageSwitcher currentLocale={locale} />
+                  </Suspense>
                 </div>
               </div>
               

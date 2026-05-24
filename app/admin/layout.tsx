@@ -4,8 +4,6 @@ import { redirect } from 'next/navigation';
 import AdminProviders from '@/components/AdminProviders';
 import AdminShell from '@/components/AdminShell';
 
-export const dynamic = 'force-dynamic';
-
 async function checkAdminAuth() {
   const session = await getServerSession(authOptions);
   
