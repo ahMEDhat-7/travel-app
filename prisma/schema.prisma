@@ -86,6 +86,7 @@ model Tour {
   isFeatured Boolean @default(false)
   isBestseller Boolean @default(false)
   hasFreeCancellation Boolean @default(false)
+  isPrivate Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

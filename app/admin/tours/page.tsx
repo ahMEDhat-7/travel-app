@@ -17,6 +17,7 @@ interface Tour {
   isActive: boolean;
   isFeatured: boolean;
   isBestseller: boolean;
+  isPrivate: boolean;
 }
 
 interface ItineraryDay {
@@ -54,6 +55,7 @@ interface TourFormData {
   isActive: boolean;
   isFeatured: boolean;
   isBestseller: boolean;
+  isPrivate: boolean;
   hasFreeCancellation: boolean;
   itinerary: ItineraryDay[];
 }
@@ -87,6 +89,7 @@ const initialFormData: TourFormData = {
   isActive: true,
   isFeatured: false,
   isBestseller: false,
+  isPrivate: false,
   hasFreeCancellation: false,
   itinerary: [],
 };
@@ -282,6 +285,21 @@ function AdminToursContent() {
     }
   };
 
+  const handleTogglePrivate = async (tourId: string, isPrivate: boolean) => {
+    try {
+      await fetch(`/api/admin/tours`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: tourId, isPrivate }),
+      });
+      setTours(prev => prev.map(t => t.id === tourId ? { ...t, isPrivate } : t));
+      showNotification(isPrivate ? 'Tour marked as private' : 'Tour marked as public');
+    } catch (error) {
+      console.error('Failed to toggle private:', error);
+      showNotification('Failed to update tour', 'error');
+    }
+  };
+
   const handleDelete = async (tourId: string) => {
     showConfirm('Are you sure you want to delete this tour?', async () => {
       setDeletingId(tourId);
@@ -329,6 +347,7 @@ function AdminToursContent() {
       isActive: tour.isActive,
       isFeatured: tour.isFeatured,
       isBestseller: tour.isBestseller,
+      isPrivate: tour.isPrivate,
       hasFreeCancellation: false,
       itinerary: [],
     });
@@ -379,6 +398,7 @@ function AdminToursContent() {
       isActive: formData.isActive,
       isFeatured: formData.isFeatured,
       isBestseller: formData.isBestseller,
+      isPrivate: formData.isPrivate,
       hasFreeCancellation: formData.hasFreeCancellation,
       itinerary: formData.itinerary.length > 0 ? formData.itinerary : undefined,
     };
@@ -425,6 +445,7 @@ function AdminToursContent() {
     if (filter === 'inactive' && tour.isActive) return false;
     if (filter === 'featured' && !tour.isFeatured) return false;
     if (filter === 'bestseller' && !tour.isBestseller) return false;
+    if (filter === 'private' && !tour.isPrivate) return false;
     if (search && !tour.title.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
@@ -470,6 +491,7 @@ function AdminToursContent() {
             { value: 'inactive', label: 'Inactive' },
             { value: 'featured', label: 'Featured' },
             { value: 'bestseller', label: 'Bestseller' },
+            { value: 'private', label: 'Private' },
           ]}
         />
       </div>
@@ -546,6 +568,7 @@ function AdminToursContent() {
                           <div className="flex gap-2">
                             {tour.isFeatured && <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-500 rounded text-xs">Featured</span>}
                             {tour.isBestseller && <span className="px-2 py-0.5 bg-purple-500/20 text-purple-500 rounded text-xs">Bestseller</span>}
+                            {tour.isPrivate && <span className="px-2 py-0.5 bg-gray-500/20 text-gray-400 rounded text-xs">Private</span>}
                           </div>
                         </td>
                         <td className="px-6 py-4 text-right">
@@ -578,7 +601,20 @@ function AdminToursContent() {
                             </button>
                             <button
                               onClick={(e) => {
-                                e.stopPropagation(); // Prevent triggering row click
+                                e.stopPropagation();
+                                handleTogglePrivate(tour.id, !tour.isPrivate);
+                              }}
+                              className={`px-2 py-1 rounded text-xs ${
+                                tour.isPrivate
+                                  ? 'bg-gray-500 text-white'
+                                  : 'bg-[var(--theme-bg-tertiary)] text-[var(--theme-text-secondary)]'
+                              }`}
+                            >
+                              Private
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 handleEdit(tour);
                               }}
                               className="px-2 py-1 rounded text-xs bg-blue-500/20 text-blue-500 hover:bg-blue-500/30"
@@ -1223,6 +1259,15 @@ function AdminToursContent() {
                     className="w-4 h-4"
                   />
                   <span className="text-[var(--theme-text)]">Free Cancellation</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.isPrivate}
+                    onChange={(e) => setFormData({ ...formData, isPrivate: e.target.checked })}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-[var(--theme-text)]">Private</span>
                 </label>
               </div>
 

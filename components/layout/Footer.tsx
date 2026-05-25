@@ -69,7 +69,7 @@ export default function Footer({ locale }: FooterProps) {
   const address = contact.address || (locale === 'ru' ? 'Шарм-эль-Шейх, Синай, Египет' : 'Sharm El-Sheikh, Sinai, Egypt');
 
   return (
-    <footer className="relative bg-[#0a0a0f] border-t border-white/10">
+    <footer className="relative bg-gray-900 border-t border-white/10">
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
       
       <div className="max-w-7xl mx-auto px-4 py-12">

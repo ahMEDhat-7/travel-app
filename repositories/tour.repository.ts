@@ -106,7 +106,7 @@ export async function countDestinations() {
   return result.length;
 }
 
-export async function updateTour(id: string, data: { isActive?: boolean; isFeatured?: boolean; isBestseller?: boolean }) {
+export async function updateTour(id: string, data: { isActive?: boolean; isFeatured?: boolean; isBestseller?: boolean; isPrivate?: boolean }) {
   return db.tour.update({
     where: { id },
     data: { ...data, updatedAt: new Date() },

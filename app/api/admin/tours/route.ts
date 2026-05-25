@@ -53,6 +53,7 @@ const tourSchema = z.object({
   isFeatured: z.boolean().default(false),
   isBestseller: z.boolean().default(false),
   hasFreeCancellation: z.boolean().default(false),
+  isPrivate: z.boolean().default(false),
 });
 
 const updateTourSchema = z.object({
@@ -97,6 +98,7 @@ const updateTourSchema = z.object({
   isFeatured: z.boolean().optional(),
   isBestseller: z.boolean().optional(),
   hasFreeCancellation: z.boolean().optional(),
+  isPrivate: z.boolean().optional(),
 });
 
 export async function GET(request: NextRequest) {

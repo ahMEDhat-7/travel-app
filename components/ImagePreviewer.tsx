@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
-const SHARM_IMAGES = [
+const FALLBACK_IMAGES = [
   '/images/preview1.jpeg',
   '/images/preview2.jpeg',
   '/images/preview3.jpeg',
@@ -11,20 +11,37 @@ const SHARM_IMAGES = [
   '/images/preview5.jpeg',
 ];
 
+interface PreviewImage {
+  name: string;
+  path: string;
+}
+
 interface ImagePreviewerProps {
   livePreview: string;
 }
 
 export default function ImagePreviewer({ livePreview }: ImagePreviewerProps) {
+  const [images, setImages] = useState<string[]>(FALLBACK_IMAGES);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    fetch('/api/admin/preview-images')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.images?.length > 0) {
+          setImages(data.images.map((img: PreviewImage) => img.path));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % SHARM_IMAGES.length);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [images.length]);
 
   return (
     <div className="relative w-full overflow-hidden bg-gradient-to-b from-amber-950/30 to-transparent image-preview-container" style={{ paddingBottom: '2rem' }}>
@@ -40,7 +57,7 @@ export default function ImagePreviewer({ livePreview }: ImagePreviewerProps) {
           </div>
 
           <div className="relative h-[60vh] md:h-[75vh] lg:h-[80vh] overflow-hidden">
-            {SHARM_IMAGES.map((img, idx) => (
+            {images.map((img, idx) => (
               <div key={idx} className="absolute inset-0" style={{ opacity: idx === currentIndex ? 1 : 0, transition: 'opacity 1s ease-in-out' }}>
                 <Image
                   src={img}
@@ -58,7 +75,7 @@ export default function ImagePreviewer({ livePreview }: ImagePreviewerProps) {
 
           <div className="absolute bottom-4 left-4 right-4 z-20" style={{ bottom: '1rem', left: '1rem', right: '1rem' }}>
             <div className="flex items-center justify-center gap-2" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-              {SHARM_IMAGES.map((_, idx) => (
+              {images.map((_, idx) => (
                 <span
                   key={idx}
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${idx === currentIndex ? 'bg-amber-400 scale-125' : 'bg-white/40'}`}

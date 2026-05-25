@@ -9,6 +9,7 @@ const updateTourSchema = z.object({
   isActive: z.boolean().optional(),
   isFeatured: z.boolean().optional(),
   isBestseller: z.boolean().optional(),
+  isPrivate: z.boolean().optional(),
 });
 
 export async function GET(request: NextRequest) {
@@ -55,6 +56,7 @@ export async function PATCH(request: NextRequest) {
       isActive: input.isActive,
       isFeatured: input.isFeatured,
       isBestseller: input.isBestseller,
+      isPrivate: input.isPrivate,
     });
 
     if (!updated) {
