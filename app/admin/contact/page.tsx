@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useNotification } from '@/components/Notification';
-import SocialIcon from '@/components/SocialIcon';
+import SocialIcon, { platformColor } from '@/components/SocialIcon';
 
 interface SocialLink {
   platform: string;
@@ -75,7 +75,37 @@ export default function AdminContactPage() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone: formData.phone,
+          whatsapp: formData.whatsapp,
+          address: formData.address,
+          contactEmail: formData.contactEmail,
+        }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        showNotification('Contact details updated successfully!', 'success');
+        fetchProfile();
+      } else {
+        showNotification(data.error || 'Failed to update contact details', 'error');
+      }
+    } catch (error) {
+      showNotification('Failed to update contact details', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSocialSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
@@ -84,18 +114,18 @@ export default function AdminContactPage() {
       const res = await fetch('/api/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, socialLinks: sorted }),
+        body: JSON.stringify({ socialLinks: sorted }),
       });
       const data = await res.json();
 
       if (data.success) {
-        showNotification('Contact info updated successfully!', 'success');
+        showNotification('Social links updated successfully!', 'success');
         fetchProfile();
       } else {
-        showNotification(data.error || 'Failed to update contact info', 'error');
+        showNotification(data.error || 'Failed to update social links', 'error');
       }
     } catch (error) {
-      showNotification('Failed to update contact info', 'error');
+      showNotification('Failed to update social links', 'error');
     } finally {
       setSaving(false);
     }
@@ -169,7 +199,7 @@ export default function AdminContactPage() {
           <div className="bg-[var(--theme-card)] rounded-xl p-6 border border-[var(--theme-border)]">
             <h2 className="text-xl font-semibold text-[var(--theme-text)] mb-6">Contact Details</h2>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleContactSubmit} className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-[var(--theme-text)] mb-2">
                   Contact Email
@@ -307,66 +337,76 @@ export default function AdminContactPage() {
               </button>
             </div>
 
-            {formData.socialLinks.length === 0 ? (
-              <p className="text-sm text-[var(--theme-text-secondary)] text-center py-6">
-                No social media links added yet.
-              </p>
-            ) : (
-              <div className="space-y-2">
-                {formData.socialLinks.map((link, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 p-3 rounded-lg bg-[var(--theme-bg)] border border-[var(--theme-border)]"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-slate-300 flex-shrink-0">
-                      <SocialIcon platform={link.platform} className="w-4 h-4" />
+            <form onSubmit={handleSocialSubmit}>
+              {formData.socialLinks.length === 0 ? (
+                <p className="text-sm text-[var(--theme-text-secondary)] text-center py-6">
+                  No social media links added yet.
+                </p>
+              ) : (
+                <div className="space-y-2 mb-6">
+                  {formData.socialLinks.map((link, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 p-3 rounded-lg bg-[var(--theme-bg)] border border-[var(--theme-border)]"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0" style={{ color: platformColor(link.platform) }}>
+                        <SocialIcon platform={link.platform} className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-[var(--theme-text)] truncate">
+                          {link.label || platformLabel(link.platform)}
+                        </p>
+                        <p className="text-xs text-[var(--theme-text-secondary)] truncate">
+                          {link.url}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => moveSocialLink(index, 'up')}
+                          disabled={index === 0}
+                          className="p-1.5 rounded-md text-[var(--theme-text-secondary)] hover:text-[var(--theme-text)] hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
+                          aria-label="Move up"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => moveSocialLink(index, 'down')}
+                          disabled={index === formData.socialLinks.length - 1}
+                          className="p-1.5 rounded-md text-[var(--theme-text-secondary)] hover:text-[var(--theme-text)] hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
+                          aria-label="Move down"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => removeSocialLink(index)}
+                          className="p-1.5 rounded-md text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                          aria-label="Remove"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[var(--theme-text)] truncate">
-                        {link.label || platformLabel(link.platform)}
-                      </p>
-                      <p className="text-xs text-[var(--theme-text-secondary)] truncate">
-                        {link.url}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 flex-shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => moveSocialLink(index, 'up')}
-                        disabled={index === 0}
-                        className="p-1.5 rounded-md text-[var(--theme-text-secondary)] hover:text-[var(--theme-text)] hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
-                        aria-label="Move up"
-                      >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                        </svg>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => moveSocialLink(index, 'down')}
-                        disabled={index === formData.socialLinks.length - 1}
-                        className="p-1.5 rounded-md text-[var(--theme-text-secondary)] hover:text-[var(--theme-text)] hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
-                        aria-label="Move down"
-                      >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => removeSocialLink(index)}
-                        className="p-1.5 rounded-md text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                        aria-label="Remove"
-                      >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={saving}
+                className="w-full py-3 px-6 bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-semibold rounded-lg hover:from-amber-600 hover:to-yellow-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {saving ? 'Saving...' : 'Save Social Links'}
+              </button>
+            </form>
           </div>
         </div>
 
@@ -433,8 +473,9 @@ export default function AdminContactPage() {
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center text-slate-300 hover:bg-amber-500/20 hover:text-amber-400 transition-all"
+                        className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center transition-all hover:scale-110"
                         aria-label={link.label || platformLabel(link.platform)}
+                        style={{ color: platformColor(link.platform) }}
                       >
                         <SocialIcon platform={link.platform} className="w-4 h-4" />
                       </a>

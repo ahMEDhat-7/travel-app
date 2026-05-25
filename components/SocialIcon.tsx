@@ -5,6 +5,19 @@ interface SocialIconProps {
   className?: string;
 }
 
+const platformColors: Record<string, string> = {
+  facebook: '#1877F2',
+  instagram: '#E4405F',
+  x: '#14171A',
+  telegram: '#0088CC',
+  whatsapp: '#25D366',
+  tiktok: '#000000',
+};
+
+export function platformColor(platform: string): string {
+  return platformColors[platform] || '#94a3b8';
+}
+
 export default function SocialIcon({ platform, className = 'w-5 h-5' }: SocialIconProps) {
   switch (platform) {
     case 'facebook':

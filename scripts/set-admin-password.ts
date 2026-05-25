@@ -14,14 +14,16 @@ async function setAdminPassword() {
     update: { 
       name: 'Admin', 
       role: 'ADMIN',
-      password: hashedPassword
+      password: hashedPassword,
+      emailVerified: true,
     },
     create: { 
       id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 
       email: ADMIN_EMAIL, 
       name: 'Admin', 
       role: 'ADMIN',
-      password: hashedPassword
+      password: hashedPassword,
+      emailVerified: true,
     }
   });
   

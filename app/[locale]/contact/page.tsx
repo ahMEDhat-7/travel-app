@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import SocialIcon from '@/components/SocialIcon';
+import SocialIcon, { platformColor } from '@/components/SocialIcon';
 
 interface ContactPageProps {
   params: Promise<{ locale: string }>;
@@ -222,8 +222,9 @@ export default function ContactPage({ params }: ContactPageProps) {
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-slate-300 hover:bg-amber-500/20 hover:text-amber-400 transition-all"
+                          className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center transition-all hover:scale-110"
                           aria-label={link.label || link.platform}
+                          style={{ color: platformColor(link.platform) }}
                         >
                           <SocialIcon platform={link.platform} className="w-5 h-5" />
                         </a>

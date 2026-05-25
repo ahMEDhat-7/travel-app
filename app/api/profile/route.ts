@@ -97,9 +97,9 @@ export async function PUT(request: NextRequest) {
     if (input.phone !== undefined) updateData.phone = input.phone;
     
     if (isAdmin) {
-      if (input.whatsapp !== undefined) updateData.whatsapp = input.whatsapp;
-      if (input.address !== undefined) updateData.address = input.address;
-      if (input.contactEmail !== undefined) updateData.contactEmail = input.contactEmail;
+      if (input.whatsapp) updateData.whatsapp = input.whatsapp;
+      if (input.address) updateData.address = input.address;
+      if (input.contactEmail) updateData.contactEmail = input.contactEmail;
       if (input.socialLinks !== undefined) updateData.socialLinks = input.socialLinks;
     }
 
