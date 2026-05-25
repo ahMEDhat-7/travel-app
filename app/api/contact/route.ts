@@ -10,6 +10,8 @@ export async function GET() {
         phone: true,
         whatsapp: true,
         address: true,
+        contactEmail: true,
+        socialLinks: true,
       },
     });
 
@@ -27,11 +29,13 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       data: {
-        email: admin.email,
+        email: admin.contactEmail || admin.email,
         phone: admin.phone,
         whatsapp: admin.whatsapp,
         whatsappLink,
         address: admin.address,
+        contactEmail: admin.contactEmail || null,
+        socialLinks: admin.socialLinks || [],
       },
     });
   } catch (error) {

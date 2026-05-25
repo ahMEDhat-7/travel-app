@@ -1,9 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import SocialIcon from '@/components/SocialIcon';
 
 interface ContactPageProps {
   params: Promise<{ locale: string }>;
+}
+
+interface SocialLink {
+  platform: string;
+  url: string;
+  label?: string;
+  order: number;
 }
 
 interface ContactData {
@@ -12,6 +20,7 @@ interface ContactData {
   whatsapp: string;
   whatsappLink: string | null;
   address: string;
+  socialLinks: SocialLink[];
 }
 
 export default function ContactPage({ params }: ContactPageProps) {
@@ -200,6 +209,28 @@ export default function ContactPage({ params }: ContactPageProps) {
                   <p className="text-amber-300 font-medium">{t.hoursValue}</p>
                 </div>
               </div>
+
+              {contact?.socialLinks && contact.socialLinks.length > 0 && (
+                <div className="pt-4 border-t border-[var(--theme-border)]">
+                  <p className="text-[var(--theme-text-secondary)] text-sm mb-3">{locale === 'ru' ? 'Подписаться' : 'Follow Us'}</p>
+                  <div className="flex gap-3">
+                    {[...contact.socialLinks]
+                      .sort((a, b) => a.order - b.order)
+                      .map((link, i) => (
+                        <a
+                          key={i}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-slate-300 hover:bg-amber-500/20 hover:text-amber-400 transition-all"
+                          aria-label={link.label || link.platform}
+                        >
+                          <SocialIcon platform={link.platform} className="w-5 h-5" />
+                        </a>
+                      ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           

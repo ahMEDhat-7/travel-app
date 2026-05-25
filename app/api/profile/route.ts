@@ -10,6 +10,13 @@ const updateProfileSchema = z.object({
   phone: z.string().max(30).optional(),
   whatsapp: z.string().max(20).optional(),
   address: z.string().max(500).optional(),
+  contactEmail: z.string().email().optional().or(z.literal('')),
+  socialLinks: z.array(z.object({
+    platform: z.string(),
+    url: z.string(),
+    label: z.string().optional(),
+    order: z.number(),
+  })).optional(),
 });
 
 export async function GET() {
@@ -35,6 +42,8 @@ export async function GET() {
         phone: true,
         whatsapp: true,
         address: true,
+        contactEmail: true,
+        socialLinks: true,
       },
     });
 
@@ -82,7 +91,7 @@ export async function PUT(request: NextRequest) {
 
     const isAdmin = user.role === 'ADMIN';
     
-    const updateData: { name?: string; email?: string; phone?: string; whatsapp?: string; address?: string } = {};
+    const updateData: Record<string, unknown> = {};
     if (input.name) updateData.name = input.name;
     if (input.email) updateData.email = input.email;
     if (input.phone !== undefined) updateData.phone = input.phone;
@@ -90,6 +99,8 @@ export async function PUT(request: NextRequest) {
     if (isAdmin) {
       if (input.whatsapp !== undefined) updateData.whatsapp = input.whatsapp;
       if (input.address !== undefined) updateData.address = input.address;
+      if (input.contactEmail !== undefined) updateData.contactEmail = input.contactEmail;
+      if (input.socialLinks !== undefined) updateData.socialLinks = input.socialLinks;
     }
 
     if (Object.keys(updateData).length === 0) {
@@ -112,6 +123,8 @@ export async function PUT(request: NextRequest) {
         phone: true,
         whatsapp: true,
         address: true,
+        contactEmail: true,
+        socialLinks: true,
       },
     });
 

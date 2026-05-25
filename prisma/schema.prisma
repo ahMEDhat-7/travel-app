@@ -52,6 +52,8 @@ model User {
   phone     String?
   whatsapp  String?
   address   String?
+  contactEmail String?
+  socialLinks  Json?
   lastActiveAt DateTime?
 
   bookings     Booking[]
