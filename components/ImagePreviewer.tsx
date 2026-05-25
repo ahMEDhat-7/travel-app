@@ -66,6 +66,7 @@ export default function ImagePreviewer({ livePreview }: ImagePreviewerProps) {
                   sizes="100vw"
                   priority={idx === 0}
                   loading={idx === 0 ? undefined : 'lazy'}
+                  unoptimized={img.startsWith('/images/previewer-images/')}
                   className="object-cover"
                 />
               </div>

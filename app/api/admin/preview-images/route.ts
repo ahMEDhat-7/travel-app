@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { readdir, writeFile, unlink } from 'fs/promises';
+import { mkdir, readdir, writeFile, unlink, open } from 'fs/promises';
 import { join } from 'path';
 
 const PREVIEW_DIR = join(process.cwd(), 'public', 'images', 'previewer-images');
@@ -17,7 +17,12 @@ async function checkAdmin() {
 
 export async function GET() {
   try {
-    const files = await readdir(PREVIEW_DIR);
+    let files: string[];
+    try {
+      files = await readdir(PREVIEW_DIR);
+    } catch {
+      return NextResponse.json({ success: true, images: [] });
+    }
     const images = files
       .filter((f) => /\.(jpe?g|png|webp|gif)$/i.test(f))
       .sort((a, b) => {
@@ -64,11 +69,27 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const timestamp = Date.now();
+    const header = buffer.slice(0, 12).toString('hex');
+    const isValidMagic =
+      header.startsWith('ffd8ff') ||
+      header.startsWith('89504e47') ||
+      header.startsWith('52494646') && header.slice(16, 24) === '57454250' ||
+      header.startsWith('47494638');
+
+    if (!isValidMagic) {
+      return NextResponse.json({ success: false, error: 'Invalid image file — contents do not match expected format' }, { status: 400 });
+    }
+
+    const ts = Date.now() + String(Math.floor(Math.random() * 9000000) + 1000000);
     const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const fileName = `${timestamp}-${originalName}`;
+    const fileName = `${ts}-${originalName}`;
     const filePath = join(PREVIEW_DIR, fileName);
-    await writeFile(filePath, buffer);
+    await mkdir(PREVIEW_DIR, { recursive: true });
+
+    const fh = await open(filePath, 'w');
+    await fh.write(buffer);
+    await fh.sync();
+    await fh.close();
 
     return NextResponse.json({
       success: true,

@@ -69,7 +69,7 @@ export default function Footer({ locale }: FooterProps) {
   const address = contact.address || (locale === 'ru' ? 'Шарм-эль-Шейх, Синай, Египет' : 'Sharm El-Sheikh, Sinai, Egypt');
 
   return (
-    <footer className="relative bg-gray-900 border-t border-white/10">
+    <footer className="relative bg-gray-800 border-t border-white/10">
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
       
       <div className="max-w-7xl mx-auto px-4 py-12">
@@ -158,7 +158,7 @@ Sharm Cloud Tours
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center transition-all hover:scale-110"
+                    className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center transition-all hover:scale-110"
                     aria-label={link.label || link.platform}
                     style={{ color: platformColor(link.platform) }}
                   >
@@ -166,7 +166,7 @@ Sharm Cloud Tours
                   </a>
                 ))}
               {contact.socialLinks.length === 0 && (
-                <span className="text-slate-500 text-sm">
+                <span className="text-slate-400 text-sm">
                   {locale === 'ru' ? 'Нет ссылок' : 'No links added'}
                 </span>
               )}
@@ -175,14 +175,14 @@ Sharm Cloud Tours
         </div>
 
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-slate-400 text-sm">
+          <p className="text-slate-300 text-sm">
             © {new Date().getFullYear()} Sharm Cloud Tours. {locale === 'ru' ? 'Все права защищены.' : 'All rights reserved.'}
           </p>
           <div className="flex gap-6 text-sm">
-            <Link href={`/${locale}/privacy`} className="text-slate-400 hover:text-amber-400 transition-colors">
+            <Link href={`/${locale}/privacy`} className="text-slate-300 hover:text-amber-400 transition-colors">
               {locale === 'ru' ? 'Политика конфиденциальности' : 'Privacy Policy'}
             </Link>
-            <Link href={`/${locale}/terms`} className="text-slate-400 hover:text-amber-400 transition-colors">
+            <Link href={`/${locale}/terms`} className="text-slate-300 hover:text-amber-400 transition-colors">
               {locale === 'ru' ? 'Условия использования' : 'Terms of Service'}
             </Link>
           </div>
