@@ -37,7 +37,7 @@ export default function TourCard({ tour, locale }: TourCardProps) {
     >
       <div className="relative aspect-video rounded-t-lg overflow-hidden">
         <Image
-          src={tour.images[0] || '/images/placeholder.jpg'}
+          src={tour.images[0]}
           alt={tour.localeTitle}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"

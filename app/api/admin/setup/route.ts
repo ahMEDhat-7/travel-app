@@ -3,45 +3,37 @@ import { db } from '@/lib/db';
 
 export async function GET() {
   try {
-    const existingUsers = await db.user.findMany({ take: 1 });
+    if (process.env.ALLOW_SETUP !== 'true') {
+      return NextResponse.json({
+        success: false,
+        error: 'Setup is disabled. Set ALLOW_SETUP=true to enable.'
+      }, { status: 403 });
+    }
+
+    const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+    if (!ADMIN_EMAIL) {
+      return NextResponse.json({
+        success: false,
+        error: 'ADMIN_EMAIL environment variable is required'
+      }, { status: 400 });
+    }
+
+    let admin = await db.user.findUnique({ where: { email: ADMIN_EMAIL } });
     
-    if (existingUsers.length === 0) {
-      await db.user.createMany({
-        data: [
-          {
-            id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
-            email: 'admin@sharmcloudtours.com',
-            name: 'Admin',
-            role: 'ADMIN',
-          },
-          {
-            id: 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22',
-            email: 'test@example.com',
-            name: 'Test User',
-            role: 'USER',
-          },
-        ],
-      }).catch(() => {});
-      
-      return NextResponse.json({ 
-        success: true, 
-        message: 'Database initialized with users',
-        admin: 'admin@sharmcloudtours.com'
+    if (!admin) {
+      admin = await db.user.create({
+        data: {
+          email: ADMIN_EMAIL,
+          name: 'Admin',
+          role: 'ADMIN',
+        },
       });
     }
     
-    const allUsers = await db.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-      },
-    });
-    
     return NextResponse.json({ 
       success: true, 
-      users: allUsers 
+      message: 'Admin account ready',
+      admin: { email: admin.email, name: admin.name, role: admin.role }
     });
   } catch (error: any) {
     console.error('Setup error:', error);

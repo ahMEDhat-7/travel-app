@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
+import { SUPPORTED_LOCALES } from '@/lib/constants';
 
 interface Language {
   code: string;
@@ -13,10 +14,11 @@ interface LanguageSwitcherProps {
   currentLocale: string;
 }
 
-const defaultLanguages = [
-  { code: 'en', name: 'English', nativeName: 'EN' },
-  { code: 'ru', name: 'Russian', nativeName: 'RU' },
-];
+const defaultLanguages: Language[] = SUPPORTED_LOCALES.map((code) => ({
+  code,
+  name: code === 'en' ? 'English' : 'Russian',
+  nativeName: code === 'en' ? 'EN' : 'RU',
+}));
 
 export default function LanguageSwitcher({ currentLocale }: LanguageSwitcherProps) {
   const pathname = usePathname();

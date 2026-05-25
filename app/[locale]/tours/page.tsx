@@ -6,102 +6,12 @@ import { useTheme } from 'next-themes';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import Select from '@/components/ui/Select';
 
-interface Tour {
-  id: string;
-  slug: string;
-  title: string;
-  shortDesc: string;
-  price: number;
-  location: string;
-  duration: string;
-  images: string[];
-  category: string;
-  isBestseller?: boolean;
-  isFeatured?: boolean;
-  titleEn?: string;
-  titleRu?: string;
-  shortDescEn?: string;
-  shortDescRu?: string;
-}
-
-const SAMPLE_TOURS: Tour[] = [
-  {
-    id: '1',
-    slug: 'pyramids-luxor-tour',
-    title: 'Pyramids & Luxor Adventure',
-    titleEn: 'Pyramids & Luxor Adventure',
-    titleRu: 'Пирамиды и Люксор',
-    shortDesc: 'Visit the Great Pyramids of Giza and explore the ancient temples of Luxor',
-    shortDescEn: 'Visit the Great Pyramids of Giza and explore the ancient temples of Luxor',
-    shortDescRu: 'Посетите великие пирамиды Гизы и исследуйте древние храмы Люксора',
-    price: 299,
-    location: 'Cairo & Luxor',
-    duration: '5 days',
-    images: ['https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=800'],
-    category: 'Historical',
-    isBestseller: true,
-  },
-  {
-    id: '2', 
-    slug: 'nile-cruise',
-    title: 'Luxury Nile Cruise',
-    titleEn: 'Luxury Nile Cruise',
-    titleRu: 'Роскошный круиз по Нилу',
-    shortDesc: 'Sail the Nile River on a private yacht with guided temple visits',
-    shortDescEn: 'Sail the Nile River on a private yacht with guided temple visits',
-    shortDescRu: 'Плывите по Нилу на частной яхте с экскурсиями к храмам',
-    price: 549,
-    location: 'Luxor to Aswan',
-    duration: '4 days',
-    images: ['https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=800'],
-    category: 'Cruise',
-    isFeatured: true,
-  },
-  {
-    id: '3',
-    slug: 'desert-safari',
-    title: 'White Desert Adventure',
-    titleEn: 'White Desert Adventure',
-    titleRu: 'Приключение в Белой пустыне',
-    shortDesc: 'Explore the white desert formations and camp under the stars',
-    shortDescEn: 'Explore the white desert formations and camp under the stars',
-    shortDescRu: 'Исследуйте белые пустынные образования и ночуйте под звездами',
-    price: 199,
-    location: 'Bahariya Oasis',
-    duration: '2 days',
-    images: ['https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=800'],
-    category: 'Adventure',
-    isBestseller: true,
-  },
-  {
-    id: '4',
-    slug: 'alexander-tour',
-    title: 'Alexandria Day Trip',
-    titleEn: 'Alexandria Day Trip',
-    titleRu: 'Однодневная поездка в Александрию',
-    shortDesc: 'Explore the historic Bibliotheca and Qaitbay Fort',
-    shortDescEn: 'Explore the historic Bibliotheca and Qaitbay Fort',
-    shortDescRu: 'Исследуйте историческую Библиотеку и форт Кайтбей',
-    price: 89,
-    location: 'Alexandria',
-    duration: '1 day',
-    images: ['https://images.unsplash.com/photo-1566375538368-8e8ffbd5e774?w=800'],
-    category: 'Historical',
-  },
-];
-
-const CATEGORIES = ['All', 'Historical', 'Cruise', 'Adventure', 'Nature'];
-
-interface ToursPageProps {
-  params: Promise<{ locale: string }>;
-}
-
-export default function ToursPage({ params }: ToursPageProps) {
+export default function ToursPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params);
   const { theme, resolvedTheme } = useTheme();
   const { formatPrice } = useCurrency();
   const [mounted, setMounted] = useState(false);
-  const [tours, setTours] = useState<Tour[]>([]);
+  const [tours, setTours] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
@@ -134,14 +44,14 @@ export default function ToursPage({ params }: ToursPageProps) {
     }
   };
 
-  const getLocalizedTitle = (tour: Tour) => {
-    if ((tour as any).localeTitle) return (tour as any).localeTitle;
+  const getLocalizedTitle = (tour: any) => {
+    if (tour.localeTitle) return tour.localeTitle;
     if (locale === 'ru' && tour.titleRu) return tour.titleRu;
     return tour.titleEn || tour.title;
   };
 
-  const getLocalizedShortDesc = (tour: Tour) => {
-    if ((tour as any).localeShortDesc) return (tour as any).localeShortDesc;
+  const getLocalizedShortDesc = (tour: any) => {
+    if (tour.localeShortDesc) return tour.localeShortDesc;
     if (locale === 'ru' && tour.shortDescRu) return tour.shortDescRu;
     return tour.shortDescEn || tour.shortDesc;
   };
@@ -154,8 +64,13 @@ export default function ToursPage({ params }: ToursPageProps) {
   const border = 'var(--theme-border)';
   const cardBg = 'var(--theme-card)';
 
+  const categories = useMemo(() => {
+    const cats = new Set(tours.map((t: any) => t.category).filter(Boolean));
+    return ['All', ...Array.from(cats)];
+  }, [tours]);
+
   const filteredTours = useMemo(() => {
-    return tours.filter((tour) => {
+    return tours.filter((tour: any) => {
       const title = getLocalizedTitle(tour);
       const desc = getLocalizedShortDesc(tour);
       const matchesSearch = title?.toLowerCase()?.includes(search.toLowerCase()) ||
@@ -232,7 +147,7 @@ export default function ToursPage({ params }: ToursPageProps) {
             <Select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              options={CATEGORIES.map((cat) => ({
+              options={categories.map((cat) => ({
                 value: cat,
                 label: cat === 'All' ? (locale === 'ru' ? 'Все категории' : 'All Categories') : cat,
               }))}
@@ -280,7 +195,7 @@ export default function ToursPage({ params }: ToursPageProps) {
               >
                 <div className="relative aspect-video overflow-hidden">
                   <img
-                    src={tour.images?.[0] || '/placeholder.jpg'}
+                    src={tour.images?.[0]}
                     alt={getLocalizedTitle(tour)}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                   />
