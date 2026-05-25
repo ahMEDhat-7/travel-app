@@ -4,6 +4,7 @@ import { getStats, getFeaturedTours, getBestsellingTours } from '@/services/tour
 import { db } from '@/lib/db';
 import type { Locale } from '@/lib/constants';
 import ScrollButton from '@/components/ScrollButton';
+import StatsCounter from '@/components/StatsCounter';
 import dynamic from 'next/dynamic';
 import { Metadata } from 'next';
 
@@ -110,26 +111,18 @@ export default async function HomePage(props: { params: Promise<{ locale: string
             </Link>
           </div>
           
-          <div className="flex justify-center gap-8 md:gap-16">
-            <div className="text-center">
-              {stats ? (
-                <>
-                  <div className="text-center">
-                    <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">{stats.tours}+</div>
-                    <div className="text-white/60 text-sm mt-1">{homeT('hero.statTours')}</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">{stats.bookings}+</div>
-                    <div className="text-white/60 text-sm mt-1">{homeT('hero.statTravelers')}</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">{stats.destinations}+</div>
-                    <div className="text-white/60 text-sm mt-1">{homeT('hero.statDestinations')}</div>
-                  </div>
-                </>
-              ) : null}
+          <div className="flex justify-center">
+            {stats ? (
+              <StatsCounter
+                tours={stats.tours}
+                bookings={stats.bookings}
+                destinations={stats.destinations}
+                statTours={homeT('hero.statTours')}
+                statTravelers={homeT('hero.statTravelers')}
+                statDestinations={homeT('hero.statDestinations')}
+              />
+            ) : null}
           </div>
-        </div>
         </div>
         
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
