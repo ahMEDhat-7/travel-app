@@ -151,25 +151,22 @@ export default async function HomePage(props: { params: Promise<{ locale: string
                 href={`/${locale}/tours/${tour.id}`} 
                 className="group relative bg-[var(--theme-card)] backdrop-blur-lg rounded-3xl overflow-hidden border border-[var(--theme-border)] hover:border-amber-400/50 transition-all duration-500 hover:shadow-[0_0_60px_rgba(251,191,36,0.2)]"
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <img 
-                    src={tour.images?.[0]} 
-                    alt={tour.title} 
-                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--theme-bg)] via-transparent to-transparent" />
-                  
-                  {tour.isBestseller && (
-                    <span className="absolute top-4 left-4 px-4 py-1.5 bg-amber-500 text-slate-900 text-sm font-bold rounded-full shadow-lg shadow-amber-500/30">
-                      {commonT('bestseller')}
-                    </span>
-                  )}
-                  {tour.isFeatured && (
-                    <span className="absolute top-4 right-4 px-4 py-1.5 bg-yellow-500 text-slate-900 text-sm font-bold rounded-full shadow-lg shadow-yellow-500/30">
-                      {commonT('featured')}
-                    </span>
-                  )}
-                </div>
+                {tour.images?.[0] && (
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <img 
+                      src={tour.images[0]} 
+                      alt={tour.title} 
+                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--theme-bg)] via-transparent to-transparent" />
+                    
+                    {tour.isBestseller && (
+                      <span className="absolute top-4 left-4 px-4 py-1.5 bg-amber-500 text-slate-900 text-sm font-bold rounded-full shadow-lg shadow-amber-500/30">
+                        {commonT('bestseller')}
+                      </span>
+                    )}
+                  </div>
+                )}
                 
                 <div className="p-6">
                   <div className="flex items-center gap-2 text-[var(--theme-gold)] text-sm mb-3">

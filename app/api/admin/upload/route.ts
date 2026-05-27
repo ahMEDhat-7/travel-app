@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { writeFile, mkdir, unlink } from 'fs/promises';
-import { join } from 'path';
+import { cloudinary } from '@/lib/cloudinary';
 
 async function checkAdmin() {
   const session = await getServerSession(authOptions);
@@ -11,6 +10,12 @@ async function checkAdmin() {
   }
   return true;
 }
+
+const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const VIDEO_TYPES = ['video/mp4', 'video/webm'];
+const ALLOWED_TYPES = [...IMAGE_TYPES, ...VIDEO_TYPES];
+const IMAGE_MAX_SIZE = 5 * 1024 * 1024;
+const VIDEO_MAX_SIZE = 50 * 1024 * 1024;
 
 export async function POST(req: NextRequest) {
   const isAdmin = await checkAdmin();
@@ -26,35 +31,64 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'No file provided' }, { status: 400 });
     }
 
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ success: false, error: 'Invalid file type. Only JPG, PNG, WebP, and GIF are allowed.' }, { status: 400 });
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      return NextResponse.json({ success: false, error: 'Invalid file type. Only JPG, PNG, WebP, GIF images and MP4, WebM videos are allowed.' }, { status: 400 });
     }
 
-    const maxSize = 5 * 1024 * 1024;
+    const isVideo = VIDEO_TYPES.includes(file.type);
+    const maxSize = isVideo ? VIDEO_MAX_SIZE : IMAGE_MAX_SIZE;
     if (file.size > maxSize) {
-      return NextResponse.json({ success: false, error: 'File too large. Maximum size is 5MB.' }, { status: 400 });
+      const sizeLabel = isVideo ? '50MB' : '5MB';
+      return NextResponse.json({ success: false, error: `File too large. Maximum size is ${sizeLabel}.` }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const timestamp = Date.now();
-    const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const fileName = `${timestamp}-${originalName}`;
-    const uploadDir = join(process.cwd(), 'public', 'images', 'tours-images');
-    
-    await mkdir(uploadDir, { recursive: true });
-    
-    const filePath = join(uploadDir, fileName);
-    await writeFile(filePath, buffer);
+    let result: { secure_url: string; public_id: string };
 
-    const imagePath = `/images/tours-images/${fileName}`;
+    if (isVideo) {
+      const uploadFn = cloudinary.uploader.upload_chunked_stream as unknown as (
+        options: Record<string, unknown>,
+        callback: (error: unknown, result: unknown) => void
+      ) => { end: (buffer: Buffer) => void };
 
-    return NextResponse.json({ 
-      success: true, 
-      path: imagePath,
-      fileName: fileName
+      result = await new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
+        const uploadStream = uploadFn(
+          {
+            folder: 'tours-videos',
+            resource_type: 'video',
+            chunk_size: 5 * 1024 * 1024,
+            eager: [{ format: 'mp4', quality: 'auto' }],
+            eager_async: true,
+          },
+          (error: unknown, chunkedResult: unknown) => {
+            if (error) reject(error);
+            else resolve(chunkedResult as { secure_url: string; public_id: string });
+          }
+        );
+        uploadStream.end(buffer);
+      });
+    } else {
+      result = await new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'tours-images',
+            resource_type: 'image',
+          },
+          (error: unknown, imageResult: unknown) => {
+            if (error) reject(error);
+            else resolve(imageResult as { secure_url: string; public_id: string });
+          }
+        );
+        uploadStream.end(buffer);
+      });
+    }
+
+    return NextResponse.json({
+      success: true,
+      path: result.secure_url,
+      publicId: result.public_id,
     });
   } catch (error) {
     console.error('Upload error:', error);
@@ -70,19 +104,18 @@ export async function DELETE(req: NextRequest) {
 
   try {
     const { searchParams } = new URL(req.url);
-    const fileName = searchParams.get('fileName');
+    const publicId = searchParams.get('publicId');
 
-    if (!fileName) {
-      return NextResponse.json({ success: false, error: 'No file name provided' }, { status: 400 });
+    if (!publicId) {
+      return NextResponse.json({ success: false, error: 'No publicId provided' }, { status: 400 });
     }
 
-    const filePath = join(process.cwd(), 'public', 'images', 'tours-images', fileName);
-    
-    try {
-      await unlink(filePath);
+    const result = await cloudinary.uploader.destroy(publicId);
+
+    if (result.result === 'ok') {
       return NextResponse.json({ success: true });
-    } catch (error) {
-      return NextResponse.json({ success: false, error: 'File not found' }, { status: 404 });
+    } else {
+      return NextResponse.json({ success: false, error: 'Failed to delete file' }, { status: 500 });
     }
   } catch (error) {
     console.error('Delete error:', error);

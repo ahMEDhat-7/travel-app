@@ -3,33 +3,20 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
-const FALLBACK_IMAGES = [
-  '/images/preview1.jpeg',
-  '/images/preview2.jpeg',
-  '/images/preview3.jpeg',
-  '/images/preview4.jpeg',
-  '/images/preview5.jpeg',
-];
-
-interface PreviewImage {
-  name: string;
-  path: string;
-}
-
 interface ImagePreviewerProps {
   livePreview: string;
 }
 
 export default function ImagePreviewer({ livePreview }: ImagePreviewerProps) {
-  const [images, setImages] = useState<string[]>(FALLBACK_IMAGES);
+  const [images, setImages] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    fetch('/api/admin/preview-images')
+    fetch('/api/preview-images')
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.images?.length > 0) {
-          setImages(data.images.map((img: PreviewImage) => img.path));
+          setImages(data.images);
         }
       })
       .catch(() => {});
@@ -42,6 +29,8 @@ export default function ImagePreviewer({ livePreview }: ImagePreviewerProps) {
 
     return () => clearInterval(interval);
   }, [images.length]);
+
+  if (images.length === 0) return null;
 
   return (
     <div className="relative w-full overflow-hidden bg-gradient-to-b from-amber-950/30 to-transparent image-preview-container" style={{ paddingBottom: '2rem' }}>
@@ -66,7 +55,6 @@ export default function ImagePreviewer({ livePreview }: ImagePreviewerProps) {
                   sizes="100vw"
                   priority={idx === 0}
                   loading={idx === 0 ? undefined : 'lazy'}
-                  unoptimized={img.startsWith('/images/previewer-images/')}
                   className="object-cover"
                 />
               </div>

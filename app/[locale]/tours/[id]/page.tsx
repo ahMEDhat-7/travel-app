@@ -11,6 +11,8 @@ import ReviewCard from '@/components/reviews/ReviewCard';
 import RatingBreakdown from '@/components/reviews/RatingBreakdown';
 import ReviewForm from '@/components/reviews/ReviewForm';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { getVideoUrl } from '@/lib/cloudinary-url';
+import { createPortal } from 'react-dom';
 
 interface ReviewData {
   id: string;
@@ -38,6 +40,7 @@ interface TourData {
   duration: string;
   category: string;
   images: string[];
+  videos: string[];
   maxCapacity: number;
   isBestseller?: boolean;
   isFeatured?: boolean;
@@ -71,6 +74,13 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
   const [error, setError] = useState(false);
   const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+  const [loadedThumbnails, setLoadedThumbnails] = useState<Record<number, boolean>>({});
+  const [loadedVideos, setLoadedVideos] = useState<Record<number, boolean>>({});
+  const [lightboxLoaded, setLightboxLoaded] = useState(false);
+  const handleLightboxClose = () => setSelectedVideo(null);
 
   useEffect(() => {
     fetchTour();
@@ -281,6 +291,136 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
                   </span>
                 )}
               </div>
+
+              {tour.images && tour.images.length > 0 ? (
+                <section className="mb-8">
+                  <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden bg-[var(--theme-bg-tertiary)] mb-3">
+                    {!heroImageLoaded && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-10 h-10 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+                      </div>
+                    )}
+                    <img
+                      src={tour.images[selectedImageIndex]}
+                      alt={`${getTourData()?.title} - Image ${selectedImageIndex + 1}`}
+                      onLoad={() => setHeroImageLoaded(true)}
+                      onError={() => setHeroImageLoaded(true)}
+                      className={`w-full h-full object-cover transition-opacity duration-500 ${heroImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    />
+                  </div>
+                  {tour.images.length > 1 && (
+                    <div className="flex gap-2 overflow-x-auto pb-1">
+                      {tour.images.map((img, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            setSelectedImageIndex(idx);
+                            setHeroImageLoaded(false);
+                          }}
+                          className={`flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                            idx === selectedImageIndex
+                              ? 'border-amber-500 opacity-100'
+                              : 'border-transparent opacity-60 hover:opacity-80'
+                          }`}
+                        >
+                          <div className="relative w-full h-full bg-[var(--theme-bg-tertiary)]">
+                            {!loadedThumbnails[idx] && (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+                              </div>
+                            )}
+                            <img
+                              src={img}
+                              alt={`Thumbnail ${idx + 1}`}
+                              onLoad={() => setLoadedThumbnails(prev => ({ ...prev, [idx]: true }))}
+                              onError={() => setLoadedThumbnails(prev => ({ ...prev, [idx]: true }))}
+                              className={`w-full h-full object-cover transition-opacity duration-300 ${loadedThumbnails[idx] ? 'opacity-100' : 'opacity-0'}`}
+                            />
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </section>
+              ) : null}
+
+              {tour.videos && tour.videos.length > 0 ? (
+                <section className="mb-8">
+                  <h2 className="text-2xl font-bold text-[var(--theme-text)] mb-4">Tour Videos</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {tour.videos.map((video, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => {
+                          setSelectedVideo(getVideoUrl(video));
+                          setLightboxLoaded(false);
+                        }}
+                        className="group relative aspect-video rounded-xl overflow-hidden bg-[var(--theme-bg-tertiary)] border border-[var(--theme-border)] hover:border-amber-500/50 transition-all duration-300 cursor-pointer"
+                      >
+                        {!loadedVideos[idx] && (
+                          <div className="absolute inset-0 flex items-center justify-center z-10">
+                            <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+                          </div>
+                        )}
+                        <video
+                          src={getVideoUrl(video)}
+                          className={`w-full h-full object-cover transition-opacity duration-500 ${loadedVideos[idx] ? 'opacity-100' : 'opacity-0'}`}
+                          preload="metadata"
+                          onLoadedData={() => setLoadedVideos(prev => ({ ...prev, [idx]: true }))}
+                          onError={() => setLoadedVideos(prev => ({ ...prev, [idx]: true }))}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+                          <div className="w-16 h-16 rounded-full bg-amber-500/90 flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                            <svg className="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        </div>
+                        <div className="absolute bottom-2 left-2 px-2 py-1 bg-black/60 text-white text-xs rounded-md backdrop-blur-sm">
+                          Tour Video {idx + 1}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+
+              {/* Video Lightbox */}
+      {selectedVideo && createPortal(
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-lg z-50 flex items-center justify-center p-4"
+          onClick={handleLightboxClose}
+        >
+          <div
+            className="relative w-full max-w-5xl rounded-2xl overflow-hidden border border-white/20 shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={handleLightboxClose}
+              className="absolute top-3 right-3 z-10 bg-black/60 hover:bg-black/80 text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            {!lightboxLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/80">
+                <div className="w-10 h-10 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
+            <video
+              src={selectedVideo}
+              className={`w-full max-h-[85vh] object-contain bg-black transition-opacity duration-500 ${lightboxLoaded ? 'opacity-100' : 'opacity-0'}`}
+              autoPlay
+              loop
+              playsInline
+              onLoadedData={() => setLightboxLoaded(true)}
+              onError={() => setLightboxLoaded(true)}
+            />
+          </div>
+        </div>,
+        document.body
+      )}
 
               <section className="mb-8">
                 <h2 className="text-2xl font-bold text-[var(--theme-text)] mb-4">{t('highlights')}</h2>

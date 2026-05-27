@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '*.cloudfront.net',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
     ],
   },
   async headers() {
@@ -54,6 +58,7 @@ const nextConfig: NextConfig = {
               "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
               "font-src 'self' data: https://fonts.gstatic.com; " +
               "img-src 'self' data: https: blob:; " +
+              "media-src 'self' https:; " +
               "connect-src 'self' https:; " +
               "frame-ancestors 'none'; " +
               "base-uri 'self'; " +

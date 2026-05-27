@@ -4,20 +4,46 @@ import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useNotification } from '@/components/Notification';
 import Select from '@/components/ui/Select';
+import { getVideoUrl } from '@/lib/cloudinary-url';
+
+interface TourTranslation {
+  title: string;
+  shortDesc: string;
+  description: string;
+  duration?: string;
+  location?: string;
+  category?: string;
+  highlights?: string[];
+  included?: string[];
+  notIncluded?: string[];
+  itinerary?: ItineraryDay[];
+}
 
 interface Tour {
   id: string;
   slug: string;
   title: string;
   shortDesc: string;
+  description: string;
   price: number;
+  childPrice?: number;
+  discountPrice?: number;
   location: string;
   duration: string;
   category: string;
+  images: string[];
+  videos: string[];
+  highlights: string[];
+  included: string[];
+  notIncluded: string[];
+  itinerary?: ItineraryDay[];
+  maxCapacity: number;
   isActive: boolean;
   isFeatured: boolean;
   isBestseller: boolean;
   isPrivate: boolean;
+  hasFreeCancellation: boolean;
+  translations?: Record<string, TourTranslation>;
 }
 
 interface ItineraryDay {
@@ -58,6 +84,7 @@ interface TourFormData {
   isPrivate: boolean;
   hasFreeCancellation: boolean;
   itinerary: ItineraryDay[];
+  videos: string[];
 }
 
 const initialFormData: TourFormData = {
@@ -85,6 +112,7 @@ const initialFormData: TourFormData = {
   location: '',
   category: '',
   images: [],
+  videos: [],
   maxCapacity: 20,
   isActive: true,
   isFeatured: false,
@@ -116,9 +144,12 @@ function AdminToursContent() {
   const [formData, setFormData] = useState<TourFormData>(initialFormData);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
+  const [uploadingImages, setUploadingImages] = useState(false);
+  const [uploadingVideos, setUploadingVideos] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchTours();
@@ -152,20 +183,42 @@ function AdminToursContent() {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    setUploading(true);
+    setUploadingImages(true);
+    setUploadProgress(0);
     const uploadedPaths: string[] = [];
+    const totalFiles = files.length;
 
-    for (const file of Array.from(files)) {
+    for (let i = 0; i < totalFiles; i++) {
+      const file = files[i];
       const formData = new FormData();
       formData.append('file', file);
 
       try {
-        const res = await fetch('/api/admin/upload', {
-          method: 'POST',
-          body: formData,
+        const data = await new Promise<{ success: boolean; path?: string }>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', '/api/admin/upload');
+
+          xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+              const filePercent = event.loaded / event.total;
+              const overall = ((i + filePercent) / totalFiles) * 100;
+              setUploadProgress(Math.round(overall));
+            }
+          };
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(JSON.parse(xhr.responseText));
+            } else {
+              reject(new Error(`Upload failed: ${xhr.status}`));
+            }
+          };
+
+          xhr.onerror = () => reject(new Error('Network error'));
+          xhr.send(formData);
         });
-        const data = await res.json();
-        if (data.success) {
+
+        if (data.success && data.path) {
           uploadedPaths.push(data.path);
         }
       } catch (error) {
@@ -177,7 +230,9 @@ function AdminToursContent() {
       ...prev,
       images: [...prev.images, ...uploadedPaths]
     }));
-    setUploading(false);
+    setUploadingImages(false);
+    setUploadProgress(null);
+    showNotification(`${uploadedPaths.length} image${uploadedPaths.length !== 1 ? 's' : ''} uploaded`);
     
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -190,6 +245,94 @@ function AdminToursContent() {
       ...prev,
       images: prev.images.filter((_, i) => i !== index)
     }));
+    if (imageToRemove?.includes('res.cloudinary.com')) {
+      const match = imageToRemove.match(/\/upload\/(?:v\d+\/)?(.+?)\.\w+$/);
+      if (match) {
+        try {
+          await fetch(`/api/admin/upload?publicId=${encodeURIComponent(match[1])}`, { method: 'DELETE' });
+        } catch (error) {
+          console.error('Failed to delete image from Cloudinary:', error);
+        }
+      }
+    }
+  };
+
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploadingVideos(true);
+    setUploadProgress(0);
+    const uploadedPaths: string[] = [];
+    const totalFiles = files.length;
+
+    for (let i = 0; i < totalFiles; i++) {
+      const file = files[i];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const data = await new Promise<{ success: boolean; path?: string }>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', '/api/admin/upload');
+
+          xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+              const filePercent = event.loaded / event.total;
+              const overall = ((i + filePercent) / totalFiles) * 100;
+              setUploadProgress(Math.round(overall));
+            }
+          };
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(JSON.parse(xhr.responseText));
+            } else {
+              reject(new Error(`Upload failed: ${xhr.status}`));
+            }
+          };
+
+          xhr.onerror = () => reject(new Error('Network error'));
+          xhr.send(formData);
+        });
+
+        if (data.success && data.path) {
+          uploadedPaths.push(data.path);
+        }
+      } catch (error) {
+        console.error('Upload failed:', error);
+      }
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      videos: [...prev.videos, ...uploadedPaths]
+    }));
+    setUploadingVideos(false);
+    setUploadProgress(null);
+    showNotification(`${uploadedPaths.length} video${uploadedPaths.length !== 1 ? 's' : ''} uploaded`);
+    
+    if (videoInputRef.current) {
+      videoInputRef.current.value = '';
+    }
+  };
+
+  const handleRemoveVideo = async (index: number) => {
+    const videoToRemove = formData.videos[index];
+    setFormData(prev => ({
+      ...prev,
+      videos: prev.videos.filter((_, i) => i !== index)
+    }));
+    if (videoToRemove?.includes('res.cloudinary.com')) {
+      const match = videoToRemove.match(/\/upload\/(?:v\d+\/)?(.+?)\.\w+$/);
+      if (match) {
+        try {
+          await fetch(`/api/admin/upload?publicId=${encodeURIComponent(match[1])}`, { method: 'DELETE' });
+        } catch (error) {
+          console.error('Failed to delete video from Cloudinary:', error);
+        }
+      }
+    }
   };
 
   const handleAddItineraryDay = () => {
@@ -318,38 +461,39 @@ function AdminToursContent() {
 
   const handleEdit = (tour: Tour) => {
     setEditingTour(tour);
+    const ru = tour.translations?.ru;
     setFormData({
       slug: tour.slug,
       title: tour.title,
       shortDesc: tour.shortDesc,
-      description: '',
-      ruTitle: '',
-      ruShortDesc: '',
-      ruDescription: '',
-      ruHighlights: '',
-      ruIncluded: '',
-      ruNotIncluded: '',
-      ruDuration: '',
-      ruLocation: '',
-      ruCategory: '',
-      ruItinerary: [],
-      highlights: '',
-      included: '',
-      notIncluded: '',
+      description: tour.description || '',
+      ruTitle: ru?.title || '',
+      ruShortDesc: ru?.shortDesc || '',
+      ruDescription: ru?.description || '',
+      ruHighlights: ru?.highlights ? ru.highlights.join('\n') : '',
+      ruIncluded: ru?.included ? ru.included.join('\n') : '',
+      ruNotIncluded: ru?.notIncluded ? ru.notIncluded.join('\n') : '',
+      ruDuration: ru?.duration || '',
+      ruLocation: ru?.location || '',
+      ruCategory: ru?.category || '',
+      ruItinerary: ru?.itinerary || [],
+      highlights: tour.highlights ? tour.highlights.join('\n') : '',
+      included: tour.included ? tour.included.join('\n') : '',
+      notIncluded: tour.notIncluded ? tour.notIncluded.join('\n') : '',
       price: tour.price,
-      childPrice: 0,
-      discountPrice: 0,
+      childPrice: tour.childPrice || 0,
+      discountPrice: tour.discountPrice || 0,
       duration: tour.duration,
       location: tour.location,
       category: tour.category,
-      images: [],
-      maxCapacity: 20,
+      images: tour.images || [],
+      videos: tour.videos || [],      maxCapacity: tour.maxCapacity || 20,
       isActive: tour.isActive,
       isFeatured: tour.isFeatured,
       isBestseller: tour.isBestseller,
       isPrivate: tour.isPrivate,
-      hasFreeCancellation: false,
-      itinerary: [],
+      hasFreeCancellation: tour.hasFreeCancellation || false,
+      itinerary: tour.itinerary || [],
     });
     setShowModal(true);
   };
@@ -393,8 +537,8 @@ function AdminToursContent() {
       duration: formData.duration,
       location: formData.location,
       category: formData.category,
-      images: formData.images.length > 0 ? formData.images : ['https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=800'],
-      maxCapacity: formData.maxCapacity,
+      images: formData.images,
+      videos: formData.videos,      maxCapacity: formData.maxCapacity,
       isActive: formData.isActive,
       isFeatured: formData.isFeatured,
       isBestseller: formData.isBestseller,
@@ -961,10 +1105,23 @@ function AdminToursContent() {
                     htmlFor="image-upload"
                     className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors cursor-pointer disabled:opacity-50"
                   >
-                    {uploading ? 'Uploading...' : '+ Add Images'}
+                    {uploadingImages ? 'Uploading...' : '+ Add Images'}
                   </label>
                   <span className="text-sm text-[var(--theme-text-muted)]">JPG, PNG, WebP, GIF (max 5MB)</span>
                 </div>
+                {uploadProgress !== null && uploadingImages && (
+                  <div className="mt-2 mb-2">
+                    <div className="flex items-center justify-between text-sm text-[var(--theme-text-muted)] mb-1">
+                      <span>Uploading... {uploadProgress}%</span>
+                    </div>
+                    <div className="w-full h-2 bg-[var(--theme-bg-tertiary)] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-amber-500 rounded-full transition-all duration-300"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
                 {formData.images.length > 0 && (
                   <div className="grid grid-cols-4 gap-2 mt-2">
                     {formData.images.map((img, idx) => (
@@ -974,6 +1131,75 @@ function AdminToursContent() {
                           type="button"
                           onClick={() => handleRemoveImage(idx)}
                           className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[var(--theme-text)] mb-1">Videos</label>
+                <div className="flex items-center gap-3 mb-2">
+                  <input
+                    ref={videoInputRef}
+                    type="file"
+                    accept="video/mp4"
+                    multiple
+                    onChange={handleVideoUpload}
+                    className="hidden"
+                    id="video-upload"
+                  />
+                  <label
+                    htmlFor="video-upload"
+                    className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    {uploadingVideos ? 'Uploading...' : '+ Add Videos'}
+                  </label>
+                  <span className="text-sm text-[var(--theme-text-muted)]">MP4, WebM (max 50MB)</span>
+                </div>
+                {uploadProgress !== null && uploadingVideos && (
+                  <div className="mt-2 mb-2">
+                    <div className="flex items-center justify-between text-sm text-[var(--theme-text-muted)] mb-1">
+                      <span>Uploading... {uploadProgress}%</span>
+                    </div>
+                    <div className="w-full h-2 bg-[var(--theme-bg-tertiary)] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-amber-500 rounded-full transition-all duration-300"
+                        style={{ width: `${uploadProgress}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+                {formData.videos.length > 0 && (
+                  <div className="grid grid-cols-2 gap-3 mt-2">
+                    {formData.videos.map((video, idx) => (
+                      <div key={idx} className="relative group rounded-lg overflow-hidden bg-[var(--theme-bg-tertiary)]">
+                        <video
+                          src={getVideoUrl(video)}
+                          className="w-full aspect-video object-cover"
+                          preload="metadata"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="w-10 h-10 rounded-full bg-amber-500/90 flex items-center justify-center">
+                            <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        </div>
+                        <div className="absolute bottom-1 right-1 px-2 py-0.5 bg-black/60 text-white text-xs rounded">
+                          <svg className="w-3 h-3 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          video
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveVideo(idx)}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity z-10"
                         >
                           ×
                         </button>

@@ -193,24 +193,26 @@ export default function ToursPage({ params }: { params: Promise<{ locale: string
                 className="group block rounded-2xl overflow-hidden transition-all duration-500 hover:scale-[1.02]"
                 style={{ ...cardStyle, boxShadow: `0 0 40px ${accent}20` }}
               >
-                <div className="relative aspect-video overflow-hidden">
-                  <img
-                    src={tour.images?.[0]}
-                    alt={getLocalizedTitle(tour)}
-                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0" style={{ background: `linear-gradient(to top, ${bg}, transparent)` }} />
-                  {tour.isBestseller && (
-                    <span className="absolute top-4 left-4 px-3 py-1 text-xs font-bold rounded-full" style={{ backgroundColor: accent, color: '#fff' }}>
-                      {locale === 'ru' ? 'Бестселлер' : 'Bestseller'}
-                    </span>
-                  )}
-                  {tour.isFeatured && (
-                    <span className="absolute top-4 right-4 px-3 py-1 text-xs font-bold rounded-full" style={{ backgroundColor: accent, color: '#fff' }}>
-                      {locale === 'ru' ? 'Рекомендуем' : 'Featured'}
-                    </span>
-                  )}
-                </div>
+                {tour.images?.[0] && (
+                  <div className="relative aspect-video overflow-hidden">
+                    <img
+                      src={tour.images[0]}
+                      alt={getLocalizedTitle(tour)}
+                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0" style={{ background: `linear-gradient(to top, ${bg}, transparent)` }} />
+                    {tour.isBestseller && (
+                      <span className="absolute top-4 left-4 px-3 py-1 text-xs font-bold rounded-full" style={{ backgroundColor: accent, color: '#fff' }}>
+                        {locale === 'ru' ? 'Бестселлер' : 'Bestseller'}
+                      </span>
+                    )}
+                    {tour.isFeatured && (
+                      <span className="absolute top-4 right-4 px-3 py-1 text-xs font-bold rounded-full" style={{ backgroundColor: accent, color: '#fff' }}>
+                        {locale === 'ru' ? 'Рекомендуем' : 'Featured'}
+                      </span>
+                    )}
+                  </div>
+                )}
                 <div className="p-5">
                   <div className="flex items-center gap-2 text-sm mb-2" style={{ color: accent }}>
                     <span>{tour.location}</span>

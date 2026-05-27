@@ -81,6 +81,7 @@ model Tour {
   location  String
   category  String
   images    Json
+  videos    Json    @default("[]")
   maxCapacity Int
   isActive  Boolean  @default(true)
   isFeatured Boolean @default(false)

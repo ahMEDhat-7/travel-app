@@ -35,24 +35,26 @@ export default function TourCard({ tour, locale }: TourCardProps) {
       href={`/${locale}/tours/${tour.slug}`}
       className="group block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
     >
-      <div className="relative aspect-video rounded-t-lg overflow-hidden">
-        <Image
-          src={tour.images[0]}
-          alt={tour.localeTitle}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
-        />
-        {tour.isBestseller && (
-          <span className="absolute top-2 left-2 px-2 py-1 bg-amber-500 text-white text-xs font-medium rounded">
-            {t('bestseller')}
-          </span>
-        )}
-        {tour.hasFreeCancellation && (
-          <span className="absolute top-2 right-2 px-2 py-1 bg-green-500 text-white text-xs font-medium rounded">
-            {t('freeCancellation')}
-          </span>
-        )}
-      </div>
+      {tour.images?.[0] && (
+        <div className="relative aspect-video rounded-t-lg overflow-hidden">
+          <Image
+            src={tour.images[0]}
+            alt={tour.localeTitle}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          {tour.isBestseller && (
+            <span className="absolute top-2 left-2 px-2 py-1 bg-amber-500 text-white text-xs font-medium rounded">
+              {t('bestseller')}
+            </span>
+          )}
+          {tour.hasFreeCancellation && (
+            <span className="absolute top-2 right-2 px-2 py-1 bg-green-500 text-white text-xs font-medium rounded">
+              {t('freeCancellation')}
+            </span>
+          )}
+        </div>
+      )}
 
       <div className="p-4">
         <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
