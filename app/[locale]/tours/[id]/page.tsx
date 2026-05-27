@@ -74,10 +74,8 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
   const [error, setError] = useState(false);
   const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
-  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
-  const [loadedThumbnails, setLoadedThumbnails] = useState<Record<number, boolean>>({});
+  const [imageLightboxIndex, setImageLightboxIndex] = useState<number | null>(null);
   const [loadedVideos, setLoadedVideos] = useState<Record<number, boolean>>({});
   const [lightboxLoaded, setLightboxLoaded] = useState(false);
   const handleLightboxClose = () => setSelectedVideo(null);
@@ -140,6 +138,27 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
       fetchReviews();
     }
   }, [id]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (imageLightboxIndex === null) return;
+      if (e.key === 'Escape') {
+        setImageLightboxIndex(null);
+      } else if (e.key === 'ArrowLeft') {
+        setImageLightboxIndex(prev => {
+          if (prev === null || !tour?.images?.length) return null;
+          return prev === 0 ? tour.images.length - 1 : prev - 1;
+        });
+      } else if (e.key === 'ArrowRight') {
+        setImageLightboxIndex(prev => {
+          if (prev === null || !tour?.images?.length) return null;
+          return prev === tour.images.length - 1 ? 0 : prev + 1;
+        });
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [imageLightboxIndex, tour?.images?.length]);
 
   const ratingDistribution = useMemo(() => {
     const dist = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
@@ -294,53 +313,27 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
 
               {tour.images && tour.images.length > 0 ? (
                 <section className="mb-8">
-                  <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden bg-[var(--theme-bg-tertiary)] mb-3">
-                    {!heroImageLoaded && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-10 h-10 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
-                      </div>
-                    )}
-                    <img
-                      src={tour.images[selectedImageIndex]}
-                      alt={`${getTourData()?.title} - Image ${selectedImageIndex + 1}`}
-                      onLoad={() => setHeroImageLoaded(true)}
-                      onError={() => setHeroImageLoaded(true)}
-                      className={`w-full h-full object-cover transition-opacity duration-500 ${heroImageLoaded ? 'opacity-100' : 'opacity-0'}`}
-                    />
+                  <h2 className="text-2xl font-bold text-[var(--theme-text)] mb-4">{tTourDetail('gallery')}</h2>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                    {tour.images.map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setImageLightboxIndex(idx)}
+                        className="group relative aspect-[4/3] rounded-lg overflow-hidden bg-[var(--theme-bg-tertiary)] border border-[var(--theme-border)] hover:border-amber-500/50 transition-all duration-200 cursor-pointer"
+                      >
+                        <img
+                          src={img}
+                          alt={`${getTourData()?.title} - Image ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                          <svg className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                          </svg>
+                        </div>
+                      </button>
+                    ))}
                   </div>
-                  {tour.images.length > 1 && (
-                    <div className="flex gap-2 overflow-x-auto pb-1">
-                      {tour.images.map((img, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => {
-                            setSelectedImageIndex(idx);
-                            setHeroImageLoaded(false);
-                          }}
-                          className={`flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                            idx === selectedImageIndex
-                              ? 'border-amber-500 opacity-100'
-                              : 'border-transparent opacity-60 hover:opacity-80'
-                          }`}
-                        >
-                          <div className="relative w-full h-full bg-[var(--theme-bg-tertiary)]">
-                            {!loadedThumbnails[idx] && (
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
-                              </div>
-                            )}
-                            <img
-                              src={img}
-                              alt={`Thumbnail ${idx + 1}`}
-                              onLoad={() => setLoadedThumbnails(prev => ({ ...prev, [idx]: true }))}
-                              onError={() => setLoadedThumbnails(prev => ({ ...prev, [idx]: true }))}
-                              className={`w-full h-full object-cover transition-opacity duration-300 ${loadedThumbnails[idx] ? 'opacity-100' : 'opacity-0'}`}
-                            />
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
                 </section>
               ) : null}
 
@@ -417,6 +410,73 @@ export default function TourDetailPage({ params }: TourDetailPageProps) {
               onLoadedData={() => setLightboxLoaded(true)}
               onError={() => setLightboxLoaded(true)}
             />
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {imageLightboxIndex !== null && tour?.images?.length && tour.images[imageLightboxIndex] && createPortal(
+        <div
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center"
+          onClick={() => setImageLightboxIndex(null)}
+        >
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setImageLightboxIndex(null);
+            }}
+            className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors z-10"
+            aria-label="Close"
+          >
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setImageLightboxIndex(prev => {
+                if (prev === null || !tour?.images?.length) return null;
+                return prev === 0 ? tour.images.length - 1 : prev - 1;
+              });
+            }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition-colors z-10"
+            aria-label="Previous"
+          >
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <img
+            src={tour.images[imageLightboxIndex]}
+            alt={`${getTourData()?.title} - Image ${imageLightboxIndex + 1}`}
+            className="max-w-[90vw] max-h-[90vh] object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setImageLightboxIndex(prev => {
+                if (prev === null || !tour?.images?.length) return null;
+                return prev === tour.images.length - 1 ? 0 : prev + 1;
+              });
+            }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition-colors z-10"
+            aria-label="Next"
+          >
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/70 text-sm">
+            {imageLightboxIndex + 1} / {tour.images.length}
           </div>
         </div>,
         document.body

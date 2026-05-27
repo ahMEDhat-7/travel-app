@@ -148,6 +148,7 @@ function AdminToursContent() {
   const [uploadingVideos, setUploadingVideos] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
 
@@ -334,6 +335,44 @@ function AdminToursContent() {
       }
     }
   };
+
+  const handleOpenLightbox = (index: number) => {
+    setLightboxIndex(index);
+  };
+
+  const handleCloseLightbox = () => {
+    setLightboxIndex(null);
+  };
+
+  const handlePrevImage = () => {
+    setLightboxIndex(prev => {
+      if (prev === null || formData.images.length === 0) return null;
+      return prev === 0 ? formData.images.length - 1 : prev - 1;
+    });
+  };
+
+  const handleNextImage = () => {
+    setLightboxIndex(prev => {
+      if (prev === null || formData.images.length === 0) return null;
+      return prev === formData.images.length - 1 ? 0 : prev + 1;
+    });
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (lightboxIndex === null) return;
+      if (e.key === 'Escape') {
+        handleCloseLightbox();
+      } else if (e.key === 'ArrowLeft') {
+        handlePrevImage();
+      } else if (e.key === 'ArrowRight') {
+        handleNextImage();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxIndex]);
 
   const handleAddItineraryDay = () => {
     const newDay = formData.itinerary.length + 1;
@@ -1123,14 +1162,28 @@ function AdminToursContent() {
                   </div>
                 )}
                 {formData.images.length > 0 && (
-                  <div className="grid grid-cols-4 gap-2 mt-2">
+                  <div className="grid grid-cols-2 gap-3 mt-2">
                     {formData.images.map((img, idx) => (
-                      <div key={idx} className="relative group">
-                        <img src={img} alt={`Upload ${idx + 1}`} className="w-full h-20 object-cover rounded-lg" />
+                      <div
+                        key={idx}
+                        className="relative group rounded-lg overflow-hidden bg-[var(--theme-bg-tertiary)] cursor-pointer"
+                        onClick={() => handleOpenLightbox(idx)}
+                      >
+                        <img src={img} alt={`Upload ${idx + 1}`} className="w-full aspect-video object-cover" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="w-10 h-10 rounded-full bg-amber-500/90 flex items-center justify-center">
+                            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                            </svg>
+                          </div>
+                        </div>
                         <button
                           type="button"
-                          onClick={() => handleRemoveImage(idx)}
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemoveImage(idx);
+                          }}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity z-10"
                         >
                           ×
                         </button>
@@ -1514,6 +1567,66 @@ function AdminToursContent() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {lightboxIndex !== null && formData.images[lightboxIndex] && (
+        <div
+          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
+          onClick={handleCloseLightbox}
+        >
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCloseLightbox();
+            }}
+            className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors z-10"
+            aria-label="Close"
+          >
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePrevImage();
+            }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition-colors z-10"
+            aria-label="Previous"
+          >
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <img
+            src={formData.images[lightboxIndex]}
+            alt={`Image ${lightboxIndex + 1}`}
+            className="max-w-[90vw] max-h-[90vh] object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNextImage();
+            }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition-colors z-10"
+            aria-label="Next"
+          >
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/70 text-sm">
+            {lightboxIndex + 1} / {formData.images.length}
           </div>
         </div>
       )}

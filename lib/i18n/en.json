@@ -219,7 +219,8 @@
   },
   "tourDetail": {
     "tourNotFound": "Tour Not Found",
-    "shareTour": "Share this tour:"
+    "shareTour": "Share this tour:",
+    "gallery": "Tour Gallery"
   },
   "profile": {
     "myBookings": "My Bookings",
