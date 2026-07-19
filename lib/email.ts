@@ -148,26 +148,6 @@ export async function sendBookingStatusUpdate(options: {
   return sendMail({ to, subject, html });
 }
 
-export async function sendReviewReplyNotification(options: {
-  to: string;
-  userName: string;
-  tourName: string;
-  reply: string;
-}) {
-  const { to, userName, tourName, reply } = options;
-
-  const html = layoutHtml('New Reply to Your Review', `
-    <p style="color:#333333;font-size:16px">Dear <strong>${userName}</strong>,</p>
-    <p style="color:#333333;font-size:16px">The admin has replied to your review for <strong>${tourName}</strong>:</p>
-    <div style="background-color:#f9f9f9;border-radius:8px;padding:20px;margin:20px 0;border-left:4px solid #FFD700">
-      <p style="color:#333333;margin:0;font-style:italic">&ldquo;${reply}&rdquo;</p>
-    </div>
-    <p style="color:#666666;font-size:14px">Thank you for your feedback!</p>
-  `);
-
-  return sendMail({ to, subject: `New Reply to Your ${tourName} Review`, html });
-}
-
 export async function sendAdminBookingNotification(options: {
   tourName: string;
   tourDate: string;

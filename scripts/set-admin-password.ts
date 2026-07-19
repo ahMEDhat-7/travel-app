@@ -1,8 +1,14 @@
 import { db } from '../lib/db';
 import { hashPassword } from '../lib/password';
 
-const ADMIN_EMAIL = 'admin@sharmcloudtours.com';
-const ADMIN_PASSWORD = 'Admin123!';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+
+if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+  console.error('Error: ADMIN_EMAIL and ADMIN_PASSWORD environment variables are required.');
+  console.error('Set them before running: ADMIN_EMAIL=... ADMIN_PASSWORD=... pnpm admin:create');
+  process.exit(1);
+}
 
 async function setAdminPassword() {
   console.log('Setting admin password...');
@@ -28,8 +34,7 @@ async function setAdminPassword() {
   });
   
   console.log('✅ Admin account ready!');
-  console.log('Email:', ADMIN_EMAIL);
-  console.log('Password:', ADMIN_PASSWORD);
+  console.log('Email:', admin.email);
   console.log('Role:', admin.role);
 }
 

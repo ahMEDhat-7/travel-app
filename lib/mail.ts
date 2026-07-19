@@ -1,13 +1,7 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { features } from './flags';
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_EMAIL,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface SendMailOptions {
   to: string;
@@ -27,17 +21,17 @@ export async function sendMail({ to, subject, html }: SendMailOptions) {
   }
 
   try {
-    const info = await transporter.sendMail({
-      from: `"Sharm Cloud Tours" <${process.env.GMAIL_EMAIL}>`,
+    const data = await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Sharm Cloud Tours <noreply@sharmcloudtours.com>',
       to,
       subject,
       html,
     });
 
-    console.log('[Email] Sent successfully to:', to, 'ID:', info.messageId);
-    return { success: true, data: info };
+    console.log('[Email] Sent successfully to:', to, 'ID:', data.id);
+    return { success: true, data };
   } catch (error: any) {
-    console.error('[Email] Error:', error.message, error.stack);
+    console.error('[Email] Error:', error.message);
     return { success: false, error: error.message };
   }
 }

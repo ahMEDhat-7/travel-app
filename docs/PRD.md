@@ -63,7 +63,7 @@
 ## 4. Project Structure
 
 ```
-sharm-cloud-tours/
+sharmcloudtours/
 ├── app/                                    # Next.js App Router root
 │   ├── [locale]/                           # Locale-prefixed public routes
 │   │   ├── page.tsx                        # Home page

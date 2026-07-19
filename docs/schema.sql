@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS wishlists (
 
 -- Insert admin user
 INSERT INTO users (id, email, name, role) VALUES 
-  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'admin@traveloo.com', 'Admin', 'ADMIN')
+  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'admin@sharmcloudtours.com', 'Admin', 'ADMIN')
 ON CONFLICT (email) DO NOTHING;
 
 -- Insert test user

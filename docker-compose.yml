@@ -1,0 +1,93 @@
+services:
+  # ──────────────────────────────────────────────
+  # Nginx — Reverse Proxy + SSL Termination
+  # ──────────────────────────────────────────────
+  nginx:
+    build: ./nginx
+    container_name: sharmcloudtours-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - sharmcloudtours-net
+
+  # ──────────────────────────────────────────────
+  # Next.js App — Application Server
+  # ──────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sharmcloudtours-app
+    restart: unless-stopped
+    expose:
+      - "3000"
+    env_file:
+      - .env.production
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - sharmcloudtours-net
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "1.5"
+        reservations:
+          memory: 256M
+          cpus: "0.5"
+
+  # ──────────────────────────────────────────────
+  # PostgreSQL — Database
+  # ──────────────────────────────────────────────
+  db:
+    image: postgres:18-alpine
+    container_name: sharmcloudtours-db
+    restart: unless-stopped
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./scripts/backup-db.sh:/usr/local/bin/backup-db.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - sharmcloudtours-net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1"
+        reservations:
+          memory: 128M
+          cpus: "0.25"
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  sharmcloudtours-net:
+    driver: bridge

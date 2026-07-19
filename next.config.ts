@@ -3,11 +3,11 @@ setDefaultResultOrder('ipv4first');
 
 import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from 'next';
-import { routing } from './i18n/routing';
 
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   images: {
     remotePatterns: [
       {
