@@ -10,13 +10,16 @@ if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
   process.exit(1);
 }
 
+const email: string = ADMIN_EMAIL;
+const password: string = ADMIN_PASSWORD;
+
 async function setAdminPassword() {
   console.log('Setting admin password...');
   
-  const hashedPassword = hashPassword(ADMIN_PASSWORD);
+  const hashedPassword = hashPassword(password);
   
   const admin = await db.user.upsert({
-    where: { email: ADMIN_EMAIL },
+    where: { email },
     update: { 
       name: 'Admin', 
       role: 'ADMIN',
@@ -25,7 +28,7 @@ async function setAdminPassword() {
     },
     create: { 
       id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 
-      email: ADMIN_EMAIL, 
+      email, 
       name: 'Admin', 
       role: 'ADMIN',
       password: hashedPassword,
