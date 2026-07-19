@@ -21,14 +21,19 @@ export async function sendMail({ to, subject, html }: SendMailOptions) {
   }
 
   try {
-    const data = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: process.env.EMAIL_FROM || 'Sharm Cloud Tours <noreply@sharmcloudtours.com>',
       to,
       subject,
       html,
     });
 
-    console.log('[Email] Sent successfully to:', to, 'ID:', data.id);
+    if (error) {
+      console.error('[Email] Resend error:', error);
+      return { success: false, error: error.message };
+    }
+
+    console.log('[Email] Sent successfully to:', to, 'ID:', data?.id);
     return { success: true, data };
   } catch (error: any) {
     console.error('[Email] Error:', error.message);
