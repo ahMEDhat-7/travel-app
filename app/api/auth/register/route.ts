@@ -7,9 +7,9 @@ import { sendVerificationEmail } from '@/lib/email';
 import { withRateLimit, RATE_LIMITS } from '@/lib/api-rate-limit';
 
 const registerSchema = z.object({
-  name: z.string().min(2),
+  name: z.string().min(2).max(100),
   email: z.string().email(),
-  password: z.string().min(6),
+  password: z.string().min(8).max(128),
   phone: z.string().min(5).max(30),
 });
 
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Registration error:', error);
     return NextResponse.json(
-      { success: false, error: error.message || 'Registration failed' },
+      { success: false, error: 'Registration failed. Please check your input and try again.' },
       { status: 400 }
     );
   }

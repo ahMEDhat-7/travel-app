@@ -37,5 +37,7 @@ export const RATE_LIMITS = {
   DEFAULT: { windowMs: 60000, maxRequests: 60 },
   LOGIN: { windowMs: 60000, maxRequests: 5 },
   REGISTER: { windowMs: 3600000, maxRequests: 3 },
+  VERIFY_EMAIL: { windowMs: 900000, maxRequests: 5 },
+  RESEND_VERIFICATION: { windowMs: 900000, maxRequests: 3 },
   API: { windowMs: 60000, maxRequests: 100 },
 };

@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import crypto from 'crypto';
 import { db } from '@/lib/db';
 import { isTokenExpired } from '@/lib/token';
+import { withRateLimit, RATE_LIMITS } from '@/lib/api-rate-limit';
 
 const verifyEmailSchema = z.object({
   email: z.string().email(),
@@ -9,6 +11,11 @@ const verifyEmailSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  const rateLimitResponse = withRateLimit(request, RATE_LIMITS.VERIFY_EMAIL);
+  if (rateLimitResponse.status === 429) {
+    return rateLimitResponse;
+  }
+
   try {
     const body = await request.json();
     const input = verifyEmailSchema.parse(body);
@@ -17,23 +24,9 @@ export async function POST(request: NextRequest) {
       where: { email: input.email },
     });
 
-    if (!user) {
+    if (!user || user.emailVerified || !user.verificationToken) {
       return NextResponse.json(
-        { success: false, error: 'User not found' },
-        { status: 404 }
-      );
-    }
-
-    if (user.emailVerified) {
-      return NextResponse.json(
-        { success: false, error: 'Email is already verified' },
-        { status: 400 }
-      );
-    }
-
-    if (!user.verificationToken || user.verificationToken !== input.code) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid verification code' },
+        { success: false, error: 'Invalid or expired verification code' },
         { status: 400 }
       );
     }
@@ -41,6 +34,16 @@ export async function POST(request: NextRequest) {
     if (isTokenExpired(user.verificationTokenExpiry)) {
       return NextResponse.json(
         { success: false, error: 'Verification code has expired. Please request a new one.' },
+        { status: 400 }
+      );
+    }
+
+    const tokenBuffer = Buffer.from(user.verificationToken);
+    const inputBuffer = Buffer.from(input.code);
+
+    if (tokenBuffer.length !== inputBuffer.length || !crypto.timingSafeEqual(tokenBuffer, inputBuffer)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid or expired verification code' },
         { status: 400 }
       );
     }

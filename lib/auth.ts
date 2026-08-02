@@ -84,7 +84,18 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user, trigger, session }) {
       if (trigger === 'update' && session) {
-        return { ...token, ...session };
+        if (typeof session === 'object' && session !== null) {
+          if ('name' in session && typeof session.name === 'string') {
+            token.name = session.name;
+          }
+          if ('email' in session && typeof session.email === 'string') {
+            token.email = session.email;
+          }
+          if ('phone' in session && typeof session.phone === 'string') {
+            token.phone = session.phone;
+          }
+        }
+        return token;
       }
 
       if (user && user.email) {
@@ -109,5 +120,6 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: 'jwt',
+    maxAge: 7 * 24 * 60 * 60,
   },
 };

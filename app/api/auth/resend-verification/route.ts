@@ -10,7 +10,7 @@ const resendVerificationSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  const rateLimitResponse = withRateLimit(request, RATE_LIMITS.DEFAULT);
+  const rateLimitResponse = withRateLimit(request, RATE_LIMITS.RESEND_VERIFICATION);
   if (rateLimitResponse.status === 429) {
     return rateLimitResponse;
   }
@@ -23,30 +23,15 @@ export async function POST(request: NextRequest) {
       where: { email: input.email },
     });
 
-    if (!user) {
+    if (!user || user.emailVerified) {
       return NextResponse.json(
-        { success: false, error: 'User not found' },
-        { status: 404 }
-      );
-    }
-
-    if (user.emailVerified) {
-      return NextResponse.json(
-        { success: false, error: 'Email is already verified' },
-        { status: 400 }
+        { success: false, error: 'If an unverified account exists, a new code has been sent.' },
+        { status: 200 }
       );
     }
 
     const verificationCode = generateVerificationCode();
     const verificationTokenExpiry = getTokenExpiry(15);
-
-    await db.user.update({
-      where: { email: input.email },
-      data: {
-        verificationToken: verificationCode,
-        verificationTokenExpiry,
-      },
-    });
 
     const emailResult = await sendVerificationEmail({
       to: input.email,
@@ -61,6 +46,14 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    await db.user.update({
+      where: { email: input.email },
+      data: {
+        verificationToken: verificationCode,
+        verificationTokenExpiry,
+      },
+    });
 
     return NextResponse.json(
       {

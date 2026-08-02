@@ -1,7 +1,4 @@
-import { Resend } from 'resend';
-import { features } from './flags';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import nodemailer from 'nodemailer';
 
 interface SendMailOptions {
   to: string;
@@ -9,8 +6,27 @@ interface SendMailOptions {
   html: string;
 }
 
+function createTransporter() {
+  const email = process.env.GMAIL_EMAIL;
+  const password = process.env.GMAIL_APP_PASSWORD;
+
+  if (!email || !password) {
+    return null;
+  }
+
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: email,
+      pass: password,
+    },
+  });
+}
+
 export async function sendMail({ to, subject, html }: SendMailOptions) {
-  if (!features.EMAIL_ENABLED) {
+  const transporter = createTransporter();
+
+  if (!transporter) {
     console.log('');
     console.log('═══════════════════════════════════════════════════');
     console.log('  [DEV MODE] Email disabled — would send to:', to);
@@ -21,20 +37,15 @@ export async function sendMail({ to, subject, html }: SendMailOptions) {
   }
 
   try {
-    const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'Sharm Cloud Tours <noreply@sharmcloudtours.com>',
+    const info = await transporter.sendMail({
+      from: `"Sharm Cloud Tours" <${process.env.GMAIL_EMAIL}>`,
       to,
       subject,
       html,
     });
 
-    if (error) {
-      console.error('[Email] Resend error:', error);
-      return { success: false, error: error.message };
-    }
-
-    console.log('[Email] Sent successfully to:', to, 'ID:', data?.id);
-    return { success: true, data };
+    console.log('[Email] Sent successfully to:', to, 'ID:', info.messageId);
+    return { success: true, data: { id: info.messageId } };
   } catch (error: any) {
     console.error('[Email] Error:', error.message);
     return { success: false, error: error.message };

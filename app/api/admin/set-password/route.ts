@@ -1,50 +1,79 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { hashPassword } from '@/lib/password';
+import { withRateLimit, RATE_LIMITS } from '@/lib/api-rate-limit';
 
-export async function GET() {
+export async function POST(request: NextRequest) {
+  const rateLimitResponse = withRateLimit(request, RATE_LIMITS.LOGIN);
+  if (rateLimitResponse.status === 429) {
+    return rateLimitResponse;
+  }
+
   try {
-    const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
-    const ADMIN_SETUP_PASSWORD = process.env.ADMIN_SETUP_PASSWORD;
-
-    if (!ADMIN_EMAIL || !ADMIN_SETUP_PASSWORD) {
-      return NextResponse.json({
-        success: false,
-        error: 'ADMIN_EMAIL and ADMIN_SETUP_PASSWORD environment variables are required'
-      }, { status: 400 });
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email || (session.user as any).role !== 'ADMIN') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
     }
 
+    const body = await request.json();
+    const { password } = body;
+
+    if (!password || typeof password !== 'string' || password.length < 8) {
+      return NextResponse.json(
+        { success: false, error: 'Password must be at least 8 characters' },
+        { status: 400 }
+      );
+    }
+
+    const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+    if (!ADMIN_EMAIL) {
+      return NextResponse.json(
+        { success: false, error: 'ADMIN_EMAIL environment variable is not set' },
+        { status: 500 }
+      );
+    }
+
+    const hashedPassword = hashPassword(password);
+
     let admin = await db.user.findUnique({ where: { email: ADMIN_EMAIL } });
-    
+
     if (!admin) {
       admin = await db.user.create({
-        data: { 
-          email: ADMIN_EMAIL, 
-          name: 'Admin', 
+        data: {
+          email: ADMIN_EMAIL,
+          name: 'Admin',
           role: 'ADMIN',
-          password: ADMIN_SETUP_PASSWORD
+          password: hashedPassword,
+          emailVerified: true,
         }
       });
     } else {
       admin = await db.user.update({
         where: { email: ADMIN_EMAIL },
-        data: { 
-          name: 'Admin', 
+        data: {
+          name: 'Admin',
           role: 'ADMIN',
+          password: hashedPassword,
         }
       });
     }
-    
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Admin account ready',
+
+    return NextResponse.json({
+      success: true,
+      message: 'Admin password updated successfully',
       email: ADMIN_EMAIL,
       role: admin.role
     });
   } catch (error: any) {
-    console.error('Error:', error.message);
-    return NextResponse.json({ 
-      success: false, 
-      error: error.message 
-    }, { status: 500 });
+    console.error('Set password error:', error.message);
+    return NextResponse.json(
+      { success: false, error: 'Failed to update admin password' },
+      { status: 500 }
+    );
   }
 }

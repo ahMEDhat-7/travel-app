@@ -5,7 +5,7 @@ export function generateToken(): string {
 }
 
 export function generateVerificationCode(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  return crypto.randomInt(100000, 1000000).toString();
 }
 
 export function getTokenExpiry(minutes: number = 60): Date {
