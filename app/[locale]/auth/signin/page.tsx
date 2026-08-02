@@ -92,17 +92,7 @@ export default function SignInPage({ params }: SignInPageProps) {
       });
 
       if (result?.error) {
-        const userRes = await fetch('/api/profile');
-        if (userRes.ok) {
-          const userData = await userRes.json();
-          if (userData.success && !userData.data.emailVerified) {
-            setError('Please verify your email first. Check your inbox for the verification code.');
-          } else {
-            setError('Invalid email or password');
-          }
-        } else {
-          setError('Invalid email or password');
-        }
+        setError('Invalid email or password');
       } else {
         const res = await fetch('/api/auth/session');
         const sessionData = await res.json();

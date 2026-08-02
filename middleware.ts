@@ -21,8 +21,9 @@ export async function middleware(request: NextRequest) {
           { status: 401 }
         );
       }
+      const locale = pathname.match(/^\/(en|ru)/)?.[1] || 'en';
       const url = request.nextUrl.clone();
-      url.pathname = '/en/auth/signin';
+      url.pathname = `/${locale}/auth/signin`;
       return NextResponse.redirect(url);
     }
   }

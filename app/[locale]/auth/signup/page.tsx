@@ -74,6 +74,7 @@ export default function SignUpPage({ params }: SignUpPageProps) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     if (session) {
@@ -95,20 +96,19 @@ export default function SignUpPage({ params }: SignUpPageProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
 
     if (password !== confirmPassword) {
       setError(t.passwordMismatch);
-      setIsLoading(false);
       return;
     }
 
     if (password.length < 8) {
       setError(t.passwordTooShort);
-      setIsLoading(false);
       return;
     }
+
+    setIsLoading(true);
 
     try {
       const res = await fetch('/api/auth/register', {
@@ -125,15 +125,13 @@ export default function SignUpPage({ params }: SignUpPageProps) {
         return;
       }
 
-      setError('');
-      setIsLoading(true);
+      setIsSuccess(true);
       setTimeout(() => {
         const params = new URLSearchParams({ email });
         router.push(`/${locale}/auth/verify-email?${params.toString()}`);
       }, 1000);
     } catch {
       setError('An error occurred. Please try again.');
-    } finally {
       setIsLoading(false);
     }
   };
@@ -300,7 +298,7 @@ export default function SignUpPage({ params }: SignUpPageProps) {
                 disabled={isLoading}
                 className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 font-bold rounded-xl hover:from-amber-400 hover:to-yellow-400 transition-all shadow-lg shadow-amber-500/30 disabled:opacity-50"
               >
-                {isLoading ? t.verifyRedirect : t.submitButton}
+                {isSuccess ? t.verifyRedirect : isLoading ? t.submitLoading : t.submitButton}
               </button>
           </form>
 

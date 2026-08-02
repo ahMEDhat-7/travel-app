@@ -33,6 +33,14 @@ export async function POST(request: NextRequest) {
     const verificationCode = generateVerificationCode();
     const verificationTokenExpiry = getTokenExpiry(15);
 
+    await db.user.update({
+      where: { email: input.email },
+      data: {
+        verificationToken: verificationCode,
+        verificationTokenExpiry,
+      },
+    });
+
     const emailResult = await sendVerificationEmail({
       to: input.email,
       verificationCode,
@@ -46,14 +54,6 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-
-    await db.user.update({
-      where: { email: input.email },
-      data: {
-        verificationToken: verificationCode,
-        verificationTokenExpiry,
-      },
-    });
 
     return NextResponse.json(
       {

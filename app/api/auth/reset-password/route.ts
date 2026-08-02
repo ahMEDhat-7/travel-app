@@ -7,11 +7,11 @@ import { withRateLimit, RATE_LIMITS } from '@/lib/api-rate-limit';
 
 const resetPasswordSchema = z.object({
   token: z.string().min(1),
-  newPassword: z.string().min(8),
+  newPassword: z.string().min(8).max(128),
 });
 
 export async function POST(request: NextRequest) {
-  const rateLimitResponse = withRateLimit(request, RATE_LIMITS.DEFAULT);
+  const rateLimitResponse = withRateLimit(request, RATE_LIMITS.RESET_PASSWORD);
   if (rateLimitResponse.status === 429) {
     return rateLimitResponse;
   }
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const hashedPassword = hashPassword(input.newPassword);
+    const hashedPassword = await hashPassword(input.newPassword);
 
     await db.user.update({
       where: { id: user.id },

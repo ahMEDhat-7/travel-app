@@ -23,9 +23,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { password } = body;
 
-    if (!password || typeof password !== 'string' || password.length < 8) {
+    if (!password || typeof password !== 'string' || password.length < 8 || password.length > 128) {
       return NextResponse.json(
-        { success: false, error: 'Password must be at least 8 characters' },
+        { success: false, error: 'Password must be between 8 and 128 characters' },
         { status: 400 }
       );
     }
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const hashedPassword = hashPassword(password);
+    const hashedPassword = await hashPassword(password);
 
     let admin = await db.user.findUnique({ where: { email: ADMIN_EMAIL } });
 
@@ -66,7 +66,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'Admin password updated successfully',
-      email: ADMIN_EMAIL,
       role: admin.role
     });
   } catch (error: any) {

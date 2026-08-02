@@ -27,12 +27,15 @@ export async function sendMail({ to, subject, html }: SendMailOptions) {
   const transporter = createTransporter();
 
   if (!transporter) {
-    console.log('');
-    console.log('═══════════════════════════════════════════════════');
-    console.log('  [DEV MODE] Email disabled — would send to:', to);
-    console.log('  Subject:', subject);
-    console.log('═══════════════════════════════════════════════════');
-    console.log('');
+    console.warn('');
+    console.warn('═══════════════════════════════════════════════════');
+    console.warn('  [WARNING] Email is DISABLED — GMAIL_EMAIL or');
+    console.warn('  GMAIL_APP_PASSWORD is not set.');
+    console.warn('  Emails will NOT be sent in production!');
+    console.warn('  Would send to:', to);
+    console.warn('  Subject:', subject);
+    console.warn('═══════════════════════════════════════════════════');
+    console.warn('');
     return { success: true, disabled: true };
   }
 

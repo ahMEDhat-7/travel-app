@@ -1,4 +1,12 @@
-const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+const MAX_STORE_SIZE = 10000;
+const CLEANUP_INTERVAL = 60 * 1000;
+
+interface RateLimitEntry {
+  count: number;
+  resetTime: number;
+}
+
+const rateLimitStore = new Map<string, RateLimitEntry>();
 
 export interface RateLimitConfig {
   windowMs: number;
@@ -18,6 +26,9 @@ export function checkRateLimit(
   const record = rateLimitStore.get(identifier);
 
   if (!record || now > record.resetTime) {
+    if (rateLimitStore.size >= MAX_STORE_SIZE) {
+      cleanupRateLimitStore();
+    }
     rateLimitStore.set(identifier, {
       count: 1,
       resetTime: now + config.windowMs,
@@ -51,11 +62,20 @@ export function getRateLimitIdentifier(ip: string, path: string): string {
 
 export function cleanupRateLimitStore(): void {
   const now = Date.now();
+  const keysToDelete: string[] = [];
   for (const [key, value] of rateLimitStore.entries()) {
     if (now > value.resetTime) {
-      rateLimitStore.delete(key);
+      keysToDelete.push(key);
     }
+  }
+  for (const key of keysToDelete) {
+    rateLimitStore.delete(key);
+  }
+  if (rateLimitStore.size > MAX_STORE_SIZE) {
+    rateLimitStore.clear();
   }
 }
 
-setInterval(cleanupRateLimitStore, 60 * 1000);
+if (typeof setInterval !== 'undefined') {
+  setInterval(cleanupRateLimitStore, CLEANUP_INTERVAL);
+}

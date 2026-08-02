@@ -3,10 +3,11 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { generateVerificationCode, getTokenExpiry } from '@/lib/token';
+import { sendVerificationEmail } from '@/lib/email';
 
 const updateProfileSchema = z.object({
   name: z.string().min(2).max(100).optional(),
-  email: z.string().email().optional(),
   phone: z.string().max(30).optional(),
   whatsapp: z.string().max(20).optional(),
   address: z.string().max(500).optional(),
@@ -93,7 +94,6 @@ export async function PUT(request: NextRequest) {
     
     const updateData: Record<string, unknown> = {};
     if (input.name) updateData.name = input.name;
-    if (input.email) updateData.email = input.email;
     if (input.phone !== undefined) updateData.phone = input.phone;
     
     if (isAdmin) {
@@ -135,7 +135,7 @@ export async function PUT(request: NextRequest) {
   } catch (error: any) {
     console.error('Profile PUT error:', error);
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to update profile' },
+      { success: false, error: 'Failed to update profile' },
       { status: 400 }
     );
   }

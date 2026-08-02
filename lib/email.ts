@@ -71,7 +71,7 @@ export async function sendPasswordReset(options: {
     <p style="color:#333333;font-size:16px">Dear <strong>${safeName}</strong>,</p>
     <p style="color:#333333;font-size:16px">You requested to reset your password. Click the button below to create a new password:</p>
     <div style="text-align:center;margin:30px 0">
-      <a href="${resetUrl}" style="display:inline-block;background:linear-gradient(135deg,#FFD700 0%,#FFEA00 100%);color:#000000;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:bold">Reset Password</a>
+      <a href="${escapeHtml(resetUrl)}" style="display:inline-block;background:linear-gradient(135deg,#FFD700 0%,#FFEA00 100%);color:#000000;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:bold">Reset Password</a>
     </div>
     <p style="color:#666666;font-size:14px">This link will expire in 1 hour. If you didn&apos;t request this, please ignore this email.</p>
     <p style="color:#999999;font-size:12px;margin-top:30px">If the button doesn&apos;t work, copy and paste this link into your browser:<br />${escapeHtml(resetUrl)}</p>
@@ -215,7 +215,7 @@ export async function sendAdminBookingNotification(options: {
     </div>
     <p style="color:#666666;font-size:14px">Please log in to the admin dashboard to confirm or cancel this booking.</p>
     <div style="text-align:center;margin:30px 0">
-      <a href="${appUrl}/admin/bookings" style="display:inline-block;background:linear-gradient(135deg,#0EA5E9 0%,#0284C7 100%);color:#ffffff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:bold">View in Admin Dashboard</a>
+      <a href="${escapeHtml(appUrl + '/admin/bookings')}" style="display:inline-block;background:linear-gradient(135deg,#0EA5E9 0%,#0284C7 100%);color:#ffffff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:bold">View in Admin Dashboard</a>
     </div>
   `, 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)', '#ffffff');
 

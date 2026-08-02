@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit, getRateLimitIdentifier, RateLimitConfig } from './rate-limit';
 
+function getClientIp(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) {
+    const firstIp = forwarded.split(',')[0].trim();
+    if (firstIp) return firstIp;
+  }
+  return request.headers.get('x-real-ip') || 'unknown';
+}
+
 export function withRateLimit(
   request: NextRequest,
   config: RateLimitConfig = { windowMs: 60000, maxRequests: 60 }
 ) {
-  const ip = request.headers.get('x-forwarded-for') || 
-             request.headers.get('x-real-ip') || 
-             'unknown';
+  const ip = getClientIp(request);
   const path = request.nextUrl.pathname;
   const identifier = getRateLimitIdentifier(ip, path);
 
@@ -39,5 +46,8 @@ export const RATE_LIMITS = {
   REGISTER: { windowMs: 3600000, maxRequests: 3 },
   VERIFY_EMAIL: { windowMs: 900000, maxRequests: 5 },
   RESEND_VERIFICATION: { windowMs: 900000, maxRequests: 3 },
+  FORGOT_PASSWORD: { windowMs: 900000, maxRequests: 3 },
+  RESET_PASSWORD: { windowMs: 900000, maxRequests: 5 },
+  NEXTAUTH: { windowMs: 60000, maxRequests: 10 },
   API: { windowMs: 60000, maxRequests: 100 },
 };

@@ -10,7 +10,7 @@ const forgotPasswordSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  const rateLimitResponse = withRateLimit(request, RATE_LIMITS.DEFAULT);
+  const rateLimitResponse = withRateLimit(request, RATE_LIMITS.FORGOT_PASSWORD);
   if (rateLimitResponse.status === 429) {
     return rateLimitResponse;
   }
@@ -23,14 +23,7 @@ export async function POST(request: NextRequest) {
       where: { email: input.email },
     });
 
-    if (!user) {
-      return NextResponse.json(
-        { success: true, message: 'If the email exists, a reset link will be sent' },
-        { status: 200 }
-      );
-    }
-
-    if (!user.password) {
+    if (!user || !user.password) {
       return NextResponse.json(
         { success: true, message: 'If the email exists, a reset link will be sent' },
         { status: 200 }

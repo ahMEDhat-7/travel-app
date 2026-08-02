@@ -23,23 +23,23 @@ export async function POST(request: NextRequest) {
       where: { email: input.email },
     });
 
-    if (!user) {
+    if (!user || !user.password) {
       return NextResponse.json(
         { success: false, error: 'Invalid email or password' },
         { status: 401 }
       );
     }
 
-    if (!user.password) {
+    const isValid = await verifyPassword(input.password, user.password);
+
+    if (!isValid) {
       return NextResponse.json(
-        { success: false, error: 'Please use Google OAuth to sign in' },
+        { success: false, error: 'Invalid email or password' },
         { status: 401 }
       );
     }
 
-    const isValid = verifyPassword(input.password, user.password);
-
-    if (!isValid) {
+    if (!user.emailVerified) {
       return NextResponse.json(
         { success: false, error: 'Invalid email or password' },
         { status: 401 }
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Login error:', error);
     return NextResponse.json(
-      { success: false, error: error.message || 'Login failed' },
+      { success: false, error: 'Login failed' },
       { status: 400 }
     );
   }

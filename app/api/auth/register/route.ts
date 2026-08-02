@@ -23,32 +23,32 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const input = registerSchema.parse(body);
 
-    const existing = await db.user.findUnique({
-      where: { email: input.email },
-    });
-
-    if (existing) {
-      return NextResponse.json(
-        { success: false, error: 'Email already registered' },
-        { status: 400 }
-      );
-    }
-
-    const hashedPassword = hashPassword(input.password);
+    const hashedPassword = await hashPassword(input.password);
     const verificationCode = generateVerificationCode();
     const verificationTokenExpiry = getTokenExpiry(15);
 
-    const user = await db.user.create({
-      data: {
-        name: input.name,
-        email: input.email,
-        password: hashedPassword,
-        phone: input.phone,
-        role: 'USER',
-        verificationToken: verificationCode,
-        verificationTokenExpiry,
-      },
-    });
+    let user;
+    try {
+      user = await db.user.create({
+        data: {
+          name: input.name,
+          email: input.email,
+          password: hashedPassword,
+          phone: input.phone,
+          role: 'USER',
+          verificationToken: verificationCode,
+          verificationTokenExpiry,
+        },
+      });
+    } catch (error: any) {
+      if (error.code === 'P2002') {
+        return NextResponse.json(
+          { success: false, error: 'Email already registered' },
+          { status: 400 }
+        );
+      }
+      throw error;
+    }
 
     const emailResult = await sendVerificationEmail({
       to: input.email,
@@ -58,7 +58,6 @@ export async function POST(request: NextRequest) {
 
     if (!emailResult.success) {
       await db.user.delete({ where: { id: user.id } });
-
       console.error('[Register] Failed to send verification email:', emailResult.error);
       return NextResponse.json(
         { success: false, error: 'Failed to send verification email. Please try again.' },
