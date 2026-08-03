@@ -16,7 +16,7 @@ const password: string = ADMIN_PASSWORD;
 async function setAdminPassword() {
   console.log('Setting admin password...');
   
-  const hashedPassword = hashPassword(password);
+  const hashedPassword = await hashPassword(password);
   
   const admin = await db.user.upsert({
     where: { email },
