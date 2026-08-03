@@ -60,7 +60,7 @@ export default function SignInPage({ params }: SignInPageProps) {
   useEffect(() => {
     if (session) {
       if ((session.user as any)?.role === 'ADMIN') {
-        router.push('/admin');
+        window.location.href = '/admin';
       } else {
         router.push(`/${locale}`);
       }
@@ -97,7 +97,7 @@ export default function SignInPage({ params }: SignInPageProps) {
         const res = await fetch('/api/auth/session');
         const sessionData = await res.json();
         if (sessionData?.user?.role === 'ADMIN') {
-          router.push('/admin');
+          window.location.href = '/admin';
         } else {
           router.push(`/${locale}`);
         }

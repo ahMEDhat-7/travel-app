@@ -26,6 +26,8 @@ export async function middleware(request: NextRequest) {
       url.pathname = `/${locale}/auth/signin`;
       return NextResponse.redirect(url);
     }
+
+    return NextResponse.next();
   }
 
   return intlMiddleware(request);
