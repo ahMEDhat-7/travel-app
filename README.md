@@ -23,6 +23,8 @@
 [![Stars](https://img.shields.io/github/stars/ahmedhat/traveloo?style=flat-square&color=FFD700)](#)
 [![Forks](https://img.shields.io/github/forks/ahmedhat/traveloo?style=flat-square)](#)
 
+**[Live Demo](https://sharmcloudtours.vercel.app/)**
+
 </div>
 
 ---
@@ -146,62 +148,6 @@ graph TD
     E --> J
     D --> K
 ```
-
----
-
-## Quick Start
-
-### Prerequisites
-
-- [Node.js 24+](https://nodejs.org)
-- [pnpm 11+](https://pnpm.io)
-- [Docker & Docker Compose](https://docker.com) (for production)
-- [PostgreSQL](https://postgresql.org) (for local dev)
-
-### Local Development
-
-```bash
-# Clone the repository
-git clone https://github.com/ahmedhat/traveloo.git
-cd traveloo
-
-# Install dependencies
-pnpm install
-
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your database URL, auth secrets, etc.
-
-# Push database schema
-pnpm db:push
-
-# Start development server
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to see the app.
-
-### Production (Docker)
-
-```bash
-# Clone and configure
-git clone https://github.com/ahmedhat/traveloo.git
-cd traveloo
-cp .env.example .env.production
-# Edit .env.production with production values
-
-# Build and start all services
-docker compose up -d --build
-
-# Run database migrations
-docker compose exec app npx prisma migrate deploy
-
-# Set up admin user
-docker compose exec app sh -c \
-  'ADMIN_EMAIL=admin@yoursite.com ADMIN_PASSWORD=yourpassword npx tsx scripts/set-admin-password.ts'
-```
-
-The app will be available at `https://yourdomain.com`.
 
 ---
 
